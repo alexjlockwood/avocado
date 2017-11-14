@@ -1,14 +1,20 @@
 {
   "name": "avdo",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Vector Drawable & Animated Vector Drawable optimizer",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepublishOnly": "npm run build",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alexjlockwood/avdo"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Alex Lockwood",
+  "license": "MIT",
   "devDependencies": {
     "typescript": "^2.6.1"
   }
