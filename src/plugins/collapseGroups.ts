@@ -1,12 +1,15 @@
-const type = 'perItemReverse';
+import * as _collections from './_collections';
 
-const active = true;
+export const type = 'perItemReverse';
 
-const description = 'collapses useless groups';
+export const active = true;
 
-const collections = require('./_collections'),
-  attrsInheritable = collections.inheritableAttrs,
-  animationElems = collections.elemsGroups.animation;
+export const description = 'collapses useless groups';
+
+export const params = undefined;
+
+const attrsInheritable = _collections.inheritableAttrs;
+const animationElems = _collections.elemsGroups.animation;
 
 function hasAnimatedAttr(item) {
   /* jshint validthis:true */
@@ -39,7 +42,7 @@ function hasAnimatedAttr(item) {
  *
  * @author Kir Belevich
  */
-function fn(item) {
+export function fn(item) {
   // non-empty elements
   if (item.isElem() && !item.isEmpty()) {
     item.content.forEach(function(g, i) {
@@ -106,5 +109,3 @@ function fn(item) {
     });
   }
 }
-
-export = { type, active, description, params: undefined, fn };

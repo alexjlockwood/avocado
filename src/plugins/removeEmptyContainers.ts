@@ -1,10 +1,14 @@
-const type = 'perItemReverse';
+import * as _collections from './_collections';
 
-const active = true;
+export const type = 'perItemReverse';
 
-const description = 'removes empty container elements';
+export const active = true;
 
-var container = require('./_collections').elemsGroups.container;
+export const description = 'removes empty container elements';
+
+export const params = undefined;
+
+const container = _collections.elemsGroups.container;
 
 /**
  * Remove empty containers.
@@ -22,7 +26,7 @@ var container = require('./_collections').elemsGroups.container;
  *
  * @author Kir Belevich
  */
-function fn(item) {
+export function fn(item) {
   return !(
     item.isElem(container) &&
     !item.isElem('svg') &&
@@ -30,5 +34,3 @@ function fn(item) {
     (!item.isElem('pattern') || !item.hasAttrLocal('href'))
   );
 }
-
-export = { type, active, description, params: undefined, fn };

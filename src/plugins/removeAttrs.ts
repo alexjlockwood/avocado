@@ -1,12 +1,12 @@
 const DEFAULT_SEPARATOR = ':';
 
-const type = 'perItem';
+export const type = 'perItem';
 
-const active = false;
+export const active = false;
 
-const description = 'removes specified attributes';
+export const description = 'removes specified attributes';
 
-const params = {
+export const params = {
   elemSeparator: DEFAULT_SEPARATOR,
   attrs: [],
 };
@@ -66,7 +66,7 @@ const params = {
  *
  * @author Benny Schudel
  */
-function fn(item, params) {
+export function fn(item, params) {
   // wrap into an array if params is not
   if (!Array.isArray(params.attrs)) {
     params.attrs = [params.attrs];
@@ -113,5 +113,3 @@ function fn(item, params) {
     });
   }
 }
-
-export = { type, active, description, params, fn };

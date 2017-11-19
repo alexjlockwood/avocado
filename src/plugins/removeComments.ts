@@ -1,8 +1,10 @@
-const type = 'perItem';
+export const type = 'perItem';
 
-const active = true;
+export const active = true;
 
-const description = 'removes comments';
+export const description = 'removes comments';
+
+export const params = undefined;
 
 /**
  * Remove comments.
@@ -16,10 +18,8 @@ const description = 'removes comments';
  *
  * @author Kir Belevich
  */
-function fn(item) {
+export function fn(item) {
   if (item.comment && item.comment.charAt(0) !== '!') {
     return false;
   }
 }
-
-export = { type, active, description, params: undefined, fn };

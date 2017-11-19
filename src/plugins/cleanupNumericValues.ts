@@ -1,11 +1,13 @@
-const type = 'perItem';
+import * as _tools from './_tools';
 
-const active = true;
+export const type = 'perItem';
 
-const description =
+export const active = true;
+
+export const description =
   'rounds numeric values to the fixed precision, removes default ‘px’ units';
 
-const params = {
+export const params = {
   floatPrecision: 3,
   leadingZero: true,
   defaultPx: true,
@@ -13,7 +15,7 @@ const params = {
 };
 
 const regNumericValues = /^([\-+]?\d*\.?\d+([eE][\-+]?\d+)?)(px|pt|pc|mm|cm|m|in|ft|em|ex|%)?$/;
-const removeLeadingZero = require('../lib/svgo/tools').removeLeadingZero;
+const removeLeadingZero = _tools.removeLeadingZero;
 const absoluteLengths = {
   // relative to px
   cm: 96 / 2.54,
@@ -33,7 +35,7 @@ const absoluteLengths = {
  *
  * @author Kir Belevich
  */
-function fn(item, params) {
+export function fn(item, params) {
   if (item.isElem()) {
     var floatPrecision = params.floatPrecision;
 
@@ -83,5 +85,3 @@ function fn(item, params) {
     });
   }
 }
-
-export = { type, active, description, params, fn };

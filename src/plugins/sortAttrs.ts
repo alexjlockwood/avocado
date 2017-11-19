@@ -1,10 +1,10 @@
-const type = 'perItem';
+export const type = 'perItem';
 
-const active = false;
+export const active = false;
 
-const description = 'sorts element attributes (disabled by default)';
+export const description = 'sorts element attributes (disabled by default)';
 
-const params = {
+export const params = {
   order: [
     'id',
     'width',
@@ -34,7 +34,7 @@ const params = {
  *
  * @author Nikolay Frantsev
  */
-function fn(item, params) {
+export function fn(item, params) {
   var attrs = [],
     sorted = {},
     orderlen = params.order.length + 1;
@@ -81,5 +81,3 @@ function fn(item, params) {
     item.attrs = sorted;
   }
 }
-
-export = { type, active, description, params, fn };

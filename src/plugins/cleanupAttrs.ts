@@ -1,11 +1,11 @@
-const type = 'perItem';
+export const type = 'perItem';
 
-const active = true;
+export const active = true;
 
-const description =
+export const description =
   'cleanups attributes from newlines, trailing and repeating spaces';
 
-const params = {
+export const params = {
   newlines: true,
   trim: true,
   spaces: true,
@@ -24,7 +24,7 @@ const regSpaces = /\s{2,}/g;
  *
  * @author Kir Belevich
  */
-function fn(item, params) {
+export function fn(item, params) {
   if (item.isElem()) {
     item.eachAttr(function(attr) {
       if (params.newlines) {
@@ -51,5 +51,3 @@ function fn(item, params) {
     });
   }
 }
-
-export = { type, active, description, params, fn };

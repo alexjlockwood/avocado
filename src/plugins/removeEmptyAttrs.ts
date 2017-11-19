@@ -1,8 +1,10 @@
-const type = 'perItem';
+export const type = 'perItem';
 
-const active = true;
+export const active = true;
 
-const description = 'removes empty attributes';
+export const description = 'removes empty attributes';
+
+export const params = undefined;
 
 /**
  * Remove attributes with empty values.
@@ -12,7 +14,7 @@ const description = 'removes empty attributes';
  *
  * @author Kir Belevich
  */
-function fn(item) {
+export function fn(item) {
   if (item.elem) {
     item.eachAttr(function(attr) {
       if (attr.value === '') {
@@ -21,5 +23,3 @@ function fn(item) {
     });
   }
 }
-
-export = { type, active, description, params: undefined, fn };

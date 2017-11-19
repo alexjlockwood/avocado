@@ -1,11 +1,16 @@
-const type = 'perItemReverse';
+import * as _collections from './_collections';
 
-const active = true;
+export const type = 'perItemReverse';
 
-const description = 'moves elements attributes to the existing group wrapper';
+export const active = true;
 
-const inheritableAttrs = require('./_collections').inheritableAttrs,
-  pathElems = require('./_collections.js').pathElems;
+export const description =
+  'moves elements attributes to the existing group wrapper';
+
+export const params = undefined;
+
+const inheritableAttrs = _collections.inheritableAttrs;
+const pathElems = _collections.pathElems;
 
 /**
  * Collapse content's intersected and inheritable
@@ -31,7 +36,7 @@ const inheritableAttrs = require('./_collections').inheritableAttrs,
  *
  * @author Kir Belevich
  */
-function fn(item) {
+export function fn(item) {
   if (item.isElem('g') && !item.isEmpty() && item.content.length > 1) {
     var intersection = {},
       hasTransform = false,
@@ -110,5 +115,3 @@ function intersectInheritableAttrs(a, b) {
 
   return c;
 }
-
-export = { type, active, description, params: undefined, fn };

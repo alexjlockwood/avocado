@@ -1,12 +1,17 @@
-const type = 'perItem';
+import * as _collections from './_collections';
 
-const active = true;
+export const type = 'perItem';
 
-const description = 'removes non-inheritable group’s presentational attributes';
+export const active = true;
 
-var inheritableAttrs = require('./_collections').inheritableAttrs,
-  attrsGroups = require('./_collections').attrsGroups,
-  excludedAttrs = ['display', 'opacity'];
+export const description =
+  'removes non-inheritable group’s presentational attributes';
+
+export const params = undefined;
+
+const inheritableAttrs = _collections.inheritableAttrs;
+const attrsGroups = _collections.attrsGroups;
+const excludedAttrs = ['display', 'opacity'];
 
 /**
  * Remove non-inheritable group's "presentation" attributes.
@@ -16,7 +21,7 @@ var inheritableAttrs = require('./_collections').inheritableAttrs,
  *
  * @author Kir Belevich
  */
-function fn(item) {
+export function fn(item) {
   if (item.isElem('g')) {
     item.eachAttr(function(attr) {
       if (
@@ -32,5 +37,3 @@ function fn(item) {
     });
   }
 }
-
-export = { type, active, description, params: undefined, fn };

@@ -1,11 +1,11 @@
-const type = 'perItem';
+export const type = 'perItem';
 
-const active = false;
+export const active = false;
 
-const description =
+export const description =
   'removes arbitrary elements by ID or className (disabled by default)';
 
-const params = {
+export const params = {
   id: [],
   class: [],
 };
@@ -49,7 +49,7 @@ const params = {
  *
  * @author Eli Dupuis (@elidupuis)
  */
-function fn(item, params) {
+export function fn(item, params) {
   var elemId, elemClass;
 
   // wrap params in an array if not already
@@ -77,5 +77,3 @@ function fn(item, params) {
     return !hasClassRegex.test(elemClass.value);
   }
 }
-
-export = { type, active, description, params, fn };

@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var JsApi = /** @class */ (function () {
     function JsApi(data, parentNode) {
         this.elem = data.elem;
@@ -276,4 +277,4 @@ var JsApi = /** @class */ (function () {
     };
     return JsApi;
 }());
-module.exports = JsApi;
+exports.JsApi = JsApi;

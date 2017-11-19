@@ -1,8 +1,10 @@
-const type = 'perItem';
+export const type = 'perItem';
 
-const active = true;
+export const active = true;
 
-const description = 'removes XML processing instructions';
+export const description = 'removes XML processing instructions';
+
+export const params = undefined;
 
 /**
  * Remove XML Processing Instruction.
@@ -15,10 +17,8 @@ const description = 'removes XML processing instructions';
  *
  * @author Kir Belevich
  */
-function fn(item) {
+export function fn(item) {
   return !(
     item.processinginstruction && item.processinginstruction.name === 'xml'
   );
 }
-
-export = { type, active, description, params: undefined, fn };

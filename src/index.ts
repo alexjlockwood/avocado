@@ -1,14 +1,16 @@
+// Example: npm run build && node bin/avdo -s '<vector><!-- asdf --></vector>'
+
 import FS = require('fs');
 import PATH = require('path');
 const PKG = require('../package.json');
-import PROGRAM = require('commander');
+import * as PROGRAM from 'commander';
 import util = require('util');
 const { promisify } = util;
 const readFile = promisify(FS.readFile);
-import SVGO = require('svgo');
+import { Avdo } from './avdo';
 const writeFile = promisify(FS.writeFile);
-import XML2JS = require('./xml2js');
-import JS2XML = require('./js2xml');
+import { xml2js } from './xml2js';
+import { js2xml } from './js2xml';
 
 function execute() {
   PROGRAM.version(PKG.version)
@@ -19,15 +21,20 @@ function execute() {
   if (PROGRAM.string) {
     // const parser = new DOMParser();
     // const doc = parser.parseFromString(PROGRAM.string, 'application/xml');
-    XML2JS(PROGRAM.string, obj => {
-      console.log(obj.content);
-      console.log('=====');
-      console.log(JS2XML(obj, undefined).data);
-    });
+    xml2js(
+      PROGRAM.string,
+      jsApi => {
+        console.log(jsApi.content);
+        console.log('=====');
+        console.log(js2xml(jsApi, undefined).data);
+      },
+      // TODO: handle error case
+      error => {},
+    );
 
     // TODO: run in parallel with other args below?
     // TODO: handle rejected case like SVGO
-    // new SVGO().optimize(PROGRAM.string).then(res => console.log(res));
+    new Avdo().optimize(PROGRAM.string).then(res => console.log(res));
     return;
   }
 
@@ -61,7 +68,7 @@ function processSVGData(config, info, data, output, input) {
   var startTime = Date.now(),
     prevFileSize = Buffer.byteLength(data, 'utf8');
 
-  return new SVGO().optimize(data, info).then(function(result) {
+  return new Avdo().optimize(data, info).then(function(result) {
     // if (config.datauri) {
     //   result.data = encodeSVGDatauri(result.data, config.datauri);
     // }

@@ -1,12 +1,16 @@
-const type = 'perItem';
+import * as _collections from './_collections';
 
-const active = true;
+export const type = 'perItem';
 
-const description = 'moves some group attributes to the content elements';
+export const active = true;
 
-let collections = require('./_collections.js'),
-  pathElems = collections.pathElems.concat(['g', 'text']),
-  referencesProps = collections.referencesProps;
+export const description =
+  'moves some group attributes to the content elements';
+
+export const params = undefined;
+
+const pathElems = _collections.pathElems.concat(['g', 'text']);
+const referencesProps = _collections.referencesProps;
 
 /**
  * Move group attrs to the content elements.
@@ -27,7 +31,7 @@ let collections = require('./_collections.js'),
  *
  * @author Kir Belevich
  */
-function fn(item) {
+export function fn(item) {
   // move group transform attr to content's pathElems
   if (
     item.isElem('g') &&
@@ -58,5 +62,3 @@ function fn(item) {
     item.removeAttr('transform');
   }
 }
-
-export = { type, active, description, params: undefined, fn };

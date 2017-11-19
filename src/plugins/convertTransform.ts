@@ -1,10 +1,14 @@
-const type = 'perItem';
+import * as _transforms from './_transforms';
+import * as _tools from './_tools';
 
-const active = true;
+export const type = 'perItem';
 
-const description = 'collapses multiple transformations and optimizes it';
+export const active = true;
 
-const params = {
+export const description =
+  'collapses multiple transformations and optimizes it';
+
+export const params = {
   convertToShorts: true,
   // degPrecision: 3, // transformPrecision (or matrix precision) - 2 by default
   floatPrecision: 3,
@@ -19,10 +23,10 @@ const params = {
   negativeExtraSpace: false,
 };
 
-const cleanupOutData = require('../lib/svgo/tools').cleanupOutData;
-const transform2js = require('./_transforms.js').transform2js;
-const transformsMultiply = require('./_transforms.js').transformsMultiply;
-const matrixToTransform = require('./_transforms.js').matrixToTransform;
+const cleanupOutData = _tools.cleanupOutData;
+const transform2js = _transforms.transform2js;
+const transformsMultiply = _transforms.transformsMultiply;
+const matrixToTransform = _transforms.matrixToTransform;
 let degRound;
 let floatRound;
 let transformRound;
@@ -41,7 +45,7 @@ let transformRound;
  *
  * @author Kir Belevich
  */
-function fn(item, params) {
+export function fn(item, params) {
   if (item.elem) {
     // transform
     if (item.hasAttr('transform')) {
@@ -373,5 +377,3 @@ function smartRound(precision, data) {
 function round(data) {
   return data.map(Math.round);
 }
-
-export = { type, active, description, params, fn };

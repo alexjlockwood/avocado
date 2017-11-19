@@ -1,11 +1,13 @@
-const type = 'perItem';
+import * as _collections from './_collections';
 
-const active = true;
+export const type = 'perItem';
 
-const description =
+export const active = true;
+
+export const description =
   'removes unknown elements content and attributes, removes attrs with default values';
 
-const params = {
+export const params = {
   unknownContent: true,
   unknownAttrs: true,
   defaultAttrs: true,
@@ -14,12 +16,11 @@ const params = {
   keepAriaAttrs: true,
 };
 
-const collections = require('./_collections'),
-  elems = collections.elems,
-  attrsGroups = collections.attrsGroups,
-  elemsGroups = collections.elemsGroups,
-  attrsGroupsDefaults = collections.attrsGroupsDefaults,
-  attrsInheritable = collections.inheritableAttrs;
+const elems = _collections.elems;
+const attrsGroups = _collections.attrsGroups;
+const elemsGroups = _collections.elemsGroups;
+const attrsGroupsDefaults = _collections.attrsGroupsDefaults;
+const attrsInheritable = _collections.inheritableAttrs;
 
 // collect and extend all references
 // tslint:disable-next-line:forin
@@ -63,7 +64,7 @@ for (const e in elems) {
  *
  * @author Kir Belevich
  */
-function fn(item, params) {
+export function fn(item, params) {
   // elems w/o namespace prefix
   if (item.isElem() && !item.prefix) {
     const elem = item.elem;
@@ -121,5 +122,3 @@ function fn(item, params) {
     }
   }
 }
-
-export = { type, active, description, params, fn };

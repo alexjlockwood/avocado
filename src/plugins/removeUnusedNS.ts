@@ -1,8 +1,10 @@
-const type = 'full';
+export const type = 'full';
 
-const active = true;
+export const active = true;
 
-const description = 'removes unused namespaces declaration';
+export const description = 'removes unused namespaces declaration';
+
+export const params = undefined;
 
 /**
  * Remove unused namespaces declaration.
@@ -12,7 +14,7 @@ const description = 'removes unused namespaces declaration';
  *
  * @author Kir Belevich
  */
-function fn(data) {
+export function fn(data) {
   var svgElem,
     xmlnsCollection = [];
 
@@ -91,5 +93,3 @@ function fn(data) {
 
   return data;
 }
-
-export = { type, active, description, params: undefined, fn };

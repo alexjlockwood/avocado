@@ -1,4 +1,4 @@
-class JsApi {
+export class JsApi {
   parentNode: JsApi | undefined;
   content?: JsApi[];
   elem: string;
@@ -317,5 +317,3 @@ class JsApi {
     return false;
   }
 }
-
-export = JsApi;

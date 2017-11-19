@@ -1,9 +1,11 @@
-const type = 'perItem';
+export const type = 'perItem';
 
-const active = false;
+export const active = false;
 
-const description =
+export const description =
   'removes width and height in presence of viewBox (opposite to removeViewBox, disable it first)';
+
+export const params = undefined;
 
 /**
  * Remove width/height attributes when a viewBox attribute is present.
@@ -18,11 +20,9 @@ const description =
  *
  * @author Benny Schudel
  */
-function fn(item) {
+export function fn(item) {
   if (item.isElem('svg') && item.hasAttr('viewBox')) {
     item.removeAttr('width');
     item.removeAttr('height');
   }
 }
-
-export = { type, active, description, params: undefined, fn };

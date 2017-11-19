@@ -1,5 +1,5 @@
-import SAX = require('sax');
-import JsApi = require('./jsapi');
+import * as SAX from 'sax';
+import { JsApi } from './jsapi';
 
 const saxOptions: SAX.SAXOptions = {
   trim: false,
@@ -13,7 +13,11 @@ const saxOptions: SAX.SAXOptions = {
  * @param {String} data input data
  * @param {Function} callback
  */
-export = function(data, callback) {
+export function xml2js(
+  data,
+  onSuccess: (jsApi: JsApi) => void,
+  onFail: (error: string) => void,
+) {
   const sax = SAX.parser(true, saxOptions);
   const root = new JsApi({ elem: '#document', content: [] });
   let current: JsApi = root;
@@ -62,19 +66,19 @@ export = function(data, callback) {
 
   sax.onend = function() {
     if (this.error) {
-      callback({ error: this.error.message });
+      onFail(this.error.message);
     } else {
-      callback(root);
+      onSuccess(root);
     }
   };
 
   try {
     sax.write(data);
   } catch (e) {
-    callback({ error: e.message });
+    onFail(e.message);
     parsingError = true;
   }
   if (!parsingError) {
     sax.close();
   }
-};
+}

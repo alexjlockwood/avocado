@@ -1,9 +1,11 @@
-const type = 'perItem';
+export const type = 'perItem';
 
-const active = false;
+export const active = false;
 
-const description =
+export const description =
   'removes xmlns attribute (for inline svg, disabled by default)';
+
+export const params = undefined;
 
 /**
  * Remove the xmlns attribute when present.
@@ -18,10 +20,8 @@ const description =
  *
  * @author Ricardo Tomasi
  */
-function fn(item) {
+export function fn(item) {
   if (item.isElem('svg') && item.hasAttr('xmlns')) {
     item.removeAttr('xmlns');
   }
 }
-
-export = { type, active, description, params: undefined, fn };

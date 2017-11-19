@@ -1,10 +1,12 @@
-const type = 'full';
+import * as _collections from './_collections';
 
-const active = true;
+export const type = 'full';
 
-const description = 'removes unused IDs and minifies used';
+export const active = true;
 
-const params = {
+export const description = 'removes unused IDs and minifies used';
+
+export const params = {
   remove: true,
   minify: true,
   prefix: '',
@@ -12,66 +14,17 @@ const params = {
   force: false,
 };
 
-let referencesProps = new Set(require('./_collections').referencesProps),
-  regReferencesUrl = /\burl\(("|')?#(.+?)\1\)/,
-  regReferencesHref = /^#(.+?)$/,
-  regReferencesBegin = /(\w+)\./,
-  styleOrScript = ['style', 'script'],
-  generateIDchars = [
-    'a',
-    'b',
-    'c',
-    'd',
-    'e',
-    'f',
-    'g',
-    'h',
-    'i',
-    'j',
-    'k',
-    'l',
-    'm',
-    'n',
-    'o',
-    'p',
-    'q',
-    'r',
-    's',
-    't',
-    'u',
-    'v',
-    'w',
-    'x',
-    'y',
-    'z',
-    'A',
-    'B',
-    'C',
-    'D',
-    'E',
-    'F',
-    'G',
-    'H',
-    'I',
-    'J',
-    'K',
-    'L',
-    'M',
-    'N',
-    'O',
-    'P',
-    'Q',
-    'R',
-    'S',
-    'T',
-    'U',
-    'V',
-    'W',
-    'X',
-    'Y',
-    'Z',
-  ],
-  maxIDindex = generateIDchars.length - 1;
+const referencesProps = new Set(_collections.referencesProps);
+const regReferencesUrl = /\burl\(("|')?#(.+?)\1\)/;
+const regReferencesHref = /^#(.+?)$/;
+const regReferencesBegin = /(\w+)\./;
+const styleOrScript = ['style', 'script'];
+// prettier-ignore
+const generateIDchars = [
+    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+];
+const maxIDindex = generateIDchars.length - 1;
 
 /**
  * Remove unused and minify used IDs
@@ -82,7 +35,7 @@ let referencesProps = new Set(require('./_collections').referencesProps),
  *
  * @author Kir Belevich
  */
-function fn(data, params) {
+export function fn(data, params) {
   var currentID,
     currentIDstring,
     IDs = new Map(),
@@ -252,5 +205,3 @@ function getIDstring(arr, params) {
   var str = params.prefix;
   return str + arr.map(i => generateIDchars[i]).join('');
 }
-
-export = { type, active, description, params, fn };

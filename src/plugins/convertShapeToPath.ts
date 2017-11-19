@@ -1,10 +1,10 @@
-const type = 'perItem';
+export const type = 'perItem';
 
-const active = true;
+export const active = true;
 
-const description = 'converts basic shapes to more compact path form';
+export const description = 'converts basic shapes to more compact path form';
 
-const params = {
+export const params = {
   convertArcs: false,
 };
 
@@ -21,7 +21,7 @@ const params = {
  *
  * @author Lev Solntsev
  */
-function fn(item, params) {
+export function fn(item, params) {
   const none = { value: 0 };
   const regNumber = /[-+]?(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?/g;
 
@@ -142,5 +142,3 @@ function fn(item, params) {
     item.renameElem('path').removeAttr(['cx', 'cy', 'rx', 'ry']);
   }
 }
-
-export = { type, active, description, params, fn };

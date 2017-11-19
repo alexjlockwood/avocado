@@ -7,7 +7,16 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
-var EOL = require('os').EOL;
+Object.defineProperty(exports, "__esModule", { value: true });
+var OS = require("os");
+var EOL = OS.EOL;
+var entities = {
+    '&': '&amp;',
+    "'": '&apos;',
+    '"': '&quot;',
+    '>': '&gt;',
+    '<': '&lt;',
+};
 var defaults = {
     doctypeStart: '<!DOCTYPE',
     doctypeEnd: '>',
@@ -30,22 +39,22 @@ var defaults = {
     indent: 4,
     regEntities: /[&'"<>]/g,
     regValEntities: /[&"<>]/g,
-    encodeEntity: encodeEntity,
+    encodeEntity: function (char) { return entities[char]; },
     pretty: false,
     useShortTags: true,
 };
-var entities = {
-    '&': '&amp;',
-    "'": '&apos;',
-    '"': '&quot;',
-    '>': '&gt;',
-    '<': '&lt;',
-};
-function encodeEntity(char) {
-    return entities[char];
+/**
+ * Convert XML-as-JS object to XML string.
+ * @param {Object} data input data
+ * @param {Object} config config
+ * @return {Object} output data
+ */
+function js2xml(data, config) {
+    return new Js2Xml(config).convert(data);
 }
-var JS2SVG = /** @class */ (function () {
-    function JS2SVG(config) {
+exports.js2xml = js2xml;
+var Js2Xml = /** @class */ (function () {
+    function Js2Xml(config) {
         if (config) {
             this.config = __assign({}, defaults, config);
         }
@@ -78,7 +87,7 @@ var JS2SVG = /** @class */ (function () {
      *
      * @return {String}
      */
-    JS2SVG.prototype.convert = function (data) {
+    Js2Xml.prototype.convert = function (data) {
         var _this = this;
         var svg = '';
         if (data.content) {
@@ -115,7 +124,7 @@ var JS2SVG = /** @class */ (function () {
      *
      * @return {String}
      */
-    JS2SVG.prototype.createIndent = function () {
+    Js2Xml.prototype.createIndent = function () {
         var indent = '';
         if (this.config.pretty) {
             indent = this.config.indent.repeat(this.indentLevel - 1);
@@ -129,7 +138,7 @@ var JS2SVG = /** @class */ (function () {
      *
      * @return {String}
      */
-    JS2SVG.prototype.createDoctype = function (doctype) {
+    Js2Xml.prototype.createDoctype = function (doctype) {
         return this.config.doctypeStart + doctype + this.config.doctypeEnd;
     };
     /**
@@ -139,7 +148,7 @@ var JS2SVG = /** @class */ (function () {
      *
      * @return {String}
      */
-    JS2SVG.prototype.createProcInst = function (instruction) {
+    Js2Xml.prototype.createProcInst = function (instruction) {
         return (this.config.procInstStart +
             instruction.name +
             ' ' +
@@ -153,7 +162,7 @@ var JS2SVG = /** @class */ (function () {
      *
      * @return {String}
      */
-    JS2SVG.prototype.createComment = function (comment) {
+    Js2Xml.prototype.createComment = function (comment) {
         return this.config.commentStart + comment + this.config.commentEnd;
     };
     /**
@@ -163,7 +172,7 @@ var JS2SVG = /** @class */ (function () {
      *
      * @return {String}
      */
-    JS2SVG.prototype.createCDATA = function (cdata) {
+    Js2Xml.prototype.createCDATA = function (cdata) {
         return (this.createIndent() +
             this.config.cdataStart +
             cdata +
@@ -176,7 +185,7 @@ var JS2SVG = /** @class */ (function () {
      *
      * @return {String}
      */
-    JS2SVG.prototype.createElem = function (data) {
+    Js2Xml.prototype.createElem = function (data) {
         // beautiful injection for obtaining SVG information :)
         if (data.isElem('svg') && data.hasAttr('width') && data.hasAttr('height')) {
             this.width = data.attr('width').value;
@@ -231,7 +240,7 @@ var JS2SVG = /** @class */ (function () {
      *
      * @return {String}
      */
-    JS2SVG.prototype.createAttrs = function (elem) {
+    Js2Xml.prototype.createAttrs = function (elem) {
         var attrs = '';
         elem.eachAttr(function (attr) {
             if (attr.value !== undefined) {
@@ -248,8 +257,5 @@ var JS2SVG = /** @class */ (function () {
         }, this);
         return attrs;
     };
-    return JS2SVG;
+    return Js2Xml;
 }());
-module.exports = function (data, config) {
-    return new JS2SVG(config).convert(data);
-};

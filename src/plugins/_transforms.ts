@@ -9,7 +9,7 @@ var regTransformTypes = /matrix|translate|scale|rotate|skewX|skewY/,
  * @param {Object} params plugin params
  * @return {Array} output array
  */
-const transform2js = function(transformString) {
+export function transform2js(transformString) {
   // JS representation of the transform data
   var transforms = [],
     // current transform context
@@ -38,7 +38,7 @@ const transform2js = function(transformString) {
   });
 
   return transforms;
-};
+}
 
 /**
  * Multiply transforms into one.
@@ -46,7 +46,7 @@ const transform2js = function(transformString) {
  * @param {Array} input transforms array
  * @return {Array} output matrix array
  */
-const transformsMultiply = function(transforms) {
+export function transformsMultiply(transforms) {
   // convert transforms objects to the matrices
   transforms = transforms.map(function(transform) {
     if (transform.name === 'matrix') {
@@ -64,14 +64,14 @@ const transformsMultiply = function(transforms) {
   };
 
   return transforms;
-};
+}
 
 /**
  * Do math like a schoolgirl.
  *
  * @type {Object}
  */
-const mth = {
+export const mth = {
   rad: function(deg) {
     return deg * Math.PI / 180;
   },
@@ -103,7 +103,7 @@ const mth = {
   atan: function(val, floatPrecision) {
     return +this.deg(Math.atan(val)).toFixed(floatPrecision);
   },
-});
+};
 
 /**
  * Decompose matrix into simple transforms. See
@@ -112,7 +112,7 @@ const mth = {
  * @param {Object} data matrix transform object
  * @return {Object|Array} transforms array or original transform object
  */
-const matrixToTransform = function(transform, params) {
+export function matrixToTransform(transform, params) {
   var floatPrecision = params.floatPrecision,
     data = transform.data,
     transforms = [],
@@ -199,7 +199,7 @@ const matrixToTransform = function(transform, params) {
     });
 
   return transforms;
-};
+}
 
 /**
  * Convert transform to the matrix data.
@@ -267,7 +267,7 @@ function transformToMatrix(transform) {
  * @param {Array} transform transformation matrix
  * @return {Array} arc transformed input arc
  */
-const transformArc = function(arc, transform) {
+export function transformArc(arc, transform) {
   var a = arc[0],
     b = arc[1],
     rot = arc[2] * Math.PI / 180,
@@ -320,7 +320,7 @@ const transformArc = function(arc, transform) {
   }
 
   return arc;
-};
+}
 
 /**
  * Multiply transformation matrices.
@@ -339,7 +339,3 @@ function multiplyTransformMatrices(a, b) {
     a[1] * b[4] + a[3] * b[5] + a[5],
   ];
 }
-
-export = {
-  transform2js, transformsMultiply,  mth, matrixToTransform, transformArc
-};

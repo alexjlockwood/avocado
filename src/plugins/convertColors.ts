@@ -1,18 +1,19 @@
-const type = 'perItem';
+import * as _collections from './_collections';
 
-const active = true;
+export const type = 'perItem';
 
-const description = 'converts colors: rgb() to #rrggbb and #rrggbb to #rgb';
+export const active = true;
 
-const params = {
+export const description =
+  'converts colors: rgb() to #rrggbb and #rrggbb to #rgb';
+
+export const params = {
   currentColor: false,
   names2hex: true,
   rgb2hex: true,
   shorthex: true,
   shortname: true,
 };
-
-import collections = require('./_collections');
 
 const rNumber = '([+-]?(?:\\d*\\.\\d+|\\d+\\.?)%?)';
 const rComma = '\\s*,\\s*';
@@ -48,10 +49,10 @@ const none = /\bnone\b/i;
  *
  * @author Kir Belevich
  */
-function fn(item, params) {
+export function fn(item, params) {
   if (item.elem) {
     item.eachAttr(function(attr) {
-      if (collections.colorsProps.indexOf(attr.name) > -1) {
+      if (_collections.colorsProps.indexOf(attr.name) > -1) {
         var val = attr.value,
           match;
 
@@ -70,8 +71,8 @@ function fn(item, params) {
         }
 
         // Convert color name keyword to long hex
-        if (params.names2hex && val.toLowerCase() in collections.colorsNames) {
-          val = collections.colorsNames[val.toLowerCase()];
+        if (params.names2hex && val.toLowerCase() in _collections.colorsNames) {
+          val = _collections.colorsNames[val.toLowerCase()];
         }
 
         // Convert rgb() to long hex
@@ -93,8 +94,8 @@ function fn(item, params) {
         // Convert hex to short name
         if (params.shortname) {
           var lowerVal = val.toLowerCase();
-          if (lowerVal in collections.colorsShortNames) {
-            val = collections.colorsShortNames[lowerVal];
+          if (lowerVal in _collections.colorsShortNames) {
+            val = _collections.colorsShortNames[lowerVal];
           }
         }
 
@@ -125,5 +126,3 @@ function rgb2hex(rgb) {
       .toUpperCase()
   );
 }
-
-export = { type, active, description, params, fn };

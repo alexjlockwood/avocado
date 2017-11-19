@@ -1,4 +1,4 @@
-const elemsGroups = {
+export const elemsGroups = {
   animation: [
     'animate',
     'animateColor',
@@ -80,10 +80,10 @@ const elemsGroups = {
   ],
 };
 
-const pathElems = ['path', 'glyph', 'missing-glyph'];
+export const pathElems = ['path', 'glyph', 'missing-glyph'];
 
 // http://www.w3.org/TR/SVG/intro.html#Definitions
-const attrsGroups = {
+export const attrsGroups = {
   animationAddition: ['additive', 'accumulate'],
   animationAttributeTarget: ['attributeType', 'attributeName'],
   animationEvent: ['onbegin', 'onend', 'onrepeat', 'onload'],
@@ -225,7 +225,7 @@ const attrsGroups = {
   ],
 };
 
-const attrsGroupsDefaults = {
+export const attrsGroupsDefaults = {
   core: { 'xml:space': 'preserve' },
   filterPrimitive: { x: '0', y: '0', width: '100%', height: '100%' },
   presentation: {
@@ -296,7 +296,7 @@ const attrsGroupsDefaults = {
 };
 
 // http://www.w3.org/TR/SVG/eltindex.html
-const elems = {
+export const elems = {
   a: {
     attrsGroups: [
       'conditionalProcessing',
@@ -1843,7 +1843,7 @@ const elems = {
 };
 
 // http://wiki.inkscape.org/wiki/index.php/Inkscape-specific_XML_attributes
-const editorNamespaces = [
+export const editorNamespaces = [
   'http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd',
   'http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd',
   'http://www.inkscape.org/namespaces/inkscape',
@@ -1861,7 +1861,7 @@ const editorNamespaces = [
 ];
 
 // http://www.w3.org/TR/SVG/linking.html#processingIRI
-const referencesProps = [
+export const referencesProps = [
   'clip-path',
   'color-profile',
   'fill',
@@ -1875,7 +1875,7 @@ const referencesProps = [
 ];
 
 // http://www.w3.org/TR/SVG/propidx.html
-const inheritableAttrs = [
+export const inheritableAttrs = [
   'clip-rule',
   'color',
   'color-interpolation',
@@ -1924,7 +1924,7 @@ const inheritableAttrs = [
 ];
 
 // http://www.w3.org/TR/SVG/single-page.html#types-ColorKeywords
-const colorsNames = {
+export const colorsNames = {
   aliceblue: '#f0f8ff',
   antiquewhite: '#faebd7',
   aqua: '#0ff',
@@ -2075,7 +2075,7 @@ const colorsNames = {
   yellowgreen: '#9acd32',
 };
 
-const colorsShortNames = {
+export const colorsShortNames = {
   '#f0ffff': 'azure',
   '#f5f5dc': 'beige',
   '#ffe4c4': 'bisque',
@@ -2111,7 +2111,7 @@ const colorsShortNames = {
 };
 
 // http://www.w3.org/TR/SVG/single-page.html#types-DataTypeColor
-const colorsProps = [
+export const colorsProps = [
   'color',
   'fill',
   'stroke',
@@ -2119,17 +2119,3 @@ const colorsProps = [
   'flood-color',
   'lighting-color',
 ];
-
-export = {
-  elemsGroups,
-  pathElems,
-  attrsGroups,
-  attrsGroupsDefaults,
-  elems,
-  editorNamespaces,
-  referencesProps,
-  inheritableAttrs,
-  colorsNames,
-  colorsShortNames,
-  colorsProps,
-};

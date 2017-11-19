@@ -1,11 +1,15 @@
-const type = 'perItem';
+import * as _tools from './_tools';
+import * as _path from './_path';
+import * as _collections from './_collections';
 
-const active = true;
+export const type = 'perItem';
 
-const description =
+export const active = true;
+
+export const description =
   'optimizes path data: writes in shorter form, applies transformations';
 
-const params = {
+export const params = {
   applyTransforms: true,
   applyTransformsStroked: true,
   makeArcs: {
@@ -24,11 +28,11 @@ const params = {
   negativeExtraSpace: true,
 };
 
-let pathElems = require('./_collections.js').pathElems,
-  path2js = require('./_path.js').path2js,
-  js2path = require('./_path.js').js2path,
-  applyTransforms = require('./_path.js').applyTransforms,
-  cleanupOutData = require('../lib/svgo/tools').cleanupOutData,
+let pathElems = _collections.pathElems,
+  path2js = _path.path2js,
+  js2path = _path.js2path,
+  applyTransforms = _path.applyTransforms,
+  cleanupOutData = _tools.cleanupOutData,
   roundData,
   precision,
   error,
@@ -52,7 +56,7 @@ let pathElems = require('./_collections.js').pathElems,
  *
  * @author Kir Belevich
  */
-function fn(item, params) {
+export function fn(item, params) {
   if (item.isElem(pathElems) && item.hasAttr('d')) {
     precision = params.floatPrecision;
     error =
@@ -933,5 +937,3 @@ function round(data) {
   }
   return data;
 }
-
-export = { type, active, description, params, fn };

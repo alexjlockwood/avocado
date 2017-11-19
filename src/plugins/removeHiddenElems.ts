@@ -1,11 +1,11 @@
-const type = 'perItem';
+export const type = 'perItem';
 
-const active = true;
+export const active = true;
 
-const description =
+export const description =
   'removes hidden elements (zero sized, with absent attributes)';
 
-const params = {
+export const params = {
   displayNone: true,
   opacity0: true,
   circleR0: true,
@@ -43,7 +43,7 @@ var regValidPath = /M\s*(?:[-+]?(?:\d*\.\d+|\d+(?:\.|(?!\.)))([eE][-+]?\d+)?(?!\
  *
  * @author Kir Belevich
  */
-function fn(item, params) {
+export function fn(item, params) {
   if (item.elem) {
     // display="none"
     //
@@ -217,5 +217,3 @@ function fn(item, params) {
       return false;
   }
 }
-
-export = { type, active, description, params, fn };

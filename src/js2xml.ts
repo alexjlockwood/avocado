@@ -2,6 +2,14 @@ import OS = require('os');
 
 const EOL = OS.EOL;
 
+const entities = {
+  '&': '&amp;',
+  "'": '&apos;',
+  '"': '&quot;',
+  '>': '&gt;',
+  '<': '&lt;',
+};
+
 const defaults = {
   doctypeStart: '<!DOCTYPE',
   doctypeEnd: '>',
@@ -24,22 +32,10 @@ const defaults = {
   indent: 4,
   regEntities: /[&'"<>]/g,
   regValEntities: /[&"<>]/g,
-  encodeEntity: encodeEntity,
+  encodeEntity: (char: string) => entities[char],
   pretty: false,
   useShortTags: true,
 };
-
-const entities = {
-  '&': '&amp;',
-  "'": '&apos;',
-  '"': '&quot;',
-  '>': '&gt;',
-  '<': '&lt;',
-};
-
-function encodeEntity(char) {
-  return entities[char];
-}
 
 /**
  * Convert XML-as-JS object to XML string.
@@ -47,11 +43,11 @@ function encodeEntity(char) {
  * @param {Object} config config
  * @return {Object} output data
  */
-export = function(data, config) {
-  return new JS2SVG(config).convert(data);
-};
+export function js2xml(data, config) {
+  return new Js2Xml(config).convert(data);
+}
 
-class JS2SVG {
+class Js2Xml {
   config: any;
   indentLevel: number;
   width?: any;
@@ -63,14 +59,12 @@ class JS2SVG {
     } else {
       this.config = defaults;
     }
-
     const indent = this.config.indent;
     if (typeof indent !== 'number' && !isNaN(indent)) {
       this.config.indent = indent < 0 ? '\t' : ' '.repeat(indent);
     } else if (typeof indent !== 'string') {
       this.config.indent = '    ';
     }
-
     if (this.config.pretty) {
       this.config.doctypeEnd += EOL;
       this.config.procInstEnd += EOL;
@@ -81,7 +75,6 @@ class JS2SVG {
       this.config.tagCloseEnd += EOL;
       this.config.textEnd += EOL;
     }
-
     this.indentLevel = 0;
   }
 
@@ -94,10 +87,8 @@ class JS2SVG {
    */
   convert(data) {
     let svg = '';
-
     if (data.content) {
       this.indentLevel++;
-
       data.content.forEach(item => {
         if (item.elem) {
           svg += this.createElem(item);
@@ -112,9 +103,7 @@ class JS2SVG {
         }
       }, this);
     }
-
     this.indentLevel--;
-
     return {
       data: svg,
       info: {
@@ -263,7 +252,6 @@ class JS2SVG {
    */
   createAttrs(elem) {
     let attrs = '';
-
     elem.eachAttr(function(attr) {
       if (attr.value !== undefined) {
         attrs +=
@@ -279,7 +267,6 @@ class JS2SVG {
         attrs += ' ' + attr.name;
       }
     }, this);
-
     return attrs;
   }
 }

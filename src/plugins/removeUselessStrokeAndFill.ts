@@ -1,20 +1,22 @@
-const type = 'perItem';
+import * as _collections from './_collections';
 
-const active = true;
+export const type = 'perItem';
 
-const description = 'removes useless stroke and fill attributes';
+export const active = true;
 
-const params = {
+export const description = 'removes useless stroke and fill attributes';
+
+export const params = {
   stroke: true,
   fill: true,
   removeNone: false,
   hasStyleOrScript: false,
 };
 
-var shape = require('./_collections').elemsGroups.shape,
-  regStrokeProps = /^stroke/,
-  regFillProps = /^fill-/,
-  styleOrScript = ['style', 'script'];
+const shape = _collections.elemsGroups.shape;
+const regStrokeProps = /^stroke/;
+const regFillProps = /^fill-/;
+const styleOrScript = ['style', 'script'];
 
 /**
  * Remove useless stroke and fill attrs.
@@ -25,7 +27,7 @@ var shape = require('./_collections').elemsGroups.shape,
  *
  * @author Kir Belevich
  */
-function fn(item, params) {
+export function fn(item, params) {
   if (item.isElem(styleOrScript)) {
     params.hasStyleOrScript = true;
   }
@@ -94,5 +96,3 @@ function fn(item, params) {
     }
   }
 }
-
-export = { type, active, description, params, fn };

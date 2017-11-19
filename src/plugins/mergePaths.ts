@@ -1,17 +1,19 @@
-const type = 'perItem';
+import * as _path from './_path';
 
-const active = true;
+export const type = 'perItem';
 
-const description = 'merges multiple paths in one if possible';
+export const active = true;
 
-const params = {
+export const description = 'merges multiple paths in one if possible';
+
+export const params = {
   collapseRepeated: true,
   leadingZero: true,
   negativeExtraSpace: true,
 };
 
-import _path = require('./_path.js');
 const { path2js, js2path, intersects } = _path;
+
 /**
  * Merge multiple Paths into one.
  *
@@ -20,7 +22,7 @@ const { path2js, js2path, intersects } = _path;
  *
  * @author Kir Belevich, Lev Solntsev
  */
-function fn(item, params) {
+export function fn(item, params) {
   if (!item.isElem() || item.isEmpty()) {
     return;
   }
@@ -66,5 +68,3 @@ function fn(item, params) {
     return true;
   });
 }
-
-export = { type, active, description, params, fn };

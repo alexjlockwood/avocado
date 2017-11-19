@@ -1,4 +1,5 @@
 "use strict";
+// Example: npm run build && node bin/avdo -s '<vector><!-- asdf --></vector>'
 Object.defineProperty(exports, "__esModule", { value: true });
 var FS = require("fs");
 var PATH = require("path");
@@ -7,10 +8,10 @@ var PROGRAM = require("commander");
 var util = require("util");
 var promisify = util.promisify;
 var readFile = promisify(FS.readFile);
-var SVGO = require("svgo");
+var avdo_1 = require("./avdo");
 var writeFile = promisify(FS.writeFile);
-var XML2JS = require("./xml2js");
-var JS2XML = require("./js2xml");
+var xml2js_1 = require("./xml2js");
+var js2xml_1 = require("./js2xml");
 function execute() {
     PROGRAM.version(PKG.version)
         .arguments('[files...]')
@@ -19,14 +20,16 @@ function execute() {
     if (PROGRAM.string) {
         // const parser = new DOMParser();
         // const doc = parser.parseFromString(PROGRAM.string, 'application/xml');
-        XML2JS(PROGRAM.string, function (obj) {
-            console.log(obj.content);
+        xml2js_1.xml2js(PROGRAM.string, function (jsApi) {
+            console.log(jsApi.content);
             console.log('=====');
-            console.log(JS2XML(obj, undefined).data);
-        });
+            console.log(js2xml_1.js2xml(jsApi, undefined).data);
+        }, 
+        // TODO: handle error case
+        function (error) { });
         // TODO: run in parallel with other args below?
         // TODO: handle rejected case like SVGO
-        // new SVGO().optimize(PROGRAM.string).then(res => console.log(res));
+        new avdo_1.Avdo().optimize(PROGRAM.string).then(function (res) { return console.log(res); });
         return;
     }
     PROGRAM.args.forEach(function (file) {
@@ -50,7 +53,7 @@ function execute() {
  */
 function processSVGData(config, info, data, output, input) {
     var startTime = Date.now(), prevFileSize = Buffer.byteLength(data, 'utf8');
-    return new SVGO().optimize(data, info).then(function (result) {
+    return new avdo_1.Avdo().optimize(data, info).then(function (result) {
         // if (config.datauri) {
         //   result.data = encodeSVGDatauri(result.data, config.datauri);
         // }

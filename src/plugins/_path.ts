@@ -1,26 +1,19 @@
-var regPathInstructions = /([MmLlHhVvCcSsQqTtAaZz])\s*/,
-  regPathData = /[-+]?(?:\d*\.\d+|\d+\.?)([eE][-+]?\d+)?/g,
-  regNumericValues = /[-+]?(\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?/,
-  transform2js = require('./_transforms').transform2js,
-  transformsMultiply = require('./_transforms').transformsMultiply,
-  transformArc = require('./_transforms').transformArc,
-  collections = require('./_collections.js'),
-  referencesProps = collections.referencesProps,
-  defaultStrokeWidth =
-    collections.attrsGroupsDefaults.presentation['stroke-width'],
-  cleanupOutData = require('../lib/svgo/tools').cleanupOutData,
-  removeLeadingZero = require('../lib/svgo/tools').removeLeadingZero,
-  prevCtrlPoint;
+import * as _transforms from './_transforms';
+import * as _collections from './_collections';
+import * as _tools from './_tools';
 
-export = {
-  path2js,
-  relative2absolute,
-  computeCubicBoundingBox,
-  applyTransforms,
-  computeQuadraticBoundingBox,
-  js2path,
-  intersects,
-};
+const regPathInstructions = /([MmLlHhVvCcSsQqTtAaZz])\s*/;
+const regPathData = /[-+]?(?:\d*\.\d+|\d+\.?)([eE][-+]?\d+)?/g;
+const regNumericValues = /[-+]?(\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?/;
+const transform2js = _transforms.transform2js;
+const transformsMultiply = _transforms.transformsMultiply;
+const transformArc = _transforms.transformArc;
+const referencesProps = _collections.referencesProps;
+const defaultStrokeWidth =
+  _collections.attrsGroupsDefaults.presentation['stroke-width'];
+const cleanupOutData = _tools.cleanupOutData;
+const removeLeadingZero = _tools.removeLeadingZero;
+let prevCtrlPoint;
 
 /**
  * Convert path string to JS representation.
@@ -29,44 +22,35 @@ export = {
  * @param {Object} params plugin params
  * @return {Array} output array
  */
-function path2js(path) {
-  if (path.pathJS) return path.pathJS;
+export function path2js(path) {
+  if (path.pathJS) {
+    return path.pathJS;
+  }
 
-  var paramsLength = {
-      // Number of parameters of every path command
-      H: 1,
-      V: 1,
-      M: 2,
-      L: 2,
-      T: 2,
-      Q: 4,
-      S: 4,
-      C: 6,
-      A: 7,
-      h: 1,
-      v: 1,
-      m: 2,
-      l: 2,
-      t: 2,
-      q: 4,
-      s: 4,
-      c: 6,
-      a: 7,
-    },
-    pathData = [], // JS representation of the path data
-    instruction, // current instruction context
-    startMoveto = false;
+  // prettier-ignore
+  const paramsLength = {
+    // Number of parameters of every path command
+    H: 1, V: 1, M: 2, L: 2, T: 2, Q: 4, S: 4, C: 6, A: 7,
+    h: 1, v: 1, m: 2, l: 2, t: 2, q: 4, s: 4, c: 6, a: 7
+  };
+  const pathData = []; // JS representation of the path data
+  let instruction; // current instruction context
+  let startMoveto = false;
 
   // splitting path string into array like ['M', '10 50', 'L', '20 30']
   path
     .attr('d')
     .value.split(regPathInstructions)
     .forEach(function(data) {
-      if (!data) return;
+      if (!data) {
+        return;
+      }
       if (!startMoveto) {
         if (data == 'M' || data == 'm') {
           startMoveto = true;
-        } else return;
+        } else {
+          return;
+        }
       }
 
       // instruction item
@@ -75,14 +59,14 @@ function path2js(path) {
 
         // z - instruction w/o data
         if (instruction == 'Z' || instruction == 'z') {
-          pathData.push({
-            instruction: 'z',
-          });
+          pathData.push({ instruction: 'z' });
         }
         // data item
       } else {
         data = data.match(regPathData);
-        if (!data) return;
+        if (!data) {
+          return;
+        }
 
         data = data.map(Number);
 
@@ -120,7 +104,7 @@ function path2js(path) {
  * @param {Array} data input data
  * @return {Array} output data
  */
-function relative2absolute(data) {
+export function relative2absolute(data) {
   var currentPoint = [0, 0],
     subpathPoint = [0, 0],
     i;
@@ -178,7 +162,7 @@ function relative2absolute(data) {
  * @param {Object} params whether to apply transforms to stroked lines and transform precision (used for stroke width)
  * @return {Array} output path data
  */
-function applyTransforms(elem, path, params) {
+export function applyTransforms(elem, path, params) {
   // if there are no 'stroke' attr and references to other objects such as
   // gradiends or clip-path which are also subjects to transform.
   if (
@@ -187,8 +171,9 @@ function applyTransforms(elem, path, params) {
     elem.someAttr(function(attr) {
       return ~referencesProps.indexOf(attr.name) && ~attr.value.indexOf('url(');
     })
-  )
+  ) {
     return path;
+  }
 
   var matrix = transformsMultiply(transform2js(elem.attr('transform').value)),
     stroke = elem.computedAttr('stroke'),
@@ -358,7 +343,7 @@ function transformPoint(matrix, x, y) {
  *
  * @return {Object}
  */
-function computeCubicBoundingBox(xa, ya, xb, yb, xc, yc, xd, yd) {
+export function computeCubicBoundingBox(xa, ya, xb, yb, xc, yc, xd, yd) {
   var minx = Number.POSITIVE_INFINITY,
     miny = Number.POSITIVE_INFINITY,
     maxx = Number.NEGATIVE_INFINITY,
@@ -479,7 +464,7 @@ function computeCubicFirstDerivativeRoots(a, b, c, d) {
  *
  * @return {Object}
  */
-function computeQuadraticBoundingBox(xa, ya, xb, yb, xc, yc) {
+export function computeQuadraticBoundingBox(xa, ya, xb, yb, xc, yc) {
   var minx = Number.POSITIVE_INFINITY,
     miny = Number.POSITIVE_INFINITY,
     maxx = Number.NEGATIVE_INFINITY,
@@ -578,7 +563,7 @@ function computeQuadraticFirstDerivativeRoot(a, b, c) {
  * @param {Object} params plugin params
  * @return {String} output path string
  */
-function js2path(path, data, params) {
+export function js2path(path, data, params) {
   path.pathJS = data;
 
   if (params.collapseRepeated) {
@@ -642,8 +627,10 @@ function set(dest, source) {
  * @param {Array} path2 JS path representation
  * @return {Boolean}
  */
-function intersects(path1, path2) {
-  if (path1.length < 3 || path2.length < 3) return false; // nothing to fill
+export function intersects(path1, path2) {
+  if (path1.length < 3 || path2.length < 3) {
+    return false; // nothing to fill
+  }
 
   // Collect points of every subpath.
   var points1 = relative2absolute(path1).reduce(gatherPoints, []),
@@ -1085,4 +1072,3 @@ function a2c(
     return newres;
   }
 }
-// jshint ignore: end

@@ -1,6 +1,7 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var SAX = require("sax");
-var JsApi = require("./jsapi");
+var jsapi_1 = require("./jsapi");
 var saxOptions = {
     trim: false,
     normalize: true,
@@ -8,14 +9,18 @@ var saxOptions = {
     xmlns: true,
     position: true,
 };
-module.exports = function (data, callback) {
+/**
+ * @param {String} data input data
+ * @param {Function} callback
+ */
+function xml2js(data, onSuccess, onFail) {
     var sax = SAX.parser(true, saxOptions);
-    var root = new JsApi({ elem: '#document', content: [] });
+    var root = new jsapi_1.JsApi({ elem: '#document', content: [] });
     var current = root;
     var stack = [root];
     var parsingError = false;
     function pushToContent(content) {
-        var newContent = new JsApi(content, current);
+        var newContent = new jsapi_1.JsApi(content, current);
         (current.content = current.content || []).push(newContent);
         return newContent;
     }
@@ -27,8 +32,6 @@ module.exports = function (data, callback) {
             local: qualifiedTag.local,
             attrs: {},
         };
-        console.log(qualifiedTag);
-        console.log('name', qualifiedTag.name, 'prefix', qualifiedTag.prefix, 'local', qualifiedTag.local);
         for (var _i = 0, _a = Object.keys(qualifiedTag.attributes); _i < _a.length; _i++) {
             var name_1 = _a[_i];
             var _b = qualifiedTag.attributes[name_1], value = _b.value, prefix = _b.prefix, local = _b.local;
@@ -54,20 +57,21 @@ module.exports = function (data, callback) {
     };
     sax.onend = function () {
         if (this.error) {
-            callback({ error: this.error.message });
+            onFail(this.error.message);
         }
         else {
-            callback(root);
+            onSuccess(root);
         }
     };
     try {
         sax.write(data);
     }
     catch (e) {
-        callback({ error: e.message });
+        onFail(e.message);
         parsingError = true;
     }
     if (!parsingError) {
         sax.close();
     }
-};
+}
+exports.xml2js = xml2js;

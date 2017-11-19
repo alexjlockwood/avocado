@@ -1,4 +1,4 @@
-declare class JsApi {
+export declare class JsApi {
     parentNode: JsApi | undefined;
     content?: JsApi[];
     elem: string;
@@ -109,4 +109,3 @@ declare class JsApi {
      */
     someAttr(callback: Function, context?: any): boolean;
 }
-export = JsApi;
