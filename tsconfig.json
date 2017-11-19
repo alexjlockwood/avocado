@@ -4,7 +4,7 @@
     "module": "commonjs",
     "declaration": true,
     "outDir": "./dist",
-    "strict": true
+    "lib": ["dom", "es2017"]
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "typings/**/*"]
 }

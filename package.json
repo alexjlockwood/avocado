@@ -4,6 +4,9 @@
   "description": "Vector Drawable & Animated Vector Drawable optimizer",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "bin": {
+    "avdo": "./bin/avdo"
+  },
   "scripts": {
     "prepublishOnly": "npm run build",
     "build": "tsc"
@@ -12,10 +15,23 @@
     "type": "git",
     "url": "https://github.com/alexjlockwood/avdo"
   },
-  "keywords": [],
+  "keywords": [
+    "Android",
+    "Vector Drawable",
+    "Animated Vector Drawable"
+  ],
   "author": "Alex Lockwood",
   "license": "MIT",
+  "dependencies": {
+    "commander": "^2.11.0",
+    "sax": "^1.2.4",
+    "svgo": "^1.0.3"
+  },
   "devDependencies": {
+    "@types/commander": "^2.11.0",
+    "@types/node": "^8.0.53",
+    "@types/sax": "^1.0.0",
+    "prettier": "^1.8.2",
     "typescript": "^2.6.1"
   }
 }
