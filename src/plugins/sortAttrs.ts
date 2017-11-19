@@ -34,7 +34,7 @@ const params = {
  *
  * @author Nikolay Frantsev
  */
-const fn = function(item, params) {
+function fn(item, params) {
   var attrs = [],
     sorted = {},
     orderlen = params.order.length + 1;
@@ -80,6 +80,6 @@ const fn = function(item, params) {
 
     item.attrs = sorted;
   }
-};
+}
 
 export = { type, active, description, params, fn };

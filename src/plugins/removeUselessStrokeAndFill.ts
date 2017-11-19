@@ -25,7 +25,7 @@ var shape = require('./_collections').elemsGroups.shape,
  *
  * @author Kir Belevich
  */
-const fn = function(item, params) {
+function fn(item, params) {
   if (item.isElem(styleOrScript)) {
     params.hasStyleOrScript = true;
   }
@@ -93,6 +93,6 @@ const fn = function(item, params) {
       return false;
     }
   }
-};
+}
 
 export = { type, active, description, params, fn };

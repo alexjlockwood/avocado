@@ -66,7 +66,7 @@ const params = {
  *
  * @author Benny Schudel
  */
-const fn = function(item, params) {
+function fn(item, params) {
   // wrap into an array if params is not
   if (!Array.isArray(params.attrs)) {
     params.attrs = [params.attrs];
@@ -112,6 +112,6 @@ const fn = function(item, params) {
       }
     });
   }
-};
+}
 
 export = { type, active, description, params, fn };

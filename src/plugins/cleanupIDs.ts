@@ -82,7 +82,7 @@ let referencesProps = new Set(require('./_collections').referencesProps),
  *
  * @author Kir Belevich
  */
-const fn = function(data, params) {
+function fn(data, params) {
   var currentID,
     currentIDstring,
     IDs = new Map(),
@@ -213,7 +213,7 @@ const fn = function(data, params) {
     }
   }
   return data;
-};
+}
 
 /**
  * Generate unique minimal ID.

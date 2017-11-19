@@ -16,7 +16,7 @@ var inheritableAttrs = require('./_collections').inheritableAttrs,
  *
  * @author Kir Belevich
  */
-const fn = function(item) {
+function fn(item) {
   if (item.isElem('g')) {
     item.eachAttr(function(attr) {
       if (
@@ -31,6 +31,6 @@ const fn = function(item) {
       }
     });
   }
-};
+}
 
 export = { type, active, description, params: undefined, fn };

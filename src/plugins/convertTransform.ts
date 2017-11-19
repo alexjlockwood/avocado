@@ -41,7 +41,7 @@ let transformRound;
  *
  * @author Kir Belevich
  */
-const fn = function(item, params) {
+function fn(item, params) {
   if (item.elem) {
     // transform
     if (item.hasAttr('transform')) {
@@ -58,7 +58,7 @@ const fn = function(item, params) {
       convertTransform(item, 'patternTransform', params);
     }
   }
-};
+}
 
 /**
  * Main function.

@@ -43,7 +43,7 @@ var regValidPath = /M\s*(?:[-+]?(?:\d*\.\d+|\d+(?:\.|(?!\.)))([eE][-+]?\d+)?(?!\
  *
  * @author Kir Belevich
  */
-const fn = function(item, params) {
+function fn(item, params) {
   if (item.elem) {
     // display="none"
     //
@@ -216,6 +216,6 @@ const fn = function(item, params) {
     )
       return false;
   }
-};
+}
 
 export = { type, active, description, params, fn };

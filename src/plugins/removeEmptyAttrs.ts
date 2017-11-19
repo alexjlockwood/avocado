@@ -12,7 +12,7 @@ const description = 'removes empty attributes';
  *
  * @author Kir Belevich
  */
-const fn = function(item) {
+function fn(item) {
   if (item.elem) {
     item.eachAttr(function(attr) {
       if (attr.value === '') {
@@ -20,6 +20,6 @@ const fn = function(item) {
       }
     });
   }
-};
+}
 
 export = { type, active, description, params: undefined, fn };

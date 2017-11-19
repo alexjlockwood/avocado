@@ -15,10 +15,10 @@ const description = 'removes XML processing instructions';
  *
  * @author Kir Belevich
  */
-const fn = function(item) {
+function fn(item) {
   return !(
     item.processinginstruction && item.processinginstruction.name === 'xml'
   );
-};
+}
 
 export = { type, active, description, params: undefined, fn };

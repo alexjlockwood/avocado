@@ -16,10 +16,10 @@ const description = 'removes comments';
  *
  * @author Kir Belevich
  */
-const fn = function(item) {
+function fn(item) {
   if (item.comment && item.comment.charAt(0) !== '!') {
     return false;
   }
-};
+}
 
 export = { type, active, description, params: undefined, fn };

@@ -22,13 +22,13 @@ var container = require('./_collections').elemsGroups.container;
  *
  * @author Kir Belevich
  */
-const fn = function(item) {
+function fn(item) {
   return !(
     item.isElem(container) &&
     !item.isElem('svg') &&
     item.isEmpty() &&
     (!item.isElem('pattern') || !item.hasAttrLocal('href'))
   );
-};
+}
 
 export = { type, active, description, params: undefined, fn };

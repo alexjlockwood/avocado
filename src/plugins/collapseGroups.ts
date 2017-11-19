@@ -39,7 +39,7 @@ function hasAnimatedAttr(item) {
  *
  * @author Kir Belevich
  */
-const fn = function(item) {
+function fn(item) {
   // non-empty elements
   if (item.isElem() && !item.isEmpty()) {
     item.content.forEach(function(g, i) {
@@ -105,6 +105,6 @@ const fn = function(item) {
       }
     });
   }
-};
+}
 
 export = { type, active, description, params: undefined, fn };

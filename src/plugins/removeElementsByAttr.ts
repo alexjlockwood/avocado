@@ -49,7 +49,7 @@ const params = {
  *
  * @author Eli Dupuis (@elidupuis)
  */
-const fn = function(item, params) {
+function fn(item, params) {
   var elemId, elemClass;
 
   // wrap params in an array if not already
@@ -76,6 +76,6 @@ const fn = function(item, params) {
     var hasClassRegex = new RegExp(params.class.join('|'));
     return !hasClassRegex.test(elemClass.value);
   }
-};
+}
 
 export = { type, active, description, params, fn };

@@ -18,11 +18,11 @@ const description =
  *
  * @author Benny Schudel
  */
-const fn = function(item) {
+function fn(item) {
   if (item.isElem('svg') && item.hasAttr('viewBox')) {
     item.removeAttr('width');
     item.removeAttr('height');
   }
-};
+}
 
 export = { type, active, description, params: undefined, fn };

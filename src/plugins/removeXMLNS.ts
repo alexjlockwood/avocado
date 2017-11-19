@@ -18,10 +18,10 @@ const description =
  *
  * @author Ricardo Tomasi
  */
-const fn = function(item) {
+function fn(item) {
   if (item.isElem('svg') && item.hasAttr('xmlns')) {
     item.removeAttr('xmlns');
   }
-};
+}
 
 export = { type, active, description, params: undefined, fn };

@@ -12,7 +12,7 @@ const description = 'removes unused namespaces declaration';
  *
  * @author Kir Belevich
  */
-const fn = function(data) {
+function fn(data) {
   var svgElem,
     xmlnsCollection = [];
 
@@ -90,6 +90,6 @@ const fn = function(data) {
   }
 
   return data;
-};
+}
 
 export = { type, active, description, params: undefined, fn };
