@@ -15,7 +15,11 @@
     "type": "git",
     "url": "https://github.com/alexjlockwood/avdo"
   },
-  "keywords": ["Android", "Vector Drawable", "Animated Vector Drawable"],
+  "keywords": [
+    "Android",
+    "Vector Drawable",
+    "Animated Vector Drawable"
+  ],
   "author": "Alex Lockwood",
   "license": "MIT",
   "dependencies": {
