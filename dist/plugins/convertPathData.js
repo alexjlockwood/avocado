@@ -66,9 +66,12 @@ function fn(item, params) {
  * @return {Array} output path data
  */
 function convertToRelative(path) {
-    var point = [0, 0], subpathPoint = [0, 0], baseItem;
+    var point = [0, 0];
+    var subpathPoint = [0, 0];
+    var baseItem;
     path.forEach(function (item, index) {
-        var instruction = item.instruction, data = item.data;
+        var instruction = item.instruction;
+        var data = item.data;
         // data !== !z
         if (data) {
             // already relative
@@ -92,8 +95,9 @@ function convertToRelative(path) {
             // if "M" was not transformed from "m"
             // M → m
             if (instruction === 'M') {
-                if (index > 0)
+                if (index > 0) {
                     instruction = 'm';
+                }
                 data[0] -= point[0];
                 data[1] -= point[1];
                 subpathPoint[0] = point[0] += data[0];
@@ -177,19 +181,23 @@ function convertToRelative(path) {
     });
     return path;
 }
-function filters(path, params) {
+function filters(pathRes, params) {
     var stringify = data2Path.bind(undefined, params);
     var relSubpoint = [0, 0];
     var pathBase = [0, 0];
     var prev = {};
-    path = path.filter(function (item, index, path) {
-        var instruction = item.instruction, data = item.data, next = path[index + 1];
+    pathRes = pathRes.filter(function (item, index, path) {
+        var instruction = item.instruction;
+        var data = item.data;
+        var next = path[index + 1];
         if (data) {
-            var sdata = data, circle;
+            var sdata = data;
+            var circle = void 0;
             if (instruction === 's') {
                 sdata = [0, 0].concat(data);
                 if ('cs'.indexOf(prev.instruction) > -1) {
-                    var pdata = prev.data, n = pdata.length;
+                    var pdata = prev.data;
+                    var n = pdata.length;
                     // (-x, -y) of the prev tangent point relative to the current point
                     sdata[0] = pdata[n - 2] - pdata[n - 4];
                     sdata[1] = pdata[n - 1] - pdata[n - 3];
@@ -197,43 +205,55 @@ function filters(path, params) {
             }
             // convert curves to arcs if possible
             if (params.makeArcs &&
-                (instruction == 'c' || instruction == 's') &&
+                (instruction === 'c' || instruction === 's') &&
                 isConvex(sdata) &&
                 (circle = findCircle(sdata))) {
-                var r = roundData([circle.radius])[0], angle = findArcAngle(sdata, circle), sweep = sdata[5] * sdata[0] - sdata[4] * sdata[1] > 0 ? 1 : 0, arc = {
+                var r = roundData([circle.radius])[0];
+                var angle = findArcAngle(sdata, circle);
+                var sweep = sdata[5] * sdata[0] - sdata[4] * sdata[1] > 0 ? 1 : 0;
+                var arc = {
                     instruction: 'a',
                     data: [r, r, 0, 0, sweep, sdata[4], sdata[5]],
                     coords: item.coords.slice(),
                     base: item.base,
-                }, output = [arc], 
+                };
+                var output = [arc];
                 // relative coordinates to adjust the found circle
-                relCenter = [
+                var relCenter = [
                     circle.center[0] - sdata[4],
                     circle.center[1] - sdata[5],
-                ], relCircle = { center: relCenter, radius: circle.radius }, arcCurves = [item], hasPrev = 0, suffix = '', nextLonghand;
-                if ((prev.instruction == 'c' &&
+                ];
+                var relCircle = { center: relCenter, radius: circle.radius };
+                var arcCurves = [item];
+                var hasPrev = 0;
+                var suffix = '';
+                var nextLonghand = void 0;
+                if ((prev.instruction === 'c' &&
                     isConvex(prev.data) &&
                     isArcPrev(prev.data, circle)) ||
-                    (prev.instruction == 'a' &&
+                    (prev.instruction === 'a' &&
                         prev.sdata &&
                         isArcPrev(prev.sdata, circle))) {
                     arcCurves.unshift(prev);
                     arc.base = prev.base;
                     arc.data[5] = arc.coords[0] - arc.base[0];
                     arc.data[6] = arc.coords[1] - arc.base[1];
-                    var prevData = prev.instruction == 'a' ? prev.sdata : prev.data;
+                    var prevData = prev.instruction === 'a' ? prev.sdata : prev.data;
                     angle += findArcAngle(prevData, {
                         center: [prevData[4] + relCenter[0], prevData[5] + relCenter[1]],
                         radius: circle.radius,
                     });
-                    if (angle > Math.PI)
+                    if (angle > Math.PI) {
                         arc.data[3] = 1;
+                    }
                     hasPrev = 1;
                 }
                 // check if next curves are fitting the arc
-                for (var j = index; (next = path[++j]) && ~'cs'.indexOf(next.instruction);) {
+                var j = index;
+                // tslint:disable-next-line:no-bitwise
+                for (; (next = path[++j]) && ~'cs'.indexOf(next.instruction);) {
                     var nextData = next.data;
-                    if (next.instruction == 's') {
+                    if (next.instruction === 's') {
                         nextLonghand = makeLonghand({ instruction: 's', data: next.data.slice() }, path[j - 1].data);
                         nextData = nextLonghand.data;
                         nextLonghand.data = nextData.slice(0, 2);
@@ -241,10 +261,12 @@ function filters(path, params) {
                     }
                     if (isConvex(nextData) && isArc(nextData, relCircle)) {
                         angle += findArcAngle(nextData, relCircle);
-                        if (angle - 2 * Math.PI > 1e-3)
+                        if (angle - 2 * Math.PI > 1e-3) {
                             break; // more than 360°
-                        if (angle > Math.PI)
+                        }
+                        if (angle > Math.PI) {
                             arc.data[3] = 1;
+                        }
                         arcCurves.push(next);
                         if (2 * Math.PI - angle > 1e-3) {
                             // less than 360°
@@ -286,7 +308,7 @@ function filters(path, params) {
                     }
                 }
                 if ((stringify(output) + suffix).length < stringify(arcCurves).length) {
-                    if (path[j] && path[j].instruction == 's') {
+                    if (path[j] && path[j].instruction === 's') {
                         makeLonghand(path[j], path[j - 1].data);
                     }
                     if (hasPrev) {
@@ -299,7 +321,7 @@ function filters(path, params) {
                         item.base = prev.coords = prevArc.coords;
                     }
                     arc = output.shift();
-                    if (arcCurves.length == 1) {
+                    if (arcCurves.length === 1) {
                         item.sdata = sdata.slice(); // preserve curve data for future checks
                     }
                     else if (arcCurves.length - 1 - hasPrev > 0) {
@@ -399,7 +421,7 @@ function filters(path, params) {
                 prev.instruction &&
                 instruction === prev.instruction.toLowerCase() &&
                 ((instruction !== 'h' && instruction !== 'v') ||
-                    prev.data[0] >= 0 == item.data[0] >= 0)) {
+                    prev.data[0] >= 0 === item.data[0] >= 0)) {
                 prev.data[0] += data[0];
                 if (instruction !== 'h' && instruction !== 'v') {
                     prev.data[1] += data[1];
@@ -480,7 +502,7 @@ function filters(path, params) {
         }
         return true;
     });
-    return path;
+    return pathRes;
 }
 /**
  * Writes data in shortest form using absolute or relative coordinates.
@@ -524,9 +546,9 @@ function convertToMixed(path, params) {
         // l20 30-10-50 instead of l20 30L20 30
         if (absoluteDataStr.length < relativeDataStr.length &&
             !(params.negativeExtraSpace &&
-                instruction == prev.instruction &&
+                instruction === prev.instruction &&
                 prev.instruction.charCodeAt(0) > 96 &&
-                absoluteDataStr.length == relativeDataStr.length - 1 &&
+                absoluteDataStr.length === relativeDataStr.length - 1 &&
                 (data[0] < 0 ||
                     (/^0\./.test(data[0]) && prev.data[prev.data.length - 1] % 1)))) {
             item.instruction = instruction.toUpperCase();
