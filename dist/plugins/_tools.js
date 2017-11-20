@@ -60,27 +60,29 @@ function intersectArrays(a, b) {
 }
 exports.intersectArrays = intersectArrays;
 function cleanupOutData(data, params) {
-    var str = '', delimiter, prev;
+    var str = '';
+    var delimiter;
+    var prev;
     data.forEach(function (item, i) {
-        // space delimiter by default
+        // Space delimiter by default.
         delimiter = ' ';
-        // no extra space in front of first number
+        // No extra space in front of first number.
         if (i === 0) {
             delimiter = '';
         }
-        // remove floating-point numbers leading zeros
+        // Remove floating-point numbers leading zeros.
         // 0.5 → .5
         // -0.5 → -.5
         if (params.leadingZero) {
             item = removeLeadingZero(item);
         }
-        // no extra space in front of negative number or
-        // in front of a floating number if a previous number is floating too
+        // No extra space in front of negative number or
+        // in front of a floating number if a previous number is floating too.
         if (params.negativeExtraSpace &&
-            (item < 0 || (String(item).charCodeAt(0) == 46 && prev % 1 !== 0))) {
+            (item < 0 || (String(item).charCodeAt(0) === 46 && prev % 1 !== 0))) {
             delimiter = '';
         }
-        // save prev item value
+        // Save prev item value.
         prev = item;
         str += delimiter + item;
     });

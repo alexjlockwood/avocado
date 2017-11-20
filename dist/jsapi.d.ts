@@ -23,6 +23,10 @@ export declare class JsApi {
         [name: string]: Attr;
     };
     comment?: string;
+    pathJS?: Array<{
+        instruction: string;
+        data?: number[];
+    }>;
     constructor(arg: string | Options, parentNode?: JsApi);
     /**
      * Perform a deep clone of this node.

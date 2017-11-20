@@ -11,8 +11,8 @@ var JsApi = /** @class */ (function () {
             this.prefix = arg.prefix;
             this.local = arg.local;
             this.attrs = arg.attrs;
+            this.parentNode = parentNode;
         }
-        this.parentNode = parentNode;
     }
     /**
      * Perform a deep clone of this node.
@@ -20,8 +20,8 @@ var JsApi = /** @class */ (function () {
      */
     JsApi.prototype.clone = function () {
         // Deep-clone node data.
-        var _a = this, elem = _a.elem, prefix = _a.prefix, local = _a.local, attrs = _a.attrs;
-        var nodeData = JSON.parse(JSON.stringify({ elem: elem, prefix: prefix, local: local, attrs: attrs }));
+        var _a = this, elem = _a.elem, prefix = _a.prefix, local = _a.local, attrs = _a.attrs, comment = _a.comment, pathJS = _a.pathJS;
+        var nodeData = JSON.parse(JSON.stringify({ elem: elem, prefix: prefix, local: local, attrs: attrs, comment: comment, pathJS: pathJS }));
         var clonedNode = new JsApi(nodeData, this.parentNode);
         if (this.content) {
             clonedNode.content = this.content.map(function (childNode) {

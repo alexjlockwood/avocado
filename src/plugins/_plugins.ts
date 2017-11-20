@@ -1,5 +1,5 @@
-import { Plugin } from './_types';
 import { JsApi } from '../jsapi';
+import { Plugin } from './_types';
 
 /**
  * Plugins engine.

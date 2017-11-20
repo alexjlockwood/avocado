@@ -32,8 +32,5 @@ export declare const params: {
  *
  * @param {Object} item current iteration item
  * @param {Object} params plugin params
- * @return {Boolean} if false, item will be filtered out
- *
- * @author Kir Belevich
  */
 export declare function fn(item: any, params: any): boolean;

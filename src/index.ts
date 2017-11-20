@@ -1,39 +1,50 @@
-// Example: npm run build && node bin/avdo -s '<vector><!-- asdf --></vector>'
+/*
+node bin/avdo -s \
+'<vector
+xmlns:android="http://schemas.android.com/apk/res/android"
+android:width="24dp"
+android:height="24dp"
+android:viewportWidth="24"
+android:viewportHeight="24">
+<!-- Path #1 -->
+<path android:pathData="M 0 0 L 10 10 L 20 20"/>
+<!-- Path #2 -->
+<path android:pathData="M 100 100 L 200 200 L 300 300"/>
+</vector>'
+*/
+
+import * as PROGRAM from 'commander';
+
+import { Avdo, Options } from './avdo';
+
+import { js2xml } from './js2xml';
+import { xml2js } from './xml2js';
 
 import FS = require('fs');
 import PATH = require('path');
-const PKG = require('../package.json');
-import * as PROGRAM from 'commander';
 import util = require('util');
+
+const PKG = require('../package.json');
 const { promisify } = util;
 const readFile = promisify(FS.readFile);
-import { Avdo } from './avdo';
 const writeFile = promisify(FS.writeFile);
-import { xml2js } from './xml2js';
-import { js2xml } from './js2xml';
 
 export function execute() {
   PROGRAM.version(PKG.version)
     .arguments('[files...]')
     .option('-s, --string <string>', 'input VD or AVD string')
+    .option('--multipass', 'enable multipass')
     .parse(process.argv);
 
+  const options: Partial<Options> = {};
+  if (PROGRAM.multipass) {
+    options.multipass = true;
+  }
+
   if (PROGRAM.string) {
-    // const parser = new DOMParser();
-    // const doc = parser.parseFromString(PROGRAM.string, 'application/xml');
-    // xml2js(
-    //   PROGRAM.string,
-    //   jsApi => {
-    //     // console.log(jsApi.content);
-    //     // console.log('=====');
-    //     console.log(js2xml(jsApi));
-    //   },
-    //   // TODO: handle error case
-    //   error => {},
-    // );
     // TODO: run in parallel with other args below?
     // TODO: handle rejected case like SVGO
-    new Avdo().optimize(PROGRAM.string).then(res => console.log(res));
+    new Avdo(options).optimize(PROGRAM.string).then(res => console.log(res));
     return;
   }
 

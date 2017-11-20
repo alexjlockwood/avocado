@@ -1,6 +1,6 @@
 import { Plugin } from './plugins/_types';
 export interface Options {
-    plugins: Plugin[][];
+    plugins?: Plugin[][];
     multipass?: boolean;
 }
 export declare class Avdo {

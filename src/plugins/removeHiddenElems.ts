@@ -22,7 +22,7 @@ export const params = {
   polygonEmptyPoints: true,
 };
 
-var regValidPath = /M\s*(?:[-+]?(?:\d*\.\d+|\d+(?:\.|(?!\.)))([eE][-+]?\d+)?(?!\d)\s*,?\s*){2}\D*\d/i;
+const regValidPath = /M\s*(?:[-+]?(?:\d*\.\d+|\d+(?:\.|(?!\.)))([eE][-+]?\d+)?(?!\d)\s*,?\s*){2}\D*\d/i;
 
 /**
  * Remove hidden elements with disabled rendering:
@@ -39,9 +39,6 @@ var regValidPath = /M\s*(?:[-+]?(?:\d*\.\d+|\d+(?:\.|(?!\.)))([eE][-+]?\d+)?(?!\
  *
  * @param {Object} item current iteration item
  * @param {Object} params plugin params
- * @return {Boolean} if false, item will be filtered out
- *
- * @author Kir Belevich
  */
 export function fn(item, params) {
   if (item.elem) {
@@ -50,12 +47,16 @@ export function fn(item, params) {
     // http://www.w3.org/TR/SVG/painting.html#DisplayProperty
     // "A value of display: none indicates that the given element
     // and its children shall not be rendered directly"
-    if (params.displayNone && item.hasAttr('display', 'none')) return false;
+    if (params.displayNone && item.hasAttr('display', 'none')) {
+      return false;
+    }
 
     // opacity="0"
     //
     // http://www.w3.org/TR/SVG/masking.html#ObjectAndGroupOpacityProperties
-    if (params.opacity0 && item.hasAttr('opacity', '0')) return false;
+    if (params.opacity0 && item.hasAttr('opacity', '0')) {
+      return false;
+    }
 
     // Circles with zero radius
     //
@@ -68,8 +69,9 @@ export function fn(item, params) {
       item.isElem('circle') &&
       item.isEmpty() &&
       item.hasAttr('r', '0')
-    )
+    ) {
       return false;
+    }
 
     // Ellipse with zero x-axis radius
     //
@@ -82,8 +84,9 @@ export function fn(item, params) {
       item.isElem('ellipse') &&
       item.isEmpty() &&
       item.hasAttr('rx', '0')
-    )
+    ) {
       return false;
+    }
 
     // Ellipse with zero y-axis radius
     //
@@ -96,8 +99,9 @@ export function fn(item, params) {
       item.isElem('ellipse') &&
       item.isEmpty() &&
       item.hasAttr('ry', '0')
-    )
+    ) {
       return false;
+    }
 
     // Rectangle with zero width
     //
@@ -110,8 +114,9 @@ export function fn(item, params) {
       item.isElem('rect') &&
       item.isEmpty() &&
       item.hasAttr('width', '0')
-    )
+    ) {
       return false;
+    }
 
     // Rectangle with zero height
     //
@@ -125,8 +130,9 @@ export function fn(item, params) {
       item.isElem('rect') &&
       item.isEmpty() &&
       item.hasAttr('height', '0')
-    )
+    ) {
       return false;
+    }
 
     // Pattern with zero width
     //
@@ -138,8 +144,9 @@ export function fn(item, params) {
       params.patternWidth0 &&
       item.isElem('pattern') &&
       item.hasAttr('width', '0')
-    )
+    ) {
       return false;
+    }
 
     // Pattern with zero height
     //
@@ -151,8 +158,9 @@ export function fn(item, params) {
       params.patternHeight0 &&
       item.isElem('pattern') &&
       item.hasAttr('height', '0')
-    )
+    ) {
       return false;
+    }
 
     // Image with zero width
     //
@@ -164,8 +172,9 @@ export function fn(item, params) {
       params.imageWidth0 &&
       item.isElem('image') &&
       item.hasAttr('width', '0')
-    )
+    ) {
       return false;
+    }
 
     // Image with zero height
     //
@@ -177,8 +186,9 @@ export function fn(item, params) {
       params.imageHeight0 &&
       item.isElem('image') &&
       item.hasAttr('height', '0')
-    )
+    ) {
       return false;
+    }
 
     // Path with empty data
     //
@@ -189,8 +199,9 @@ export function fn(item, params) {
       params.pathEmptyD &&
       item.isElem('path') &&
       (!item.hasAttr('d') || !regValidPath.test(item.attr('d').value))
-    )
+    ) {
       return false;
+    }
 
     // Polyline with empty points
     //
@@ -201,8 +212,9 @@ export function fn(item, params) {
       params.polylineEmptyPoints &&
       item.isElem('polyline') &&
       !item.hasAttr('points')
-    )
+    ) {
       return false;
+    }
 
     // Polygon with empty points
     //
@@ -213,7 +225,8 @@ export function fn(item, params) {
       params.polygonEmptyPoints &&
       item.isElem('polygon') &&
       !item.hasAttr('points')
-    )
+    ) {
       return false;
+    }
   }
 }

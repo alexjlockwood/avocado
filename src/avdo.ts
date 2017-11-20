@@ -1,11 +1,6 @@
-import { xml2js } from './xml2js';
-import { Plugin } from './plugins/_types';
-import { process } from './plugins/_plugins';
 import { JsApi } from './jsapi';
+import { Plugin } from './plugins/_types';
 import { js2xml } from './js2xml';
-
-// import * as removeXMLProcInst from './plugins/removeXMLProcInst';
-import { removeComments } from './plugins/removeComments';
 // import * as removeXMLNS from './plugins/removeXMLNS';
 // import * as cleanupAttrs from './plugins/cleanupAttrs';
 // import * as cleanupIDs from './plugins/cleanupIDs';
@@ -23,7 +18,12 @@ import { removeComments } from './plugins/removeComments';
 // import * as convertTransform from './plugins/convertTransform';
 // import * as removeEmptyAttrs from './plugins/removeEmptyAttrs';
 // import * as removeEmptyContainers from './plugins/removeEmptyContainers';
-// import * as mergePaths from './plugins/mergePaths';
+import { mergePaths } from './plugins/mergePaths';
+import { process } from './plugins/_plugins';
+// import * as removeXMLProcInst from './plugins/removeXMLProcInst';
+import { removeComments } from './plugins/removeComments';
+import { xml2js } from './xml2js';
+
 // import * as removeUnusedNS from './plugins/removeUnusedNS';
 // import * as sortAttrs from './plugins/sortAttrs';
 // import * as removeDimensions from './plugins/removeDimensions';
@@ -65,7 +65,7 @@ const optimizedPluginsData = (function(plugins: Plugin[]) {
   // convertTransform,
   // removeEmptyAttrs,
   // removeEmptyContainers,
-  // mergePaths,
+  mergePaths,
   // removeUnusedNS,
   // sortAttrs,
   // removeDimensions,
@@ -77,14 +77,14 @@ const optimizedPluginsData = (function(plugins: Plugin[]) {
 ]);
 
 export interface Options {
-  plugins: Plugin[][];
+  plugins?: Plugin[][];
   multipass?: boolean;
 }
 
 export class Avdo {
-  constructor(
-    private readonly options: Options = { plugins: optimizedPluginsData },
-  ) {}
+  constructor(private readonly options: Options = {}) {
+    options.plugins = options.plugins || optimizedPluginsData;
+  }
 
   optimize(xml: string): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -105,12 +105,13 @@ export class Avdo {
   }
 
   private optimizeOnce(xml: string, onSuccess, onFail) {
-    const options = this.options;
+    const { options } = this;
     xml2js(
       xml,
       jsApi => {
         jsApi = process(jsApi, options.plugins);
-        onSuccess(js2xml(jsApi, /*config.js2svg*/ undefined));
+        // TODO: make it possible to configure the 'pretty' option
+        onSuccess(js2xml(jsApi, undefined));
       },
       error => onFail(error),
     );

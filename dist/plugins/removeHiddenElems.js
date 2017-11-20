@@ -35,9 +35,6 @@ var regValidPath = /M\s*(?:[-+]?(?:\d*\.\d+|\d+(?:\.|(?!\.)))([eE][-+]?\d+)?(?!\
  *
  * @param {Object} item current iteration item
  * @param {Object} params plugin params
- * @return {Boolean} if false, item will be filtered out
- *
- * @author Kir Belevich
  */
 function fn(item, params) {
     if (item.elem) {
@@ -46,13 +43,15 @@ function fn(item, params) {
         // http://www.w3.org/TR/SVG/painting.html#DisplayProperty
         // "A value of display: none indicates that the given element
         // and its children shall not be rendered directly"
-        if (params.displayNone && item.hasAttr('display', 'none'))
+        if (params.displayNone && item.hasAttr('display', 'none')) {
             return false;
+        }
         // opacity="0"
         //
         // http://www.w3.org/TR/SVG/masking.html#ObjectAndGroupOpacityProperties
-        if (params.opacity0 && item.hasAttr('opacity', '0'))
+        if (params.opacity0 && item.hasAttr('opacity', '0')) {
             return false;
+        }
         // Circles with zero radius
         //
         // http://www.w3.org/TR/SVG/shapes.html#CircleElementRAttribute
@@ -62,8 +61,9 @@ function fn(item, params) {
         if (params.circleR0 &&
             item.isElem('circle') &&
             item.isEmpty() &&
-            item.hasAttr('r', '0'))
+            item.hasAttr('r', '0')) {
             return false;
+        }
         // Ellipse with zero x-axis radius
         //
         // http://www.w3.org/TR/SVG/shapes.html#EllipseElementRXAttribute
@@ -73,8 +73,9 @@ function fn(item, params) {
         if (params.ellipseRX0 &&
             item.isElem('ellipse') &&
             item.isEmpty() &&
-            item.hasAttr('rx', '0'))
+            item.hasAttr('rx', '0')) {
             return false;
+        }
         // Ellipse with zero y-axis radius
         //
         // http://www.w3.org/TR/SVG/shapes.html#EllipseElementRYAttribute
@@ -84,8 +85,9 @@ function fn(item, params) {
         if (params.ellipseRY0 &&
             item.isElem('ellipse') &&
             item.isEmpty() &&
-            item.hasAttr('ry', '0'))
+            item.hasAttr('ry', '0')) {
             return false;
+        }
         // Rectangle with zero width
         //
         // http://www.w3.org/TR/SVG/shapes.html#RectElementWidthAttribute
@@ -95,8 +97,9 @@ function fn(item, params) {
         if (params.rectWidth0 &&
             item.isElem('rect') &&
             item.isEmpty() &&
-            item.hasAttr('width', '0'))
+            item.hasAttr('width', '0')) {
             return false;
+        }
         // Rectangle with zero height
         //
         // http://www.w3.org/TR/SVG/shapes.html#RectElementHeightAttribute
@@ -107,8 +110,9 @@ function fn(item, params) {
             params.rectWidth0 &&
             item.isElem('rect') &&
             item.isEmpty() &&
-            item.hasAttr('height', '0'))
+            item.hasAttr('height', '0')) {
             return false;
+        }
         // Pattern with zero width
         //
         // http://www.w3.org/TR/SVG/pservers.html#PatternElementWidthAttribute
@@ -117,8 +121,9 @@ function fn(item, params) {
         // <pattern width="0">
         if (params.patternWidth0 &&
             item.isElem('pattern') &&
-            item.hasAttr('width', '0'))
+            item.hasAttr('width', '0')) {
             return false;
+        }
         // Pattern with zero height
         //
         // http://www.w3.org/TR/SVG/pservers.html#PatternElementHeightAttribute
@@ -127,8 +132,9 @@ function fn(item, params) {
         // <pattern height="0">
         if (params.patternHeight0 &&
             item.isElem('pattern') &&
-            item.hasAttr('height', '0'))
+            item.hasAttr('height', '0')) {
             return false;
+        }
         // Image with zero width
         //
         // http://www.w3.org/TR/SVG/struct.html#ImageElementWidthAttribute
@@ -137,8 +143,9 @@ function fn(item, params) {
         // <image width="0">
         if (params.imageWidth0 &&
             item.isElem('image') &&
-            item.hasAttr('width', '0'))
+            item.hasAttr('width', '0')) {
             return false;
+        }
         // Image with zero height
         //
         // http://www.w3.org/TR/SVG/struct.html#ImageElementHeightAttribute
@@ -147,8 +154,9 @@ function fn(item, params) {
         // <image height="0">
         if (params.imageHeight0 &&
             item.isElem('image') &&
-            item.hasAttr('height', '0'))
+            item.hasAttr('height', '0')) {
             return false;
+        }
         // Path with empty data
         //
         // http://www.w3.org/TR/SVG/paths.html#DAttribute
@@ -156,8 +164,9 @@ function fn(item, params) {
         // <path d=""/>
         if (params.pathEmptyD &&
             item.isElem('path') &&
-            (!item.hasAttr('d') || !regValidPath.test(item.attr('d').value)))
+            (!item.hasAttr('d') || !regValidPath.test(item.attr('d').value))) {
             return false;
+        }
         // Polyline with empty points
         //
         // http://www.w3.org/TR/SVG/shapes.html#PolylineElementPointsAttribute
@@ -165,8 +174,9 @@ function fn(item, params) {
         // <polyline points="">
         if (params.polylineEmptyPoints &&
             item.isElem('polyline') &&
-            !item.hasAttr('points'))
+            !item.hasAttr('points')) {
             return false;
+        }
         // Polygon with empty points
         //
         // http://www.w3.org/TR/SVG/shapes.html#PolygonElementPointsAttribute
@@ -174,8 +184,9 @@ function fn(item, params) {
         // <polygon points="">
         if (params.polygonEmptyPoints &&
             item.isElem('polygon') &&
-            !item.hasAttr('points'))
+            !item.hasAttr('points')) {
             return false;
+        }
     }
 }
 exports.fn = fn;

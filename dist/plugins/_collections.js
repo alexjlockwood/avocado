@@ -1350,21 +1350,15 @@ exports.elems = {
         contentGroups: ['descriptive'],
     },
     path: {
-        attrsGroups: [
-            'conditionalProcessing',
-            'core',
-            'graphicalEvent',
-            'presentation',
-        ],
+        attrsGroups: [],
         attrs: [
-            'class',
-            'style',
-            'externalResourcesRequired',
-            'transform',
-            'd',
-            'pathLength',
+            // 'class',
+            // 'style',
+            // 'externalResourcesRequired',
+            // 'transform',
+            'pathData',
         ],
-        contentGroups: ['animation', 'descriptive'],
+        contentGroups: [],
     },
     pattern: {
         attrsGroups: ['conditionalProcessing', 'core', 'presentation', 'xlink'],

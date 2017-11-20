@@ -1,6 +1,8 @@
-import * as _transforms from './_transforms';
 import * as _collections from './_collections';
 import * as _tools from './_tools';
+import * as _transforms from './_transforms';
+
+import { JsApi } from '../jsapi';
 
 const regPathInstructions = /([MmLlHhVvCcSsQqTtAaZz])\s*/;
 const regPathData = /[-+]?(?:\d*\.\d+|\d+\.?)([eE][-+]?\d+)?/g;
@@ -22,7 +24,8 @@ let prevCtrlPoint;
  * @param {Object} params plugin params
  * @return {Array} output array
  */
-export function path2js(path) {
+export function path2js(path: JsApi) {
+  // TODO: avoid this caching hackery...
   if (path.pathJS) {
     return path.pathJS;
   }
@@ -31,68 +34,70 @@ export function path2js(path) {
   const paramsLength = {
     // Number of parameters of every path command
     H: 1, V: 1, M: 2, L: 2, T: 2, Q: 4, S: 4, C: 6, A: 7,
-    h: 1, v: 1, m: 2, l: 2, t: 2, q: 4, s: 4, c: 6, a: 7
+    h: 1, v: 1, m: 2, l: 2, t: 2, q: 4, s: 4, c: 6, a: 7,
   };
-  const pathData = []; // JS representation of the path data
-  let instruction; // current instruction context
+  const pathData: Array<{ instruction: string; data?: number[] }> = [];
+  let instruction: string;
   let startMoveto = false;
 
   // splitting path string into array like ['M', '10 50', 'L', '20 30']
   path
-    .attr('d')
+    .attr('android:pathData')
     .value.split(regPathInstructions)
-    .forEach(function(data) {
+    .forEach(data => {
       if (!data) {
         return;
       }
       if (!startMoveto) {
-        if (data == 'M' || data == 'm') {
+        if (data === 'M' || data === 'm') {
           startMoveto = true;
         } else {
           return;
         }
       }
 
-      // instruction item
+      // Instruction item.
       if (regPathInstructions.test(data)) {
         instruction = data;
 
-        // z - instruction w/o data
-        if (instruction == 'Z' || instruction == 'z') {
+        // Z - instruction w/o data.
+        if (instruction === 'Z' || instruction === 'z') {
           pathData.push({ instruction: 'z' });
         }
-        // data item
       } else {
-        data = data.match(regPathData);
-        if (!data) {
+        // Data item.
+        const matchedData = data.match(regPathData);
+        if (!matchedData) {
           return;
         }
 
-        data = data.map(Number);
+        const matchedNumData = matchedData.map(Number);
 
         // Subsequent moveto pairs of coordinates are threated as implicit lineto commands
         // http://www.w3.org/TR/SVG/paths.html#PathDataMovetoCommands
-        if (instruction == 'M' || instruction == 'm') {
+        if (instruction === 'M' || instruction === 'm') {
           pathData.push({
-            instruction: pathData.length == 0 ? 'M' : instruction,
-            data: data.splice(0, 2),
+            instruction: pathData.length === 0 ? 'M' : instruction,
+            data: matchedNumData.splice(0, 2),
           });
-          instruction = instruction == 'M' ? 'L' : 'l';
+          instruction = instruction === 'M' ? 'L' : 'l';
         }
 
-        for (var pair = paramsLength[instruction]; data.length; ) {
+        for (const pair = paramsLength[instruction]; matchedNumData.length; ) {
           pathData.push({
-            instruction: instruction,
-            data: data.splice(0, pair),
+            instruction,
+            data: matchedNumData.splice(0, pair),
           });
         }
       }
     });
 
   // First moveto is actually absolute. Subsequent coordinates were separated above.
-  if (pathData.length && pathData[0].instruction == 'm') {
+  if (pathData.length && pathData[0].instruction === 'm') {
     pathData[0].instruction = 'M';
   }
+
+  // TODO: avoid this caching hackery...
   path.pathJS = pathData;
 
   return pathData;
@@ -328,31 +333,28 @@ function transformPoint(matrix, x, y) {
 }
 
 /**
- * Compute Cubic Bézie bounding box.
- *
+ * Compute Cubic Bézier bounding box.
  * @see http://processingjs.nihongoresources.com/bezierinfo/
- *
- * @param {Float} xa
- * @param {Float} ya
- * @param {Float} xb
- * @param {Float} yb
- * @param {Float} xc
- * @param {Float} yc
- * @param {Float} xd
- * @param {Float} yd
- *
- * @return {Object}
  */
-export function computeCubicBoundingBox(xa, ya, xb, yb, xc, yc, xd, yd) {
-  var minx = Number.POSITIVE_INFINITY,
-    miny = Number.POSITIVE_INFINITY,
-    maxx = Number.NEGATIVE_INFINITY,
-    maxy = Number.NEGATIVE_INFINITY,
-    ts,
-    t,
-    x,
-    y,
-    i;
+export function computeCubicBoundingBox(
+  xa: number,
+  ya: number,
+  xb: number,
+  yb: number,
+  xc: number,
+  yc: number,
+  xd: number,
+  yd: number,
+) {
+  let minx = Number.POSITIVE_INFINITY;
+  let miny = Number.POSITIVE_INFINITY;
+  let maxx = Number.NEGATIVE_INFINITY;
+  let maxy = Number.NEGATIVE_INFINITY;
+  let ts: number[];
+  let t: number;
+  let x: number;
+  let y: number;
+  let i: number;
 
   // X
   if (xa < minx) {
@@ -372,11 +374,8 @@ export function computeCubicBoundingBox(xa, ya, xb, yb, xc, yc, xd, yd) {
 
   for (i = 0; i < ts.length; i++) {
     t = ts[i];
-
     if (t >= 0 && t <= 1) {
       x = computeCubicBaseValue(t, xa, xb, xc, xd);
-      // y = computeCubicBaseValue(t, ya, yb, yc, yd);
-
       if (x < minx) {
         minx = x;
       }
@@ -404,11 +403,8 @@ export function computeCubicBoundingBox(xa, ya, xb, yb, xc, yc, xd, yd) {
 
   for (i = 0; i < ts.length; i++) {
     t = ts[i];
-
     if (t >= 0 && t <= 1) {
-      // x = computeCubicBaseValue(t, xa, xb, xc, xd);
       y = computeCubicBaseValue(t, ya, yb, yc, yd);
-
       if (y < miny) {
         miny = y;
       }
@@ -418,35 +414,38 @@ export function computeCubicBoundingBox(xa, ya, xb, yb, xc, yc, xd, yd) {
     }
   }
 
-  return {
-    minx: minx,
-    miny: miny,
-    maxx: maxx,
-    maxy: maxy,
-  };
+  return { minx, miny, maxx, maxy };
 }
 
-// compute the value for the cubic bezier function at time=t
-function computeCubicBaseValue(t, a, b, c, d) {
-  var mt = 1 - t;
-
+// Compute the value for the cubic bezier function at time t.
+function computeCubicBaseValue(
+  t: number,
+  a: number,
+  b: number,
+  c: number,
+  d: number,
+) {
+  const mt = 1 - t;
   return (
     mt * mt * mt * a + 3 * mt * mt * t * b + 3 * mt * t * t * c + t * t * t * d
   );
 }
 
-// compute the value for the first derivative of the cubic bezier function at time=t
-function computeCubicFirstDerivativeRoots(a, b, c, d) {
-  var result = [-1, -1],
-    tl = -a + 2 * b - c,
-    tr = -Math.sqrt(-a * (c - d) + b * b - b * (c + d) + c * c),
-    dn = -a + 3 * b - 3 * c + d;
-
+// Compute the value for the first derivative of the cubic bezier function at time t.
+function computeCubicFirstDerivativeRoots(
+  a: number,
+  b: number,
+  c: number,
+  d: number,
+) {
+  const result = [-1, -1];
+  const tl = -a + 2 * b - c;
+  const tr = -Math.sqrt(-a * (c - d) + b * b - b * (c + d) + c * c);
+  const dn = -a + 3 * b - 3 * c + d;
   if (dn !== 0) {
     result[0] = (tl + tr) / dn;
     result[1] = (tl - tr) / dn;
   }
-
   return result;
 }
 
@@ -454,24 +453,22 @@ function computeCubicFirstDerivativeRoots(a, b, c, d) {
  * Compute Quadratic Bézier bounding box.
  *
  * @see http://processingjs.nihongoresources.com/bezierinfo/
- *
- * @param {Float} xa
- * @param {Float} ya
- * @param {Float} xb
- * @param {Float} yb
- * @param {Float} xc
- * @param {Float} yc
- *
- * @return {Object}
  */
-export function computeQuadraticBoundingBox(xa, ya, xb, yb, xc, yc) {
-  var minx = Number.POSITIVE_INFINITY,
-    miny = Number.POSITIVE_INFINITY,
-    maxx = Number.NEGATIVE_INFINITY,
-    maxy = Number.NEGATIVE_INFINITY,
-    t,
-    x,
-    y;
+export function computeQuadraticBoundingBox(
+  xa: number,
+  ya: number,
+  xb: number,
+  yb: number,
+  xc: number,
+  yc: number,
+) {
+  let minx = Number.POSITIVE_INFINITY;
+  let miny = Number.POSITIVE_INFINITY;
+  let maxx = Number.NEGATIVE_INFINITY;
+  let maxy = Number.NEGATIVE_INFINITY;
+  let t: number;
+  let x: number;
+  let y: number;
 
   // X
   if (xa < minx) {
@@ -488,11 +485,8 @@ export function computeQuadraticBoundingBox(xa, ya, xb, yb, xc, yc) {
   }
 
   t = computeQuadraticFirstDerivativeRoot(xa, xb, xc);
-
   if (t >= 0 && t <= 1) {
     x = computeQuadraticBaseValue(t, xa, xb, xc);
-    // y = computeQuadraticBaseValue(t, ya, yb, yc);
-
     if (x < minx) {
       minx = x;
     }
@@ -516,11 +510,8 @@ export function computeQuadraticBoundingBox(xa, ya, xb, yb, xc, yc) {
   }
 
   t = computeQuadraticFirstDerivativeRoot(ya, yb, yc);
-
   if (t >= 0 && t <= 1) {
-    // x = computeQuadraticBaseValue(t, xa, xb, xc);
     y = computeQuadraticBaseValue(t, ya, yb, yc);
-
     if (y < miny) {
       miny = y;
     }
@@ -529,86 +520,86 @@ export function computeQuadraticBoundingBox(xa, ya, xb, yb, xc, yc) {
     }
   }
 
-  return {
-    minx: minx,
-    miny: miny,
-    maxx: maxx,
-    maxy: maxy,
-  };
+  return { minx, miny, maxx, maxy };
 }
 
-// compute the value for the quadratic bezier function at time=t
-function computeQuadraticBaseValue(t, a, b, c) {
-  var mt = 1 - t;
-
+// Compute the value for the quadratic bezier function at time t.
+function computeQuadraticBaseValue(t: number, a: number, b: number, c: number) {
+  const mt = 1 - t;
   return mt * mt * a + 2 * mt * t * b + t * t * c;
 }
 
-// compute the value for the first derivative of the quadratic bezier function at time=t
-function computeQuadraticFirstDerivativeRoot(a, b, c) {
-  var t = -1,
-    denominator = a - 2 * b + c;
-
+// Compute the value for the first derivative of the quadratic bezier function at time t.
+function computeQuadraticFirstDerivativeRoot(a: number, b: number, c: number) {
+  let t = -1;
+  const denominator = a - 2 * b + c;
   if (denominator !== 0) {
     t = (a - b) / denominator;
   }
-
   return t;
 }
 
 /**
  * Convert path array to string.
- *
- * @param {Array} path input path data
- * @param {Object} params plugin params
- * @return {String} output path string
  */
-export function js2path(path, data, params) {
+export function js2path(
+  path: JsApi,
+  data: Array<{ instruction: string; data?: number[] }>,
+  params: {
+    collapseRepeated: boolean;
+    leadingZero: boolean;
+    negativeExtraSpace: boolean;
+  },
+) {
   path.pathJS = data;
-
   if (params.collapseRepeated) {
     data = collapseRepeated(data);
   }
-
-  path.attr('d').value = data.reduce(function(pathString, item) {
+  path.attr('android:pathData').value = data.reduce((pathString, item) => {
     return (pathString +=
       item.instruction + (item.data ? cleanupOutData(item.data, params) : ''));
   }, '');
 }
 
+interface Item {
+  instruction: string;
+  data?: number[];
+  coords?: number[];
+  base?: number[];
+}
+
 /**
- * Collapse repeated instructions data
- *
- * @param {Array} path input path data
- * @return {Array} output path data
+ * Collapse repeated instructions data.
  */
-function collapseRepeated(data) {
-  var prev, prevIndex;
+function collapseRepeated(data: Item[]) {
+  let prev: Item;
+  let prevIndex: number;
 
-  // copy an array and modifieds item to keep original data untouched
-  data = data.reduce(function(newPath, item) {
-    if (prev && item.data && item.instruction == prev.instruction) {
-      // concat previous data with current
-      if (item.instruction != 'M') {
-        prev = newPath[prevIndex] = {
-          instruction: prev.instruction,
-          data: prev.data.concat(item.data),
-          coords: item.coords,
-          base: prev.base,
-        };
+  // Copy an array and modifieds item to keep original data untouched.
+  data = data.reduce(
+    (newPath, item) => {
+      if (prev && item.data && item.instruction === prev.instruction) {
+        // Concat previous data with current.
+        if (item.instruction !== 'M') {
+          prev = newPath[prevIndex] = {
+            instruction: prev.instruction,
+            data: prev.data.concat(item.data),
+            coords: item.coords,
+            base: prev.base,
+          };
+        } else {
+          prev.data = item.data;
+          prev.coords = item.coords;
+        }
       } else {
-        prev.data = item.data;
-        prev.coords = item.coords;
+        newPath.push(item);
+        prev = item;
+        prevIndex = newPath.length - 1;
       }
-    } else {
-      newPath.push(item);
-      prev = item;
-      prevIndex = newPath.length - 1;
-    }
-
-    return newPath;
-  }, []);
-
+      return newPath;
+    },
+    [] as Item[],
+  );
   return data;
 }
 
@@ -629,12 +620,12 @@ function set(dest, source) {
  */
 export function intersects(path1, path2) {
   if (path1.length < 3 || path2.length < 3) {
-    return false; // nothing to fill
+    return false; // Nothing to fill.
   }
 
   // Collect points of every subpath.
-  var points1 = relative2absolute(path1).reduce(gatherPoints, []),
-    points2 = relative2absolute(path2).reduce(gatherPoints, []);
+  const points1 = relative2absolute(path1).reduce(gatherPoints, []);
+  const points2 = relative2absolute(path2).reduce(gatherPoints, []);
 
   // Axis-aligned bounding box check.
   if (
@@ -652,8 +643,9 @@ export function intersects(path1, path2) {
         );
       });
     })
-  )
+  ) {
     return false;
+  }
 
   // Get a convex hull from points of each subpath. Has the most complexity O(n·log n).
   var hullNest1 = points1.map(convexHull),
@@ -671,7 +663,7 @@ export function intersects(path1, path2) {
 
       var iterations = 1e4; // infinite loop protection, 10 000 iterations is more than enough
       while (true) {
-        if (iterations-- == 0) {
+        if (iterations-- === 0) {
           console.error(
             'Error: infinite loop while processing mergePaths plugin.',
           );

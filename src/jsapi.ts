@@ -22,6 +22,9 @@ export class JsApi {
   attrs?: { [name: string]: Attr };
   comment?: string;
 
+  // TODO: avoid this caching hackery
+  pathJS?: Array<{ instruction: string; data?: number[] }>;
+
   constructor(arg: string | Options, parentNode?: JsApi) {
     if (typeof arg === 'string') {
       this.comment = arg;
@@ -31,8 +34,8 @@ export class JsApi {
       this.prefix = arg.prefix;
       this.local = arg.local;
       this.attrs = arg.attrs;
+      this.parentNode = parentNode;
     }
-    this.parentNode = parentNode;
   }
 
   /**
@@ -41,8 +44,10 @@ export class JsApi {
    */
   clone() {
     // Deep-clone node data.
-    const { elem, prefix, local, attrs } = this;
-    const nodeData = JSON.parse(JSON.stringify({ elem, prefix, local, attrs }));
+    const { elem, prefix, local, attrs, comment, pathJS } = this;
+    const nodeData = JSON.parse(
+      JSON.stringify({ elem, prefix, local, attrs, comment, pathJS }),
+    );
     const clonedNode = new JsApi(nodeData, this.parentNode);
     if (this.content) {
       clonedNode.content = this.content.map(childNode => {

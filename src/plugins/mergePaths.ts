@@ -1,70 +1,71 @@
-import * as _path from './_path';
+import { intersects, js2path, path2js } from './_path';
 
-export const type = 'perItem';
+import { JsApi } from '../jsapi';
+import { Plugin } from './_types';
 
-export const active = true;
-
-export const description = 'merges multiple paths in one if possible';
-
-export const params = {
-  collapseRepeated: true,
-  leadingZero: true,
-  negativeExtraSpace: true,
-};
-
-const { path2js, js2path, intersects } = _path;
+export interface Params {
+  collapseRepeated: boolean;
+  leadingZero: boolean;
+  negativeExtraSpace: boolean;
+}
 
 /**
- * Merge multiple Paths into one.
- *
- * @param {Object} item current iteration item
- * @return {Boolean} if false, item will be filtered out
- *
- * @author Kir Belevich, Lev Solntsev
+ * Merge multiple paths into one.
  */
-export function fn(item, params) {
+function fn(item: JsApi, params: Params) {
   if (!item.isElem() || item.isEmpty()) {
-    return;
+    return item;
   }
 
-  let prevContentItem = null;
-  let prevContentItemKeys = null;
+  let prevContentItem: JsApi;
+  let prevContentItemKeys: string[];
 
-  item.content = item.content.filter(function(contentItem) {
+  item.content = item.content.filter(contentItem => {
     if (
       prevContentItem &&
       prevContentItem.isElem('path') &&
       prevContentItem.isEmpty() &&
-      prevContentItem.hasAttr('d') &&
+      prevContentItem.hasAttr('android:pathData') &&
       contentItem.isElem('path') &&
       contentItem.isEmpty() &&
-      contentItem.hasAttr('d')
+      contentItem.hasAttr('android:pathData')
     ) {
       if (!prevContentItemKeys) {
         prevContentItemKeys = Object.keys(prevContentItem.attrs);
       }
-
       const contentItemAttrs = Object.keys(contentItem.attrs);
       const equalData =
-        prevContentItemKeys.length == contentItemAttrs.length &&
-        contentItemAttrs.every(function(key) {
+        prevContentItemKeys.length === contentItemAttrs.length &&
+        contentItemAttrs.every(key => {
           return (
-            key == 'd' ||
+            key === 'android:pathData' ||
             (prevContentItem.hasAttr(key) &&
-              prevContentItem.attr(key).value == contentItem.attr(key).value)
+              prevContentItem.attr(key).value === contentItem.attr(key).value)
           );
         });
       const prevPathJS = path2js(prevContentItem);
       const curPathJS = path2js(contentItem);
-
       if (equalData && !intersects(prevPathJS, curPathJS)) {
         js2path(prevContentItem, prevPathJS.concat(curPathJS), params);
         return false;
       }
     }
-
     prevContentItem = contentItem;
-    prevContentItemKeys = null;
+    prevContentItemKeys = undefined;
     return true;
   });
+
+  return item;
 }
+
+export const mergePaths: Plugin<Params> = {
+  type: 'perItem',
+  active: true,
+  description: 'merges multiple paths into one, if possible',
+  params: {
+    collapseRepeated: true,
+    leadingZero: true,
+    negativeExtraSpace: true,
+  },
+  fn,
+};

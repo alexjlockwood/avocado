@@ -14,7 +14,10 @@ export declare function encodeSVGDatauri(str: any, type: any): any;
  */
 export declare function decodeSVGDatauri(str: any): any;
 export declare function intersectArrays(a: any, b: any): any;
-export declare function cleanupOutData(data: any, params: any): string;
+export declare function cleanupOutData(data: number[], params: {
+    leadingZero: boolean;
+    negativeExtraSpace: boolean;
+}): string;
 /**
  * Remove floating-point numbers leading zero.
  *

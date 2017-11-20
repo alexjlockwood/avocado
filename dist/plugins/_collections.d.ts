@@ -580,9 +580,9 @@ export declare const elems: {
         contentGroups: string[];
     };
     path: {
-        attrsGroups: string[];
+        attrsGroups: any[];
         attrs: string[];
-        contentGroups: string[];
+        contentGroups: any[];
     };
     pattern: {
         attrsGroups: string[];

@@ -8,8 +8,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var OS = require("os");
-var EOL = OS.EOL;
+var os_1 = require("os");
 var entities = {
     '&': '&amp;',
     "'": '&apos;',
@@ -70,14 +69,14 @@ var Js2Xml = /** @class */ (function () {
             this.config.indent = '    ';
         }
         if (this.config.pretty) {
-            this.config.doctypeEnd += EOL;
-            this.config.procInstEnd += EOL;
-            this.config.commentEnd += EOL;
-            this.config.cdataEnd += EOL;
-            this.config.tagShortEnd += EOL;
-            this.config.tagOpenEnd += EOL;
-            this.config.tagCloseEnd += EOL;
-            this.config.textEnd += EOL;
+            this.config.doctypeEnd += os_1.EOL;
+            this.config.procInstEnd += os_1.EOL;
+            this.config.commentEnd += os_1.EOL;
+            this.config.cdataEnd += os_1.EOL;
+            this.config.tagShortEnd += os_1.EOL;
+            this.config.tagOpenEnd += os_1.EOL;
+            this.config.tagCloseEnd += os_1.EOL;
+            this.config.textEnd += os_1.EOL;
         }
     }
     /**

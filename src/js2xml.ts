@@ -1,7 +1,5 @@
+import { EOL } from 'os';
 import { JsApi } from './jsapi';
-import OS = require('os');
-
-const EOL = OS.EOL;
 
 const entities = {
   '&': '&amp;',

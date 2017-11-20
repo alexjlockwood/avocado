@@ -1,3 +1,4 @@
+import { JsApi } from '../jsapi';
 /**
  * Convert path string to JS representation.
  *
@@ -5,7 +6,10 @@
  * @param {Object} params plugin params
  * @return {Array} output array
  */
-export declare function path2js(path: any): any;
+export declare function path2js(path: JsApi): {
+    instruction: string;
+    data?: number[];
+}[];
 /**
  * Convert relative Path data to absolute.
  *
@@ -23,22 +27,10 @@ export declare function relative2absolute(data: any): any;
  */
 export declare function applyTransforms(elem: any, path: any, params: any): any;
 /**
- * Compute Cubic Bézie bounding box.
- *
+ * Compute Cubic Bézier bounding box.
  * @see http://processingjs.nihongoresources.com/bezierinfo/
- *
- * @param {Float} xa
- * @param {Float} ya
- * @param {Float} xb
- * @param {Float} yb
- * @param {Float} xc
- * @param {Float} yc
- * @param {Float} xd
- * @param {Float} yd
- *
- * @return {Object}
  */
-export declare function computeCubicBoundingBox(xa: any, ya: any, xb: any, yb: any, xc: any, yc: any, xd: any, yd: any): {
+export declare function computeCubicBoundingBox(xa: number, ya: number, xb: number, yb: number, xc: number, yc: number, xd: number, yd: number): {
     minx: number;
     miny: number;
     maxx: number;
@@ -48,17 +40,8 @@ export declare function computeCubicBoundingBox(xa: any, ya: any, xb: any, yb: a
  * Compute Quadratic Bézier bounding box.
  *
  * @see http://processingjs.nihongoresources.com/bezierinfo/
- *
- * @param {Float} xa
- * @param {Float} ya
- * @param {Float} xb
- * @param {Float} yb
- * @param {Float} xc
- * @param {Float} yc
- *
- * @return {Object}
  */
-export declare function computeQuadraticBoundingBox(xa: any, ya: any, xb: any, yb: any, xc: any, yc: any): {
+export declare function computeQuadraticBoundingBox(xa: number, ya: number, xb: number, yb: number, xc: number, yc: number): {
     minx: number;
     miny: number;
     maxx: number;
@@ -66,12 +49,15 @@ export declare function computeQuadraticBoundingBox(xa: any, ya: any, xb: any, y
 };
 /**
  * Convert path array to string.
- *
- * @param {Array} path input path data
- * @param {Object} params plugin params
- * @return {String} output path string
  */
-export declare function js2path(path: any, data: any, params: any): void;
+export declare function js2path(path: JsApi, data: Array<{
+    instruction: string;
+    data?: number[];
+}>, params: {
+    collapseRepeated: boolean;
+    leadingZero: boolean;
+    negativeExtraSpace: boolean;
+}): void;
 /**
  * Checks if two paths have an intersection by checking convex hulls
  * collision using Gilbert-Johnson-Keerthi distance algorithm
