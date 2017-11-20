@@ -1,21 +1,27 @@
+export interface Attr {
+  name: string;
+  value: string;
+  prefix: string;
+  local: string;
+}
+
+export interface Options {
+  elem: string;
+  content?: JsApi[];
+  prefix?: string;
+  local?: string;
+  attrs?: { [name: string]: Attr };
+}
+
 export class JsApi {
   parentNode: JsApi | undefined;
   content?: JsApi[];
   elem: string;
   prefix?: string;
   local?: string;
-  attrs?: any;
+  attrs?: { [name: string]: Attr };
 
-  constructor(
-    data: {
-      elem: string;
-      content?: JsApi[];
-      prefix?: string;
-      local?: string;
-      attrs?: { [key: string]: any };
-    },
-    parentNode?: JsApi,
-  ) {
+  constructor(data: Options, parentNode?: JsApi) {
     this.elem = data.elem;
     this.content = data.content;
     this.prefix = data.prefix;
@@ -26,7 +32,7 @@ export class JsApi {
 
   /**
    * Perform a deep clone of this node.
-   * @return {Object} element
+   * @return {Object}
    */
   clone() {
     // Deep-clone node data
@@ -87,7 +93,7 @@ export class JsApi {
   /**
    * Find the closest ancestor of the current element.
    * @param elemName
-   * @return {?Object}
+   * @return {Object}
    */
   closestElem(elemName: string) {
     let node: JsApi = this;
@@ -212,7 +218,7 @@ export class JsApi {
    * @param {String} name attribute name
    * @return {Object|Undefined}
    */
-  computedAttr(name: string, val: any) {
+  computedAttr(name: string, val?: any) {
     if (!arguments.length) {
       return;
     }
@@ -240,19 +246,14 @@ export class JsApi {
    * @param {String} [val] attribute value
    * @return {Boolean}
    */
-  removeAttr(name, val, recursive?: boolean) {
+  removeAttr(name) {
     if (!arguments.length) {
       return false;
     }
     if (Array.isArray(name)) {
-      // TODO: figure out how this is supposed to work...
-      // @ts-ignore
       name.forEach(this.removeAttr, this);
     }
     if (!this.hasAttr(name)) {
-      return false;
-    }
-    if (!recursive && val && this.attrs[name].value !== val) {
       return false;
     }
     delete this.attrs[name];
