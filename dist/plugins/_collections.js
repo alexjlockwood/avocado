@@ -1351,6 +1351,7 @@ exports.elems = {
     },
     path: {
         attrsGroups: [],
+        // TODO: use 'android:pathData' instead or no?
         attrs: [
             // 'class',
             // 'style',

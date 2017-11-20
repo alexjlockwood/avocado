@@ -1358,6 +1358,7 @@ export const elems = {
       // 'graphicalEvent',
       // 'presentation',
     ],
+    // TODO: use 'android:pathData' instead or no?
     attrs: [
       // 'class',
       // 'style',

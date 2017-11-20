@@ -14,6 +14,7 @@ android:viewportHeight="24">
 </vector>'
 */
 Object.defineProperty(exports, "__esModule", { value: true });
+// TODO: figure out 'android:pathData' vs. 'pathData' stuff
 var PROGRAM = require("commander");
 var avdo_1 = require("./avdo");
 var FS = require("fs");

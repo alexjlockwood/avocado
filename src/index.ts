@@ -13,6 +13,8 @@ android:viewportHeight="24">
 </vector>'
 */
 
+// TODO: figure out 'android:pathData' vs. 'pathData' stuff
+
 import * as PROGRAM from 'commander';
 
 import { Avdo, Options } from './avdo';
