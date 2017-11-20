@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var collapseGroups_1 = require("./plugins/collapseGroups");
 var js2xml_1 = require("./js2xml");
 var mergePaths_1 = require("./plugins/mergePaths");
 var _plugins_1 = require("./plugins/_plugins");
@@ -14,7 +15,6 @@ var xml2js_1 = require("./xml2js");
 // import * as removeUnknownsAndDefaults from './plugins/removeUnknownsAndDefaults';
 // import * as removeUselessStrokeAndFill from './plugins/removeUselessStrokeAndFill';
 // import * as removeHiddenElems from './plugins/removeHiddenElems';
-// import * as collapseGroups from './plugins/collapseGroups';
 // import * as convertPathData from './plugins/convertPathData';
 // import * as convertTransform from './plugins/convertTransform';
 // import * as removeUnusedNS from './plugins/removeUnusedNS';
@@ -42,7 +42,7 @@ var optimizedPluginsData = (function (plugins) {
     // removeUnknownsAndDefaults,
     // removeUselessStrokeAndFill,
     // removeHiddenElems,
-    // collapseGroups,
+    collapseGroups_1.collapseGroups,
     // convertPathData,
     // convertTransform,
     removeEmptyGroups_1.removeEmptyGroups,
@@ -77,8 +77,7 @@ var Avdo = /** @class */ (function () {
         var options = this.options;
         xml2js_1.xml2js(xml, function (jsApi) {
             jsApi = _plugins_1.processPlugins(jsApi, options.plugins);
-            // TODO: make it possible to configure the 'pretty' option
-            onSuccess(js2xml_1.js2xml(jsApi, undefined));
+            onSuccess(js2xml_1.js2xml(jsApi, { pretty: options.pretty }));
         }, function (error) { return onFail(error); });
     };
     return Avdo;

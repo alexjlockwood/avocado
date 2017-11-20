@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * TODO: are there any empty containers that could be removed in an animated-vector?
  */
 function fn(item) {
-    return item.isElem('g') && item.isEmpty() ? undefined : item;
+    return item.isElem('group') && item.isEmpty() ? undefined : item;
 }
 exports.removeEmptyGroups = {
     type: 'perItemReverse',

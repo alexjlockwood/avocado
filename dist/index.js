@@ -2,17 +2,28 @@
 /*
 npm run build && \
 node bin/avdo --multipass -s \
-'<?xml version="1.0" encoding="utf-8"?>
+'
+<?xml version="1.0" encoding="utf-8"?>
 <vector
-xmlns:android="http://schemas.android.com/apk/res/android"
-android:width="24dp"
-android:height="24dp"
-android:viewportWidth="24"
-android:viewportHeight="24">
-<!-- Path #1 -->
-<path android:pathData="M 0 0 L 10 10 L 20 20"/>
-<!-- Path #2 -->
-<path android:pathData="M 100 100 L 200 200 L 300 300"/>
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:width="24dp"
+  android:height="24dp"
+  android:viewportWidth="24"
+  android:viewportHeight="24">
+  <!-- Useless container group -->
+  <group>
+    <group>
+      <!-- Path #1 -->
+      <path android:pathData="M 0 0 L 10 10 L 20 20"/>
+      <!-- Path #2 -->
+      <path android:pathData="M 100 100 L 200 200 L 300 300"/>
+      <group android:rotation="90">
+        <!-- Useless empty group. -->
+        <group></group>
+        <path d="M 1000 1000 L 2000 2000 L 3000 3000"></path>
+      </group>
+    </group>
+  </group>
 </vector>'
 */
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -33,10 +44,14 @@ function execute() {
         .arguments('[files...]')
         .option('-s, --string <string>', 'input VD or AVD string')
         .option('--multipass', 'enable multipass')
+        .option('--pretty', 'pretty print the result')
         .parse(process.argv);
     var options = {};
     if (PROGRAM.multipass) {
         options.multipass = true;
+    }
+    if (PROGRAM.pretty) {
+        options.pretty = true;
     }
     if (PROGRAM.string) {
         // TODO: run in parallel with other args below?

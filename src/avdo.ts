@@ -1,5 +1,6 @@
 import { JsApi } from './jsapi';
 import { Plugin } from './plugins/_types';
+import { collapseGroups } from './plugins/collapseGroups';
 import { js2xml } from './js2xml';
 import { mergePaths } from './plugins/mergePaths';
 import { processPlugins } from './plugins/_plugins';
@@ -15,7 +16,6 @@ import { xml2js } from './xml2js';
 // import * as removeUnknownsAndDefaults from './plugins/removeUnknownsAndDefaults';
 // import * as removeUselessStrokeAndFill from './plugins/removeUselessStrokeAndFill';
 // import * as removeHiddenElems from './plugins/removeHiddenElems';
-// import * as collapseGroups from './plugins/collapseGroups';
 // import * as convertPathData from './plugins/convertPathData';
 // import * as convertTransform from './plugins/convertTransform';
 // import * as removeUnusedNS from './plugins/removeUnusedNS';
@@ -46,7 +46,7 @@ const optimizedPluginsData = (function(plugins: Plugin[]) {
   // removeUnknownsAndDefaults,
   // removeUselessStrokeAndFill,
   // removeHiddenElems,
-  // collapseGroups,
+  collapseGroups,
   // convertPathData,
   // convertTransform,
   removeEmptyGroups,
@@ -58,6 +58,8 @@ const optimizedPluginsData = (function(plugins: Plugin[]) {
 export interface Options {
   plugins?: Plugin[][];
   multipass?: boolean;
+  // TODO: make it possible to configure indentation too
+  pretty?: boolean;
 }
 
 export class Avdo {
@@ -89,8 +91,7 @@ export class Avdo {
       xml,
       jsApi => {
         jsApi = processPlugins(jsApi, options.plugins);
-        // TODO: make it possible to configure the 'pretty' option
-        onSuccess(js2xml(jsApi, undefined));
+        onSuccess(js2xml(jsApi, { pretty: options.pretty }));
       },
       error => onFail(error),
     );

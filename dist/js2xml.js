@@ -35,7 +35,7 @@ var defaults = {
     cdataEnd: ']]>',
     textStart: '',
     textEnd: '',
-    indent: 4,
+    indentSize: 4,
     regEntities: /[&'"<>]/g,
     regValEntities: /[&"<>]/g,
     encodeEntity: function (char) { return entities[char]; },
@@ -45,38 +45,31 @@ var defaults = {
 /**
  * Convert XML-as-JS object to XML string.
  * @param {Object} data input data
- * @param {Object} config config
+ * @param {Object} options options
  * @return {Object} output data
  */
-function js2xml(data, config) {
-    return new Js2Xml(config).convert(data);
+function js2xml(data, options) {
+    return new Js2Xml(options).convert(data);
 }
 exports.js2xml = js2xml;
 var Js2Xml = /** @class */ (function () {
-    function Js2Xml(config) {
+    function Js2Xml(options) {
         this.indentLevel = 0;
-        if (config) {
-            this.config = __assign({}, defaults, config);
+        if (options) {
+            this.options = __assign({}, defaults, options);
         }
         else {
-            this.config = defaults;
+            this.options = defaults;
         }
-        var indent = this.config.indent;
-        if (typeof indent !== 'number' && !isNaN(indent)) {
-            this.config.indent = indent < 0 ? '\t' : ' '.repeat(indent);
-        }
-        else if (typeof indent !== 'string') {
-            this.config.indent = '    ';
-        }
-        if (this.config.pretty) {
-            this.config.doctypeEnd += os_1.EOL;
-            this.config.procInstEnd += os_1.EOL;
-            this.config.commentEnd += os_1.EOL;
-            this.config.cdataEnd += os_1.EOL;
-            this.config.tagShortEnd += os_1.EOL;
-            this.config.tagOpenEnd += os_1.EOL;
-            this.config.tagCloseEnd += os_1.EOL;
-            this.config.textEnd += os_1.EOL;
+        if (this.options.pretty) {
+            this.options.doctypeEnd += os_1.EOL;
+            this.options.procInstEnd += os_1.EOL;
+            this.options.commentEnd += os_1.EOL;
+            this.options.cdataEnd += os_1.EOL;
+            this.options.tagShortEnd += os_1.EOL;
+            this.options.tagOpenEnd += os_1.EOL;
+            this.options.tagCloseEnd += os_1.EOL;
+            this.options.textEnd += os_1.EOL;
         }
     }
     /**
@@ -110,8 +103,9 @@ var Js2Xml = /** @class */ (function () {
      */
     Js2Xml.prototype.createIndent = function () {
         var indent = '';
-        if (this.config.pretty) {
-            indent = this.config.indent.repeat(this.indentLevel - 1);
+        if (this.options.pretty) {
+            // TODO: make the indentation size configurable?
+            indent = '    '.repeat(this.indentLevel - 1);
         }
         return indent;
     };
@@ -121,7 +115,7 @@ var Js2Xml = /** @class */ (function () {
      * @return {String}
      */
     Js2Xml.prototype.createComment = function (comment) {
-        return this.config.commentStart + comment + this.config.commentEnd;
+        return this.options.commentStart + comment + this.options.commentEnd;
     };
     /**
      * Create XML Processing Instruction tag.
@@ -129,11 +123,11 @@ var Js2Xml = /** @class */ (function () {
      * @return {String}
      */
     Js2Xml.prototype.createProcInst = function (instruction) {
-        return (this.config.procInstStart +
+        return (this.options.procInstStart +
             instruction.name +
             ' ' +
             instruction.body +
-            this.config.procInstEnd);
+            this.options.procInstEnd);
     };
     /**
      * Create element tag.
@@ -143,30 +137,30 @@ var Js2Xml = /** @class */ (function () {
     Js2Xml.prototype.createElem = function (data) {
         // Empty element and short tag.
         if (data.isEmpty()) {
-            if (this.config.useShortTags) {
+            if (this.options.useShortTags) {
                 return (this.createIndent() +
-                    this.config.tagShortStart +
+                    this.options.tagShortStart +
                     data.elem +
                     this.createAttrs(data) +
-                    this.config.tagShortEnd);
+                    this.options.tagShortEnd);
             }
             else {
                 return (this.createIndent() +
-                    this.config.tagShortStart +
+                    this.options.tagShortStart +
                     data.elem +
                     this.createAttrs(data) +
-                    this.config.tagOpenEnd +
-                    this.config.tagCloseStart +
+                    this.options.tagOpenEnd +
+                    this.options.tagCloseStart +
                     data.elem +
-                    this.config.tagCloseEnd);
+                    this.options.tagCloseEnd);
             }
         }
         else {
             // Non-empty element.
-            var tagOpenStart = this.config.tagOpenStart;
-            var tagOpenEnd = this.config.tagOpenEnd;
-            var tagCloseStart = this.config.tagCloseStart;
-            var tagCloseEnd = this.config.tagCloseEnd;
+            var tagOpenStart = this.options.tagOpenStart;
+            var tagOpenEnd = this.options.tagOpenEnd;
+            var tagCloseStart = this.options.tagCloseStart;
+            var tagCloseEnd = this.options.tagCloseEnd;
             var openIndent = this.createIndent();
             var dataEnd = '';
             var processedData = '' + this.convert(data);
@@ -195,9 +189,9 @@ var Js2Xml = /** @class */ (function () {
                 attrs +=
                     ' ' +
                         attr.name +
-                        this.config.attrStart +
-                        String(attr.value).replace(this.config.regValEntities, this.config.encodeEntity) +
-                        this.config.attrEnd;
+                        this.options.attrStart +
+                        String(attr.value).replace(this.options.regValEntities, this.options.encodeEntity) +
+                        this.options.attrEnd;
             }
             else {
                 attrs += ' ' + attr.name;

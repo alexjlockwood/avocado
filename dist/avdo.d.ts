@@ -2,6 +2,7 @@ import { Plugin } from './plugins/_types';
 export interface Options {
     plugins?: Plugin[][];
     multipass?: boolean;
+    pretty?: boolean;
 }
 export declare class Avdo {
     private readonly options;
