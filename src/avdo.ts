@@ -1,34 +1,25 @@
 import { JsApi } from './jsapi';
 import { Plugin } from './plugins/_types';
 import { js2xml } from './js2xml';
-// import * as removeXMLNS from './plugins/removeXMLNS';
+import { mergePaths } from './plugins/mergePaths';
+import { processPlugins } from './plugins/_plugins';
+import { removeComments } from './plugins/removeComments';
+import { removeEmptyGroups } from './plugins/removeEmptyGroups';
+import { removeXMLProcInst } from './plugins/removeXMLProcInst';
+import { xml2js } from './xml2js';
+
 // import * as cleanupAttrs from './plugins/cleanupAttrs';
 // import * as cleanupIDs from './plugins/cleanupIDs';
 // import * as cleanupNumericValues from './plugins/cleanupNumericValues';
 // import * as convertColors from './plugins/convertColors';
 // import * as removeUnknownsAndDefaults from './plugins/removeUnknownsAndDefaults';
-// import * as removeNonInheritableGroupAttrs from './plugins/removeNonInheritableGroupAttrs';
 // import * as removeUselessStrokeAndFill from './plugins/removeUselessStrokeAndFill';
 // import * as removeHiddenElems from './plugins/removeHiddenElems';
-// import * as convertShapeToPath from './plugins/convertShapeToPath';
-// import * as moveElemsAttrsToGroup from './plugins/moveElemsAttrsToGroup';
-// import * as moveGroupAttrsToElems from './plugins/moveGroupAttrsToElems';
 // import * as collapseGroups from './plugins/collapseGroups';
 // import * as convertPathData from './plugins/convertPathData';
 // import * as convertTransform from './plugins/convertTransform';
-// import * as removeEmptyAttrs from './plugins/removeEmptyAttrs';
-// import * as removeEmptyContainers from './plugins/removeEmptyContainers';
-import { mergePaths } from './plugins/mergePaths';
-import { processPlugins } from './plugins/_plugins';
-import { removeComments } from './plugins/removeComments';
-import { removeXMLProcInst } from './plugins/removeXMLProcInst';
-import { xml2js } from './xml2js';
-
 // import * as removeUnusedNS from './plugins/removeUnusedNS';
 // import * as sortAttrs from './plugins/sortAttrs';
-// import * as removeDimensions from './plugins/removeDimensions';
-// import * as removeAttrs from './plugins/removeAttrs';
-// import * as removeElementsByAttr from './plugins/removeElementsByAttr';
 
 // Arrange plugins by type - this is what plugins() expects.
 const optimizedPluginsData = (function(plugins: Plugin[]) {
@@ -48,32 +39,20 @@ const optimizedPluginsData = (function(plugins: Plugin[]) {
   // The order is from https://github.com/svg/svgo/blob/master/.svgo.yml
   removeXMLProcInst,
   removeComments,
-  // removeXMLNS,
   // cleanupAttrs,
   // cleanupIDs,
   // cleanupNumericValues,
   // convertColors,
   // removeUnknownsAndDefaults,
-  // removeNonInheritableGroupAttrs,
   // removeUselessStrokeAndFill,
   // removeHiddenElems,
-  // convertShapeToPath,
-  // moveElemsAttrsToGroup,
-  // moveGroupAttrsToElems,
   // collapseGroups,
   // convertPathData,
   // convertTransform,
-  // removeEmptyAttrs,
-  // removeEmptyContainers,
+  removeEmptyGroups,
   mergePaths,
   // removeUnusedNS,
   // sortAttrs,
-  // removeDimensions,
-  // Some of these don't have a useful default action
-  // 'removeAttrs': removeAttrs,
-  // 'removeElementsByAttr': removeElementsByAttr,
-  // 'addClassesToSVGElement': addClassesToSVGElement,
-  // 'addAttributesToSVGElement': addAttributesToSVGElement,
 ]);
 
 export interface Options {

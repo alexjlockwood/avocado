@@ -1,33 +1,24 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var js2xml_1 = require("./js2xml");
-// import * as removeXMLNS from './plugins/removeXMLNS';
+var mergePaths_1 = require("./plugins/mergePaths");
+var _plugins_1 = require("./plugins/_plugins");
+var removeComments_1 = require("./plugins/removeComments");
+var removeEmptyGroups_1 = require("./plugins/removeEmptyGroups");
+var removeXMLProcInst_1 = require("./plugins/removeXMLProcInst");
+var xml2js_1 = require("./xml2js");
 // import * as cleanupAttrs from './plugins/cleanupAttrs';
 // import * as cleanupIDs from './plugins/cleanupIDs';
 // import * as cleanupNumericValues from './plugins/cleanupNumericValues';
 // import * as convertColors from './plugins/convertColors';
 // import * as removeUnknownsAndDefaults from './plugins/removeUnknownsAndDefaults';
-// import * as removeNonInheritableGroupAttrs from './plugins/removeNonInheritableGroupAttrs';
 // import * as removeUselessStrokeAndFill from './plugins/removeUselessStrokeAndFill';
 // import * as removeHiddenElems from './plugins/removeHiddenElems';
-// import * as convertShapeToPath from './plugins/convertShapeToPath';
-// import * as moveElemsAttrsToGroup from './plugins/moveElemsAttrsToGroup';
-// import * as moveGroupAttrsToElems from './plugins/moveGroupAttrsToElems';
 // import * as collapseGroups from './plugins/collapseGroups';
 // import * as convertPathData from './plugins/convertPathData';
 // import * as convertTransform from './plugins/convertTransform';
-// import * as removeEmptyAttrs from './plugins/removeEmptyAttrs';
-// import * as removeEmptyContainers from './plugins/removeEmptyContainers';
-var mergePaths_1 = require("./plugins/mergePaths");
-var _plugins_1 = require("./plugins/_plugins");
-var removeComments_1 = require("./plugins/removeComments");
-var removeXMLProcInst_1 = require("./plugins/removeXMLProcInst");
-var xml2js_1 = require("./xml2js");
 // import * as removeUnusedNS from './plugins/removeUnusedNS';
 // import * as sortAttrs from './plugins/sortAttrs';
-// import * as removeDimensions from './plugins/removeDimensions';
-// import * as removeAttrs from './plugins/removeAttrs';
-// import * as removeElementsByAttr from './plugins/removeElementsByAttr';
 // Arrange plugins by type - this is what plugins() expects.
 var optimizedPluginsData = (function (plugins) {
     return plugins.map(function (item) { return [item]; }).reduce(function (arr, item) {
@@ -44,23 +35,17 @@ var optimizedPluginsData = (function (plugins) {
     // The order is from https://github.com/svg/svgo/blob/master/.svgo.yml
     removeXMLProcInst_1.removeXMLProcInst,
     removeComments_1.removeComments,
-    // removeXMLNS,
     // cleanupAttrs,
     // cleanupIDs,
     // cleanupNumericValues,
     // convertColors,
     // removeUnknownsAndDefaults,
-    // removeNonInheritableGroupAttrs,
     // removeUselessStrokeAndFill,
     // removeHiddenElems,
-    // convertShapeToPath,
-    // moveElemsAttrsToGroup,
-    // moveGroupAttrsToElems,
     // collapseGroups,
     // convertPathData,
     // convertTransform,
-    // removeEmptyAttrs,
-    // removeEmptyContainers,
+    removeEmptyGroups_1.removeEmptyGroups,
     mergePaths_1.mergePaths,
 ]);
 var Avdo = /** @class */ (function () {

@@ -17,6 +17,8 @@ android:viewportHeight="24">
 */
 Object.defineProperty(exports, "__esModule", { value: true });
 // TODO: figure out 'android:pathData' vs. 'pathData' stuff
+// TODO: create plugin that removes useless clip-paths?
+// TODO: a 'useless clip-paths' plugin would have to run before the 'empty groups' plugin
 var PROGRAM = require("commander");
 var avdo_1 = require("./avdo");
 var FS = require("fs");

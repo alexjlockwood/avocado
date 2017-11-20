@@ -16,6 +16,8 @@ android:viewportHeight="24">
 */
 
 // TODO: figure out 'android:pathData' vs. 'pathData' stuff
+// TODO: create plugin that removes useless clip-paths?
+// TODO: a 'useless clip-paths' plugin would have to run before the 'empty groups' plugin
 
 import * as PROGRAM from 'commander';
 
