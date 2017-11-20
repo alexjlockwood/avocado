@@ -20,8 +20,8 @@ var js2xml_1 = require("./js2xml");
 // import * as removeEmptyContainers from './plugins/removeEmptyContainers';
 var mergePaths_1 = require("./plugins/mergePaths");
 var _plugins_1 = require("./plugins/_plugins");
-// import * as removeXMLProcInst from './plugins/removeXMLProcInst';
 var removeComments_1 = require("./plugins/removeComments");
+var removeXMLProcInst_1 = require("./plugins/removeXMLProcInst");
 var xml2js_1 = require("./xml2js");
 // import * as removeUnusedNS from './plugins/removeUnusedNS';
 // import * as sortAttrs from './plugins/sortAttrs';
@@ -42,7 +42,7 @@ var optimizedPluginsData = (function (plugins) {
     }, []);
 })([
     // The order is from https://github.com/svg/svgo/blob/master/.svgo.yml
-    // removeXMLProcInst,
+    removeXMLProcInst_1.removeXMLProcInst,
     removeComments_1.removeComments,
     // removeXMLNS,
     // cleanupAttrs,
@@ -91,7 +91,7 @@ var Avdo = /** @class */ (function () {
     Avdo.prototype.optimizeOnce = function (xml, onSuccess, onFail) {
         var options = this.options;
         xml2js_1.xml2js(xml, function (jsApi) {
-            jsApi = _plugins_1.process(jsApi, options.plugins);
+            jsApi = _plugins_1.processPlugins(jsApi, options.plugins);
             // TODO: make it possible to configure the 'pretty' option
             onSuccess(js2xml_1.js2xml(jsApi, undefined));
         }, function (error) { return onFail(error); });

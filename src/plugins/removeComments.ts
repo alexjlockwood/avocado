@@ -7,7 +7,7 @@ export type Params = undefined;
  * Remove comments.
  */
 function fn(item: JsApi) {
-  return item.comment && item.comment.charAt(0) !== '!' ? undefined : item;
+  return item.comment && item.comment.text.charAt(0) !== '!' ? undefined : item;
 }
 
 export const removeComments: Plugin<Params> = {

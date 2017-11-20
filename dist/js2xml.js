@@ -92,8 +92,11 @@ var Js2Xml = /** @class */ (function () {
                 if (item.elem) {
                     xml += this.createElem(item);
                 }
+                else if (item.processingInstruction) {
+                    xml += this.createProcInst(item.processingInstruction);
+                }
                 else if (item.comment) {
-                    xml += this.createComment(item.comment);
+                    xml += this.createComment(item.comment.text);
                 }
             }, this);
         }
@@ -114,13 +117,23 @@ var Js2Xml = /** @class */ (function () {
     };
     /**
      * Create comment tag.
-     *
      * @param {String} comment comment body
-     *
      * @return {String}
      */
     Js2Xml.prototype.createComment = function (comment) {
         return this.config.commentStart + comment + this.config.commentEnd;
+    };
+    /**
+     * Create XML Processing Instruction tag.
+     * @param {Object} instruction instruction object
+     * @return {String}
+     */
+    Js2Xml.prototype.createProcInst = function (instruction) {
+        return (this.config.procInstStart +
+            instruction.name +
+            ' ' +
+            instruction.body +
+            this.config.procInstEnd);
     };
     /**
      * Create element tag.

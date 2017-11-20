@@ -1,81 +1,63 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.type = 'full';
-exports.active = true;
-exports.description = 'removes unused namespaces declaration';
-exports.params = undefined;
 /**
- * Remove unused namespaces declaration.
- *
- * @param {Object} item current iteration item
- * @return {Boolean} if false, item will be filtered out
- *
- * @author Kir Belevich
+ * Remove unused namespaces declarations.
+ * TODO: remove namespace declarations that occur on non-root nodes?
  */
 function fn(data) {
-    var svgElem, xmlnsCollection = [];
-    /**
-     * Remove namespace from collection.
-     *
-     * @param {String} ns namescape name
-     */
-    function removeNSfromCollection(ns) {
-        var pos = xmlnsCollection.indexOf(ns);
-        // if found - remove ns from the namespaces collection
+    var svgElem;
+    var xmlnsCollection = [];
+    function removeNSfromCollection(nsName) {
+        var pos = xmlnsCollection.indexOf(nsName);
+        // If found, remove the ns from the namespaces collection.
         if (pos > -1) {
             xmlnsCollection.splice(pos, 1);
         }
     }
-    /**
-     * Bananas!
-     *
-     * @param {Array} items input items
-     *
-     * @return {Array} output items
-     */
-    function monkeys(items) {
+    data = (function recurseFn(items) {
         var i = 0;
         var length = items.content.length;
         while (i < length) {
             var item = items.content[i];
-            if (item.isElem('svg')) {
+            if (item.isElem('vector') || item.isElem('animated-vector')) {
                 item.eachAttr(function (attr) {
-                    // collect namespaces
+                    // Collect namespaces.
                     if (attr.prefix === 'xmlns' && attr.local) {
                         xmlnsCollection.push(attr.local);
                     }
                 });
-                // if svg element has ns-attr
+                // If the root element has ns-attr.
                 if (xmlnsCollection.length) {
-                    // save svg element
+                    // Save root element.
                     svgElem = item;
                 }
             }
             else if (xmlnsCollection.length) {
-                // check item for the ns-attrs
+                // Check item for the ns-attrs.
                 if (item.prefix) {
                     removeNSfromCollection(item.prefix);
                 }
-                // check each attr for the ns-attrs
-                item.eachAttr(function (attr) {
-                    removeNSfromCollection(attr.prefix);
-                });
+                // Check each attr for the ns-attrs.
+                item.eachAttr(function (attr) { return removeNSfromCollection(attr.prefix); });
             }
-            // if nothing is found - go deeper
+            // If nothing is found, go deeper.
             if (xmlnsCollection.length && item.content) {
-                monkeys(item);
+                recurseFn(item);
             }
             i++;
         }
         return items;
-    }
-    data = monkeys(data);
-    // remove svg element ns-attributes if they are not used even once
+    })(data);
+    // Remove svg element ns-attributes if they are never used.
     if (xmlnsCollection.length) {
-        xmlnsCollection.forEach(function (name) {
-            svgElem.removeAttr('xmlns:' + name);
-        });
+        xmlnsCollection.forEach(function (name) { return svgElem.removeAttr('xmlns:' + name); });
     }
     return data;
 }
-exports.fn = fn;
+exports.removeUnusedNS = {
+    type: 'full',
+    active: true,
+    description: 'removes unused namespaces declarations',
+    params: undefined,
+    fn: fn,
+};

@@ -5,32 +5,45 @@ export interface Attr {
     local: string;
 }
 export interface Options {
-    elem: string;
     content?: JsApi[];
+    parentNode?: JsApi;
+    elem?: string;
     prefix?: string;
     local?: string;
     attrs?: {
         [name: string]: Attr;
+    };
+    comment?: {
+        text: string;
+    };
+    processingInstruction?: {
+        name: string;
+        body: string;
     };
 }
-export declare class JsApi {
-    parentNode: JsApi | undefined;
+export declare class JsApi implements Options {
     content?: JsApi[];
-    elem: string;
+    parentNode?: JsApi;
+    elem?: string;
     prefix?: string;
     local?: string;
     attrs?: {
         [name: string]: Attr;
     };
-    comment?: string;
+    comment?: {
+        text: string;
+    };
+    processingInstruction?: {
+        name: string;
+        body: string;
+    };
     pathJS?: Array<{
         instruction: string;
         data?: number[];
     }>;
-    constructor(arg: string | Options, parentNode?: JsApi);
+    constructor(arg: Options);
     /**
      * Perform a deep clone of this node.
-     * @return {Object}
      */
     clone(): JsApi;
     /**
@@ -113,7 +126,7 @@ export declare class JsApi {
      * @param {Object} [context] callback context
      * @return {Boolean} false if there are no any attributes
      */
-    eachAttr(callback: Function, context: any): boolean;
+    eachAttr(callback: Function, context?: any): boolean;
     /**
      * Tests whether some attribute passes the test.
      *

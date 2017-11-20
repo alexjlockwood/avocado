@@ -6,4 +6,4 @@ import { Plugin } from './_types';
  * @param {Array} plugins plugins object from config
  * @return {Object} output data
  */
-export declare function process(item: JsApi, plugins: Plugin[][]): JsApi;
+export declare function processPlugins(item: JsApi, plugins: Plugin[][]): JsApi;

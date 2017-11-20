@@ -7,7 +7,7 @@ import { Plugin } from './_types';
  * @param {Array} plugins plugins object from config
  * @return {Object} output data
  */
-export function process(item: JsApi, plugins: Plugin[][]) {
+export function processPlugins(item: JsApi, plugins: Plugin[][]) {
   plugins.forEach(batch => {
     switch (batch[0].type) {
       case 'perItem':

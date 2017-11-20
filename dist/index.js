@@ -1,7 +1,9 @@
 "use strict";
 /*
-node bin/avdo -s \
-'<vector
+npm run build && \
+node bin/avdo --multipass -s \
+'<?xml version="1.0" encoding="utf-8"?>
+<vector
 xmlns:android="http://schemas.android.com/apk/res/android"
 android:width="24dp"
 android:height="24dp"

@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * @param {Array} plugins plugins object from config
  * @return {Object} output data
  */
-function process(item, plugins) {
+function processPlugins(item, plugins) {
     plugins.forEach(function (batch) {
         switch (batch[0].type) {
             case 'perItem':
@@ -22,7 +22,7 @@ function process(item, plugins) {
     });
     return item;
 }
-exports.process = process;
+exports.processPlugins = processPlugins;
 /**
  * Direct or reverse per-item loop.
  * @param {Object} jsApi input data

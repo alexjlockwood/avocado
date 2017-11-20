@@ -1,6 +1,6 @@
 import * as SAX from 'sax';
 
-import { JsApi } from './jsapi';
+import { JsApi, Options } from './jsapi';
 
 const saxOptions: SAX.SAXOptions = {
   trim: false,
@@ -25,8 +25,8 @@ export function xml2js(
   const stack = [root];
   let parsingError = false;
 
-  function pushToContent(content) {
-    const newContent = new JsApi(content, current);
+  function pushToContent(options: Options) {
+    const newContent = new JsApi({ parentNode: current, ...options });
     (current.content = current.content || []).push(newContent);
     return newContent;
   }
@@ -54,8 +54,11 @@ export function xml2js(
   };
 
   sax.oncomment = function(comment) {
-    comment = comment.trim();
-    pushToContent({ comment });
+    pushToContent({ comment: { text: comment.trim() } });
+  };
+
+  sax.onprocessinginstruction = function(processingInstruction) {
+    pushToContent({ processingInstruction });
   };
 
   sax.onerror = function(error) {

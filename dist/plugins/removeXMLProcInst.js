@@ -1,21 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.type = 'perItem';
-exports.active = true;
-exports.description = 'removes XML processing instructions';
-exports.params = undefined;
 /**
- * Remove XML Processing Instruction.
- *
- * @example
- * <?xml version="1.0" encoding="utf-8"?>
- *
- * @param {Object} item current iteration item
- * @return {Boolean} if false, item will be filtered out
- *
- * @author Kir Belevich
+ * Removes XML processing instructions. (<?xml version="1.0" encoding="utf-8"?>)
  */
 function fn(item) {
-    return !(item.processinginstruction && item.processinginstruction.name === 'xml');
+    return item.processingInstruction && item.processingInstruction.name === 'xml'
+        ? undefined
+        : item;
 }
-exports.fn = fn;
+exports.removeXMLProcInst = {
+    type: 'perItem',
+    active: true,
+    description: 'removes XML processing instructions',
+    params: undefined,
+    fn: fn,
+};

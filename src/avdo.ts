@@ -19,9 +19,9 @@ import { js2xml } from './js2xml';
 // import * as removeEmptyAttrs from './plugins/removeEmptyAttrs';
 // import * as removeEmptyContainers from './plugins/removeEmptyContainers';
 import { mergePaths } from './plugins/mergePaths';
-import { process } from './plugins/_plugins';
-// import * as removeXMLProcInst from './plugins/removeXMLProcInst';
+import { processPlugins } from './plugins/_plugins';
 import { removeComments } from './plugins/removeComments';
+import { removeXMLProcInst } from './plugins/removeXMLProcInst';
 import { xml2js } from './xml2js';
 
 // import * as removeUnusedNS from './plugins/removeUnusedNS';
@@ -46,7 +46,7 @@ const optimizedPluginsData = (function(plugins: Plugin[]) {
   );
 })([
   // The order is from https://github.com/svg/svgo/blob/master/.svgo.yml
-  // removeXMLProcInst,
+  removeXMLProcInst,
   removeComments,
   // removeXMLNS,
   // cleanupAttrs,
@@ -109,7 +109,7 @@ export class Avdo {
     xml2js(
       xml,
       jsApi => {
-        jsApi = process(jsApi, options.plugins);
+        jsApi = processPlugins(jsApi, options.plugins);
         // TODO: make it possible to configure the 'pretty' option
         onSuccess(js2xml(jsApi, undefined));
       },

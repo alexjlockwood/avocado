@@ -6,49 +6,57 @@ export interface Attr {
 }
 
 export interface Options {
-  elem: string;
   content?: JsApi[];
+  parentNode?: JsApi;
+  elem?: string;
   prefix?: string;
   local?: string;
   attrs?: { [name: string]: Attr };
+  comment?: { text: string };
+  processingInstruction?: { name: string; body: string };
 }
 
-export class JsApi {
-  parentNode: JsApi | undefined;
+export class JsApi implements Options {
   content?: JsApi[];
-  elem: string;
+  parentNode?: JsApi;
+  elem?: string;
   prefix?: string;
   local?: string;
   attrs?: { [name: string]: Attr };
-  comment?: string;
+  comment?: { text: string };
+  processingInstruction?: { name: string; body: string };
 
   // TODO: avoid this caching hackery
   pathJS?: Array<{ instruction: string; data?: number[] }>;
 
-  constructor(arg: string | Options, parentNode?: JsApi) {
-    if (typeof arg === 'string') {
-      this.comment = arg;
-    } else {
-      this.elem = arg.elem;
-      this.content = arg.content;
-      this.prefix = arg.prefix;
-      this.local = arg.local;
-      this.attrs = arg.attrs;
-      this.parentNode = parentNode;
-    }
+  constructor(arg: Options) {
+    this.content = arg.content;
+    this.parentNode = arg.parentNode;
+    this.elem = arg.elem;
+    this.prefix = arg.prefix;
+    this.local = arg.local;
+    this.attrs = arg.attrs;
+    this.comment = arg.comment;
+    this.processingInstruction = arg.processingInstruction;
   }
 
   /**
    * Perform a deep clone of this node.
-   * @return {Object}
    */
   clone() {
     // Deep-clone node data.
-    const { elem, prefix, local, attrs, comment, pathJS } = this;
     const nodeData = JSON.parse(
-      JSON.stringify({ elem, prefix, local, attrs, comment, pathJS }),
+      JSON.stringify({
+        elem: this.elem,
+        prefix: this.prefix,
+        local: this.local,
+        attrs: this.attrs,
+        comment: this.comment,
+        processingInstruction: this.processingInstruction,
+        pathJS: this.pathJS,
+      }),
     );
-    const clonedNode = new JsApi(nodeData, this.parentNode);
+    const clonedNode = new JsApi({ ...nodeData, parentNode: this.parentNode });
     if (this.content) {
       clonedNode.content = this.content.map(childNode => {
         const clonedChild = childNode.clone();
@@ -293,7 +301,7 @@ export class JsApi {
    * @param {Object} [context] callback context
    * @return {Boolean} false if there are no any attributes
    */
-  eachAttr(callback: Function, context) {
+  eachAttr(callback: Function, context?: any) {
     if (!this.hasAttr()) {
       return false;
     }
@@ -310,7 +318,7 @@ export class JsApi {
    * @param {Object} [context] callback context
    * @return {Boolean} false if there are no any attributes
    */
-  someAttr(callback: Function, context?) {
+  someAttr(callback: Function, context?: any) {
     if (!this.hasAttr()) {
       return false;
     }

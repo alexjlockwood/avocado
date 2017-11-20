@@ -1,28 +1,39 @@
 "use strict";
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var JsApi = /** @class */ (function () {
-    function JsApi(arg, parentNode) {
-        if (typeof arg === 'string') {
-            this.comment = arg;
-        }
-        else {
-            this.elem = arg.elem;
-            this.content = arg.content;
-            this.prefix = arg.prefix;
-            this.local = arg.local;
-            this.attrs = arg.attrs;
-            this.parentNode = parentNode;
-        }
+    function JsApi(arg) {
+        this.content = arg.content;
+        this.parentNode = arg.parentNode;
+        this.elem = arg.elem;
+        this.prefix = arg.prefix;
+        this.local = arg.local;
+        this.attrs = arg.attrs;
+        this.comment = arg.comment;
+        this.processingInstruction = arg.processingInstruction;
     }
     /**
      * Perform a deep clone of this node.
-     * @return {Object}
      */
     JsApi.prototype.clone = function () {
         // Deep-clone node data.
-        var _a = this, elem = _a.elem, prefix = _a.prefix, local = _a.local, attrs = _a.attrs, comment = _a.comment, pathJS = _a.pathJS;
-        var nodeData = JSON.parse(JSON.stringify({ elem: elem, prefix: prefix, local: local, attrs: attrs, comment: comment, pathJS: pathJS }));
-        var clonedNode = new JsApi(nodeData, this.parentNode);
+        var nodeData = JSON.parse(JSON.stringify({
+            elem: this.elem,
+            prefix: this.prefix,
+            local: this.local,
+            attrs: this.attrs,
+            comment: this.comment,
+            processingInstruction: this.processingInstruction,
+            pathJS: this.pathJS,
+        }));
+        var clonedNode = new JsApi(__assign({}, nodeData, { parentNode: this.parentNode }));
         if (this.content) {
             clonedNode.content = this.content.map(function (childNode) {
                 var clonedChild = childNode.clone();

@@ -83,11 +83,13 @@ class Js2Xml {
     let xml = '';
     if (data.content) {
       this.indentLevel++;
-      data.content.forEach(function(item) {
+      data.content.forEach(function(this: Js2Xml, item) {
         if (item.elem) {
           xml += this.createElem(item);
+        } else if (item.processingInstruction) {
+          xml += this.createProcInst(item.processingInstruction);
         } else if (item.comment) {
-          xml += this.createComment(item.comment);
+          xml += this.createComment(item.comment.text);
         }
       }, this);
     }
@@ -110,13 +112,26 @@ class Js2Xml {
 
   /**
    * Create comment tag.
-   *
    * @param {String} comment comment body
-   *
    * @return {String}
    */
   private createComment(comment: string) {
     return this.config.commentStart + comment + this.config.commentEnd;
+  }
+
+  /**
+   * Create XML Processing Instruction tag.
+   * @param {Object} instruction instruction object
+   * @return {String}
+   */
+  private createProcInst(instruction: { name: string; body: string }) {
+    return (
+      this.config.procInstStart +
+      instruction.name +
+      ' ' +
+      instruction.body +
+      this.config.procInstEnd
+    );
   }
 
   /**
