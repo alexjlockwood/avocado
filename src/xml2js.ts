@@ -1,4 +1,5 @@
 import * as SAX from 'sax';
+
 import { JsApi } from './jsapi';
 
 const saxOptions: SAX.SAXOptions = {
