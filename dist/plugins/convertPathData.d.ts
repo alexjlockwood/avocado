@@ -1,7 +1,5 @@
-export declare const type = "perItem";
-export declare const active: boolean;
-export declare const description = "optimizes path data: writes in shorter form, applies transformations";
-export declare const params: {
+import { Plugin } from './_types';
+export declare const defaultParams: {
     applyTransforms: boolean;
     applyTransformsStroked: boolean;
     makeArcs: {
@@ -19,20 +17,5 @@ export declare const params: {
     leadingZero: boolean;
     negativeExtraSpace: boolean;
 };
-/**
- * Convert absolute Path to relative,
- * collapse repeated instructions,
- * detect and convert Lineto shorthands,
- * remove useless instructions like "l0,0",
- * trim useless delimiters and leading zeros,
- * decrease accuracy of floating-point numbers.
- *
- * @see http://www.w3.org/TR/SVG/paths.html#PathData
- *
- * @param {Object} item current iteration item
- * @param {Object} params plugin params
- * @return {Boolean} if false, item will be filtered out
- *
- * @author Kir Belevich
- */
-export declare function fn(item: any, params: any): void;
+export declare type Params = typeof defaultParams;
+export declare const convertPathData: Plugin<Params>;

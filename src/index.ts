@@ -19,7 +19,7 @@ node bin/avdo --multipass -s \
       <group android:rotation="90">
         <!-- Useless empty group. -->
         <group></group>
-        <path d="M 1000 1000 L 2000 2000 L 3000 3000"></path>
+        <path android:pathData="M 1000 1000 L 2000 2000 L 3000 3000"></path>
       </group>
     </group>
   </group>

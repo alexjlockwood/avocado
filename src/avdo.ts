@@ -1,6 +1,7 @@
 import { JsApi } from './jsapi';
 import { Plugin } from './plugins/_types';
 import { collapseGroups } from './plugins/collapseGroups';
+import { convertPathData } from './plugins/convertPathData';
 import { js2xml } from './js2xml';
 import { mergePaths } from './plugins/mergePaths';
 import { processPlugins } from './plugins/_plugins';
@@ -16,7 +17,6 @@ import { xml2js } from './xml2js';
 // import * as removeUnknownsAndDefaults from './plugins/removeUnknownsAndDefaults';
 // import * as removeUselessStrokeAndFill from './plugins/removeUselessStrokeAndFill';
 // import * as removeHiddenElems from './plugins/removeHiddenElems';
-// import * as convertPathData from './plugins/convertPathData';
 // import * as convertTransform from './plugins/convertTransform';
 // import * as removeUnusedNS from './plugins/removeUnusedNS';
 // import * as sortAttrs from './plugins/sortAttrs';
@@ -47,7 +47,7 @@ const optimizedPluginsData = (function(plugins: Plugin[]) {
   // removeUselessStrokeAndFill,
   // removeHiddenElems,
   collapseGroups,
-  // convertPathData,
+  convertPathData,
   // convertTransform,
   removeEmptyGroups,
   mergePaths,

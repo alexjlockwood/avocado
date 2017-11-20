@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var collapseGroups_1 = require("./plugins/collapseGroups");
+var convertPathData_1 = require("./plugins/convertPathData");
 var js2xml_1 = require("./js2xml");
 var mergePaths_1 = require("./plugins/mergePaths");
 var _plugins_1 = require("./plugins/_plugins");
@@ -15,7 +16,6 @@ var xml2js_1 = require("./xml2js");
 // import * as removeUnknownsAndDefaults from './plugins/removeUnknownsAndDefaults';
 // import * as removeUselessStrokeAndFill from './plugins/removeUselessStrokeAndFill';
 // import * as removeHiddenElems from './plugins/removeHiddenElems';
-// import * as convertPathData from './plugins/convertPathData';
 // import * as convertTransform from './plugins/convertTransform';
 // import * as removeUnusedNS from './plugins/removeUnusedNS';
 // import * as sortAttrs from './plugins/sortAttrs';
@@ -43,7 +43,7 @@ var optimizedPluginsData = (function (plugins) {
     // removeUselessStrokeAndFill,
     // removeHiddenElems,
     collapseGroups_1.collapseGroups,
-    // convertPathData,
+    convertPathData_1.convertPathData,
     // convertTransform,
     removeEmptyGroups_1.removeEmptyGroups,
     mergePaths_1.mergePaths,
