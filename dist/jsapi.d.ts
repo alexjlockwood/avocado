@@ -1,22 +1,32 @@
+export interface Attr {
+    name: string;
+    value: string;
+    prefix: string;
+    local: string;
+}
+export interface Options {
+    elem: string;
+    content?: JsApi[];
+    prefix?: string;
+    local?: string;
+    attrs?: {
+        [name: string]: Attr;
+    };
+}
 export declare class JsApi {
     parentNode: JsApi | undefined;
     content?: JsApi[];
     elem: string;
     prefix?: string;
     local?: string;
-    attrs?: any;
-    constructor(data: {
-        elem: string;
-        content?: JsApi[];
-        prefix?: string;
-        local?: string;
-        attrs?: {
-            [key: string]: any;
-        };
-    }, parentNode?: JsApi);
+    attrs?: {
+        [name: string]: Attr;
+    };
+    comment?: string;
+    constructor(arg: string | Options, parentNode?: JsApi);
     /**
      * Perform a deep clone of this node.
-     * @return {Object} element
+     * @return {Object}
      */
     clone(): JsApi;
     /**
@@ -39,7 +49,7 @@ export declare class JsApi {
     /**
      * Find the closest ancestor of the current element.
      * @param elemName
-     * @return {?Object}
+     * @return {Object}
      */
     closestElem(elemName: string): JsApi;
     /**
@@ -72,26 +82,26 @@ export declare class JsApi {
      * @param {String} [val] attribute value (will be toString()'ed)
      * @return {Object|Undefined}
      */
-    attr(name: string, val?: string): any;
+    attr(name: string, val?: string): Attr;
     /**
      * Get computed attribute value from an element.
      * @param {String} name attribute name
      * @return {Object|Undefined}
      */
-    computedAttr(name: string, val: any): any;
+    computedAttr(name: string, val?: any): string | boolean;
     /**
      * Remove a specific attribute.
      * @param {String|Array} name attribute name
      * @param {String} [val] attribute value
      * @return {Boolean}
      */
-    removeAttr(name: any, val: any, recursive?: boolean): boolean;
+    removeAttr(name: any): boolean;
     /**
      * Add attribute.
      * @param {Object} [attr={}] attribute object
      * @return {Object|Boolean} created attribute or false if no attr was passed in
      */
-    addAttr(attr: any): any;
+    addAttr(attr: any): false | Attr;
     /**
      * Iterates over all attributes.
      *

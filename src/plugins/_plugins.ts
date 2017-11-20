@@ -1,79 +1,70 @@
 import { Plugin } from './_types';
+import { JsApi } from '../jsapi';
 
 /**
  * Plugins engine.
- *
- * @module plugins
- *
  * @param {Object} data input data
- * @param {Object} info extra information
- * @param {Object} plugins plugins object from config
+ * @param {Array} plugins plugins object from config
  * @return {Object} output data
  */
-export function process(data, info, plugins?: Plugin[][]) {
-  plugins.forEach(function(group) {
-    switch (group[0].type) {
+export function process(item: JsApi, plugins: Plugin[][]) {
+  plugins.forEach(batch => {
+    switch (batch[0].type) {
       case 'perItem':
-        data = perItem(data, info, group);
+        item = perItem(item, batch);
         break;
       case 'perItemReverse':
-        data = perItem(data, info, group, true);
+        item = perItem(item, batch, true);
         break;
       case 'full':
-        data = full(data, info, group);
+        item = full(item, batch);
         break;
     }
   });
-  return data;
+  return item;
 }
 
 /**
  * Direct or reverse per-item loop.
- *
- * @param {Object} data input data
- * @param {Object} info extra information
+ * @param {Object} jsApi input data
  * @param {Array} plugins plugins list to process
- * @param {Boolean} [reverse] reverse pass?
+ * @param {Boolean} [reverse] reverse pass
  * @return {Object} output data
  */
-function perItem(data, info, plugins: Plugin[], reverse?: boolean) {
-  return (function monkeys(items) {
-    items.content = items.content.filter(function(item) {
+function perItem(jsApi: JsApi, plugins: Plugin[], reverse = false) {
+  return (function monkeys(item) {
+    item.content = item.content.filter(i => {
       // Reverse pass.
-      if (reverse && item.content) {
-        monkeys(item);
+      if (reverse && i.content) {
+        monkeys(i);
       }
       // Main filter.
       let filter = true;
-      for (let i = 0; filter && i < plugins.length; i++) {
-        const plugin = plugins[i];
-        if (plugin.active && plugin.fn(item, plugin.params, info) === false) {
+      for (let j = 0; filter && j < plugins.length; j++) {
+        const { active, params, fn } = plugins[j];
+        if (active && !fn(i, params)) {
           filter = false;
         }
       }
       // Direct pass.
-      if (!reverse && item.content) {
-        monkeys(item);
+      if (!reverse && i.content) {
+        monkeys(i);
       }
       return filter;
     });
-    return items;
-  })(data);
+    return item;
+  })(jsApi);
 }
 
 /**
- * "Full" plugins.
- *
- * @param {Object} data input data
- * @param {Object} info extra information
+ * Full plugins.
+ * @param {Object} item input data
  * @param {Array} plugins plugins list to process
  * @return {Object} output data
  */
-function full(data, info, plugins?: Plugin[]) {
-  plugins.forEach(function(plugin) {
-    if (plugin.active) {
-      data = plugin.fn(data, plugin.params, info);
-    }
+function full(item: JsApi, plugins: Plugin[]) {
+  plugins.forEach(({ active, params, fn }) => {
+    item = active ? fn(item, params) : item;
   });
-  return data;
+  return item;
 }

@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var regTransformTypes = /matrix|translate|scale|rotate|skewX|skewY/, regTransformSplit = /\s*(matrix|translate|scale|rotate|skewX|skewY)\s*\(\s*(.+?)\s*\)[\s,]*/, regNumericValues = /[-+]?(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?/g;
+var regTransformTypes = /matrix|translate|scale|rotate|skewX|skewY/;
+var regTransformSplit = /\s*(matrix|translate|scale|rotate|skewX|skewY)\s*\(\s*(.+?)\s*\)[\s,]*/;
+var regNumericValues = /[-+]?(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?/g;
 /**
  * Convert transform string to JS representation.
  *
@@ -10,12 +12,11 @@ var regTransformTypes = /matrix|translate|scale|rotate|skewX|skewY/, regTransfor
  */
 function transform2js(transformString) {
     // JS representation of the transform data
-    var transforms = [], 
+    var transforms = [];
     // current transform context
-    current;
+    var current;
     // split value into ['', 'translate', '10 50', '', 'scale', '2', '', 'rotate', '-45', '']
     transformString.split(regTransformSplit).forEach(function (item) {
-        /*jshint -W084 */
         var num;
         if (item) {
             // if item is a translate function
@@ -28,10 +29,12 @@ function transform2js(transformString) {
                 // then split it into [10, 50] and collect as context.data
                 while ((num = regNumericValues.exec(item))) {
                     num = Number(num);
-                    if (current.data)
+                    if (current.data) {
                         current.data.push(num);
-                    else
+                    }
+                    else {
                         current.data = [num];
+                    }
                 }
             }
         }
@@ -64,7 +67,7 @@ function transformsMultiply(transforms) {
 }
 exports.transformsMultiply = transformsMultiply;
 /**
- * Do math like a schoolgirl.
+ * Do math like a school girl.
  *
  * @type {Object}
  */
@@ -102,7 +105,14 @@ exports.mth = {
  * @return {Object|Array} transforms array or original transform object
  */
 function matrixToTransform(transform, params) {
-    var floatPrecision = params.floatPrecision, data = transform.data, transforms = [], sx = +Math.sqrt(data[0] * data[0] + data[1] * data[1]).toFixed(params.transformPrecision), sy = +((data[0] * data[3] - data[1] * data[2]) / sx).toFixed(params.transformPrecision), colsSum = data[0] * data[2] + data[1] * data[3], rowsSum = data[0] * data[1] + data[2] * data[3], scaleBefore = rowsSum || +(sx == sy);
+    var floatPrecision = params.floatPrecision;
+    var data = transform.data;
+    var transforms = [];
+    var sx = +Math.sqrt(data[0] * data[0] + data[1] * data[1]).toFixed(params.transformPrecision);
+    var sy = +((data[0] * data[3] - data[1] * data[2]) / sx).toFixed(params.transformPrecision);
+    var colsSum = data[0] * data[2] + data[1] * data[3];
+    var rowsSum = data[0] * data[1] + data[2] * data[3];
+    var scaleBefore = rowsSum || +(sx == sy);
     // [..., ..., ..., ..., tx, ty] → translate(tx, ty)
     if (data[4] || data[5]) {
         transforms.push({
@@ -141,17 +151,23 @@ function matrixToTransform(transform, params) {
         var rotate = [
             exports.mth.acos(data[0] / sx, floatPrecision) * (data[1] * sy < 0 ? -1 : 1),
         ];
-        if (rotate[0])
+        if (rotate[0]) {
             transforms.push({ name: 'rotate', data: rotate });
-        if (rowsSum && colsSum)
+        }
+        if (rowsSum && colsSum) {
             transforms.push({
                 name: 'skewX',
                 data: [exports.mth.atan(colsSum / (sx * sx), floatPrecision)],
             });
+        }
         // rotate(a, cx, cy) can consume translate() within optional arguments cx, cy (rotation point)
         if (rotate[0] && (data[4] || data[5])) {
             transforms.shift();
-            var cos = data[0] / sx, sin = data[1] / (scaleBefore ? sx : sy), x = data[4] * (scaleBefore || sy), y = data[5] * (scaleBefore || sx), denom = (Math.pow(1 - cos, 2) + Math.pow(sin, 2)) * (scaleBefore || sx * sy);
+            var cos = data[0] / sx;
+            var sin = data[1] / (scaleBefore ? sx : sy);
+            var x = data[4] * (scaleBefore || sy);
+            var y = data[5] * (scaleBefore || sx);
+            var denom = (Math.pow(1 - cos, 2) + Math.pow(sin, 2)) * (scaleBefore || sx * sy);
             rotate.push(((1 - cos) * x - sin * y) / denom);
             rotate.push(((1 - cos) * y + sin * x) / denom);
         }
@@ -160,11 +176,12 @@ function matrixToTransform(transform, params) {
     else if (data[1] || data[2]) {
         return transform;
     }
-    if ((scaleBefore && (sx != 1 || sy != 1)) || !transforms.length)
+    if ((scaleBefore && (sx != 1 || sy != 1)) || !transforms.length) {
         transforms.push({
             name: 'scale',
             data: sx == sy ? [sx] : [sx, sy],
         });
+    }
     return transforms;
 }
 exports.matrixToTransform = matrixToTransform;
@@ -175,8 +192,9 @@ exports.matrixToTransform = matrixToTransform;
  * @return {Array} matrix data
  */
 function transformToMatrix(transform) {
-    if (transform.name === 'matrix')
+    if (transform.name === 'matrix') {
         return transform.data;
+    }
     var matrix;
     switch (transform.name) {
         case 'translate':
@@ -196,7 +214,10 @@ function transformToMatrix(transform) {
             break;
         case 'rotate':
             // [cos(a), sin(a), -sin(a), cos(a), x, y]
-            var cos = exports.mth.cos(transform.data[0]), sin = exports.mth.sin(transform.data[0]), cx = transform.data[1] || 0, cy = transform.data[2] || 0;
+            var cos = exports.mth.cos(transform.data[0]);
+            var sin = exports.mth.sin(transform.data[0]);
+            var cx = transform.data[1] || 0;
+            var cy = transform.data[2] || 0;
             matrix = [
                 cos,
                 sin,
@@ -228,16 +249,24 @@ function transformToMatrix(transform) {
  * @return {Array} arc transformed input arc
  */
 function transformArc(arc, transform) {
-    var a = arc[0], b = arc[1], rot = arc[2] * Math.PI / 180, cos = Math.cos(rot), sin = Math.sin(rot), h = Math.pow(arc[5] * cos + arc[6] * sin, 2) / (4 * a * a) +
+    var a = arc[0];
+    var b = arc[1];
+    var rot = arc[2] * Math.PI / 180;
+    var cos = Math.cos(rot);
+    var sin = Math.sin(rot);
+    var h = Math.pow(arc[5] * cos + arc[6] * sin, 2) / (4 * a * a) +
         Math.pow(arc[6] * cos - arc[5] * sin, 2) / (4 * b * b);
     if (h > 1) {
         h = Math.sqrt(h);
         a *= h;
         b *= h;
     }
-    var ellipse = [a * cos, a * sin, -b * sin, b * cos, 0, 0], m = multiplyTransformMatrices(transform, ellipse), 
+    var ellipse = [a * cos, a * sin, -b * sin, b * cos, 0, 0];
+    var m = multiplyTransformMatrices(transform, ellipse);
     // Decompose the new ellipse matrix
-    lastCol = m[2] * m[2] + m[3] * m[3], squareSum = m[0] * m[0] + m[1] * m[1] + lastCol, root = Math.sqrt((Math.pow(m[0] - m[3], 2) + Math.pow(m[1] + m[2], 2)) *
+    var lastCol = m[2] * m[2] + m[3] * m[3];
+    var squareSum = m[0] * m[0] + m[1] * m[1] + lastCol;
+    var root = Math.sqrt((Math.pow(m[0] - m[3], 2) + Math.pow(m[1] + m[2], 2)) *
         (Math.pow(m[0] + m[3], 2) + Math.pow(m[1] - m[2], 2)));
     if (!root) {
         // circle
@@ -245,7 +274,13 @@ function transformArc(arc, transform) {
         arc[2] = 0;
     }
     else {
-        var majorAxisSqr = (squareSum + root) / 2, minorAxisSqr = (squareSum - root) / 2, major = Math.abs(majorAxisSqr - lastCol) > 1e-6, sub = (major ? majorAxisSqr : minorAxisSqr) - lastCol, rowsSum = m[0] * m[2] + m[1] * m[3], term1 = m[0] * sub + m[2] * rowsSum, term2 = m[1] * sub + m[3] * rowsSum;
+        var majorAxisSqr = (squareSum + root) / 2;
+        var minorAxisSqr = (squareSum - root) / 2;
+        var major = Math.abs(majorAxisSqr - lastCol) > 1e-6;
+        var sub = (major ? majorAxisSqr : minorAxisSqr) - lastCol;
+        var rowsSum = m[0] * m[2] + m[1] * m[3];
+        var term1 = m[0] * sub + m[2] * rowsSum;
+        var term2 = m[1] * sub + m[3] * rowsSum;
         arc[0] = Math.sqrt(majorAxisSqr);
         arc[1] = Math.sqrt(minorAxisSqr);
         arc[2] =

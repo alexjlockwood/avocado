@@ -1,26 +1,27 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var JsApi = /** @class */ (function () {
-    function JsApi(data, parentNode) {
-        this.elem = data.elem;
-        this.content = data.content;
-        this.prefix = data.prefix;
-        this.local = data.local;
-        this.attrs = data.attrs;
+    function JsApi(arg, parentNode) {
+        if (typeof arg === 'string') {
+            this.comment = arg;
+        }
+        else {
+            this.elem = arg.elem;
+            this.content = arg.content;
+            this.prefix = arg.prefix;
+            this.local = arg.local;
+            this.attrs = arg.attrs;
+        }
         this.parentNode = parentNode;
     }
     /**
      * Perform a deep clone of this node.
-     * @return {Object} element
+     * @return {Object}
      */
     JsApi.prototype.clone = function () {
-        // Deep-clone node data
-        var nodeData = JSON.parse(JSON.stringify({
-            elem: this.elem,
-            prefix: this.prefix,
-            local: this.local,
-            attrs: this.attrs,
-        }));
+        // Deep-clone node data.
+        var _a = this, elem = _a.elem, prefix = _a.prefix, local = _a.local, attrs = _a.attrs;
+        var nodeData = JSON.parse(JSON.stringify({ elem: elem, prefix: prefix, local: local, attrs: attrs }));
         var clonedNode = new JsApi(nodeData, this.parentNode);
         if (this.content) {
             clonedNode.content = this.content.map(function (childNode) {
@@ -66,7 +67,7 @@ var JsApi = /** @class */ (function () {
     /**
      * Find the closest ancestor of the current element.
      * @param elemName
-     * @return {?Object}
+     * @return {Object}
      */
     JsApi.prototype.closestElem = function (elemName) {
         var node = this;
@@ -85,7 +86,7 @@ var JsApi = /** @class */ (function () {
             return [];
         }
         if (!Array.isArray(insertion)) {
-            insertion = Array.apply(null, arguments).slice(2);
+            insertion = Array.apply(undefined, arguments).slice(2);
         }
         insertion.forEach(function (inner) {
             inner.parentNode = this;
@@ -202,19 +203,14 @@ var JsApi = /** @class */ (function () {
      * @param {String} [val] attribute value
      * @return {Boolean}
      */
-    JsApi.prototype.removeAttr = function (name, val, recursive) {
+    JsApi.prototype.removeAttr = function (name) {
         if (!arguments.length) {
             return false;
         }
         if (Array.isArray(name)) {
-            // TODO: figure out how this is supposed to work...
-            // @ts-ignore
             name.forEach(this.removeAttr, this);
         }
         if (!this.hasAttr(name)) {
-            return false;
-        }
-        if (!recursive && val && this.attrs[name].value !== val) {
             return false;
         }
         delete this.attrs[name];

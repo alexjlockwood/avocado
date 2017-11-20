@@ -14,7 +14,7 @@ export declare function transform2js(transformString: any): any[];
  */
 export declare function transformsMultiply(transforms: any): any;
 /**
- * Do math like a schoolgirl.
+ * Do math like a school girl.
  *
  * @type {Object}
  */

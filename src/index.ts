@@ -12,7 +12,7 @@ const writeFile = promisify(FS.writeFile);
 import { xml2js } from './xml2js';
 import { js2xml } from './js2xml';
 
-function execute() {
+export function execute() {
   PROGRAM.version(PKG.version)
     .arguments('[files...]')
     .option('-s, --string <string>', 'input VD or AVD string')
@@ -21,17 +21,16 @@ function execute() {
   if (PROGRAM.string) {
     // const parser = new DOMParser();
     // const doc = parser.parseFromString(PROGRAM.string, 'application/xml');
-    xml2js(
-      PROGRAM.string,
-      jsApi => {
-        console.log(jsApi.content);
-        console.log('=====');
-        console.log(js2xml(jsApi, undefined).data);
-      },
-      // TODO: handle error case
-      error => {},
-    );
-
+    // xml2js(
+    //   PROGRAM.string,
+    //   jsApi => {
+    //     // console.log(jsApi.content);
+    //     // console.log('=====');
+    //     console.log(js2xml(jsApi));
+    //   },
+    //   // TODO: handle error case
+    //   error => {},
+    // );
     // TODO: run in parallel with other args below?
     // TODO: handle rejected case like SVGO
     new Avdo().optimize(PROGRAM.string).then(res => console.log(res));
@@ -44,40 +43,39 @@ function execute() {
     readFile(file, 'utf8').then(
       data =>
         processSVGData(
-          undefined, // config,
-          { input: 'file', path: file },
           data,
-          '-', // output,
+          '-', // TODO: use output option instead
           file,
+          undefined, // TODO: use options arg instead,
         ),
       // error => checkOptimizeFileError(config, file, output, error),
     );
   });
-  console.log(PROGRAM.args);
+  // console.log(PROGRAM.args);
 }
 
 /**
  * Optimize SVG data.
- * @param {Object} config options
  * @param {string} data SVG content to optimize
  * @param {string} output where to write optimized file
  * @param {string} [input] input file name (being used if output is a directory)
+ * @param {Object} [options] options
  * @return {Promise}
  */
-function processSVGData(config, info, data, output, input) {
-  var startTime = Date.now(),
-    prevFileSize = Buffer.byteLength(data, 'utf8');
-
-  return new Avdo().optimize(data, info).then(function(result) {
-    // if (config.datauri) {
-    //   result.data = encodeSVGDatauri(result.data, config.datauri);
-    // }
-    var resultFileSize = Buffer.byteLength(result.data, 'utf8'),
-      processingTime = Date.now() - startTime;
-
-    return writeOutput(input, output, result.data).then(
-      function() {
-        if (/*!config.quiet &&*/ output != '-') {
+function processSVGData(
+  data: string,
+  output: string,
+  input: string,
+  options?: { quiet: boolean },
+) {
+  const startTime = Date.now();
+  const prevFileSize = Buffer.byteLength(data, 'utf8');
+  return new Avdo().optimize(data).then(result => {
+    const resultFileSize = Buffer.byteLength(result, 'utf8');
+    const processingTime = Date.now() - startTime;
+    return writeOutput(input, output, result).then(
+      () => {
+        if (options && !options.quiet && output !== '-') {
           if (input) {
             console.log(`\n${PATH.basename(input)}:`);
           }
@@ -101,7 +99,7 @@ function processSVGData(config, info, data, output, input) {
  * Write a time taken by optimization.
  * @param {number} time time in milliseconds.
  */
-function printTimeInfo(time) {
+function printTimeInfo(time: number) {
   console.log(`Done in ${time} ms!`);
 }
 
@@ -110,7 +108,7 @@ function printTimeInfo(time) {
  * @param {number} inBytes size before optimization.
  * @param {number} outBytes size after optimization.
  */
-function printProfitInfo(inBytes, outBytes) {
+function printProfitInfo(inBytes: number, outBytes: number) {
   // var profitPercents = 100 - outBytes * 100 / inBytes;
 
   // console.log(
@@ -132,8 +130,8 @@ function printProfitInfo(inBytes, outBytes) {
  * @param {string} data data to write
  * @return {Promise}
  */
-function writeOutput(input, output, data) {
-  if (output == '-') {
+function writeOutput(input: string, output: string, data: string) {
+  if (output === '-') {
     console.log(data);
     return Promise.resolve();
   }
@@ -150,12 +148,15 @@ function writeOutput(input, output, data) {
  * @param {Error} error
  * @return {Promise}
  */
-function checkWriteFileError(input, output, data, error) {
-  if (error.code == 'EISDIR' && input) {
+function checkWriteFileError(
+  input: string,
+  output: string,
+  data: string,
+  error: any,
+) {
+  if (error.code === 'EISDIR' && input) {
     return writeFile(PATH.resolve(output, PATH.basename(input)), data, 'utf8');
   } else {
     return Promise.reject(error);
   }
 }
-
-module.exports = { execute };

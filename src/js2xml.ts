@@ -1,3 +1,4 @@
+import { JsApi } from './jsapi';
 import OS = require('os');
 
 const EOL = OS.EOL;
@@ -43,15 +44,13 @@ const defaults = {
  * @param {Object} config config
  * @return {Object} output data
  */
-export function js2xml(data, config) {
+export function js2xml(data: JsApi, config?: any) {
   return new Js2Xml(config).convert(data);
 }
 
 class Js2Xml {
-  config: any;
-  indentLevel: number;
-  width?: any;
-  height?: any;
+  private readonly config: any;
+  private indentLevel = 0;
 
   constructor(config) {
     if (config) {
@@ -75,42 +74,27 @@ class Js2Xml {
       this.config.tagCloseEnd += EOL;
       this.config.textEnd += EOL;
     }
-    this.indentLevel = 0;
   }
 
   /**
    * Start conversion.
-   *
    * @param {Object} data input data
-   *
    * @return {String}
    */
-  convert(data) {
-    let svg = '';
+  convert(data: JsApi) {
+    let xml = '';
     if (data.content) {
       this.indentLevel++;
-      data.content.forEach(item => {
+      data.content.forEach(function(item) {
         if (item.elem) {
-          svg += this.createElem(item);
-        } else if (item.doctype) {
-          svg += this.createDoctype(item.doctype);
-        } else if (item.processinginstruction) {
-          svg += this.createProcInst(item.processinginstruction);
+          xml += this.createElem(item);
         } else if (item.comment) {
-          svg += this.createComment(item.comment);
-        } else if (item.cdata) {
-          svg += this.createCDATA(item.cdata);
+          xml += this.createComment(item.comment);
         }
       }, this);
     }
     this.indentLevel--;
-    return {
-      data: svg,
-      info: {
-        width: this.width,
-        height: this.height,
-      },
-    };
+    return xml;
   }
 
   /**
@@ -118,40 +102,12 @@ class Js2Xml {
    *
    * @return {String}
    */
-  createIndent() {
+  private createIndent() {
     let indent = '';
     if (this.config.pretty) {
       indent = this.config.indent.repeat(this.indentLevel - 1);
     }
     return indent;
-  }
-
-  /**
-   * Create doctype tag.
-   *
-   * @param {String} doctype doctype body string
-   *
-   * @return {String}
-   */
-  createDoctype(doctype) {
-    return this.config.doctypeStart + doctype + this.config.doctypeEnd;
-  }
-
-  /**
-   * Create XML Processing Instruction tag.
-   *
-   * @param {Object} instruction instruction object
-   *
-   * @return {String}
-   */
-  createProcInst(instruction) {
-    return (
-      this.config.procInstStart +
-      instruction.name +
-      ' ' +
-      instruction.body +
-      this.config.procInstEnd
-    );
   }
 
   /**
@@ -161,41 +117,17 @@ class Js2Xml {
    *
    * @return {String}
    */
-  createComment(comment) {
+  private createComment(comment: string) {
     return this.config.commentStart + comment + this.config.commentEnd;
   }
 
   /**
-   * Create CDATA section.
-   *
-   * @param {String} cdata CDATA body
-   *
-   * @return {String}
-   */
-  createCDATA(cdata) {
-    return (
-      this.createIndent() +
-      this.config.cdataStart +
-      cdata +
-      this.config.cdataEnd
-    );
-  }
-
-  /**
    * Create element tag.
-   *
    * @param {Object} data element object
-   *
    * @return {String}
    */
-  createElem(data) {
-    // beautiful injection for obtaining SVG information :)
-    if (data.isElem('svg') && data.hasAttr('width') && data.hasAttr('height')) {
-      this.width = data.attr('width').value;
-      this.height = data.attr('height').value;
-    }
-
-    // empty element and short tag
+  private createElem(data: JsApi) {
+    // Empty element and short tag.
     if (data.isEmpty()) {
       if (this.config.useShortTags) {
         return (
@@ -217,15 +149,15 @@ class Js2Xml {
           this.config.tagCloseEnd
         );
       }
-      // non-empty element
     } else {
+      // Non-empty element.
       const tagOpenStart = this.config.tagOpenStart;
       const tagOpenEnd = this.config.tagOpenEnd;
       const tagCloseStart = this.config.tagCloseStart;
       const tagCloseEnd = this.config.tagCloseEnd;
       const openIndent = this.createIndent();
       const dataEnd = '';
-      const processedData = '' + this.convert(data).data;
+      const processedData = '' + this.convert(data);
 
       return (
         openIndent +
@@ -245,12 +177,10 @@ class Js2Xml {
 
   /**
    * Create element attributes.
-   *
    * @param {Object} elem attributes object
-   *
    * @return {String}
    */
-  createAttrs(elem) {
+  private createAttrs(elem: JsApi) {
     let attrs = '';
     elem.eachAttr(function(attr) {
       if (attr.value !== undefined) {

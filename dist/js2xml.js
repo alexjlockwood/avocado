@@ -55,6 +55,7 @@ function js2xml(data, config) {
 exports.js2xml = js2xml;
 var Js2Xml = /** @class */ (function () {
     function Js2Xml(config) {
+        this.indentLevel = 0;
         if (config) {
             this.config = __assign({}, defaults, config);
         }
@@ -78,46 +79,27 @@ var Js2Xml = /** @class */ (function () {
             this.config.tagCloseEnd += EOL;
             this.config.textEnd += EOL;
         }
-        this.indentLevel = 0;
     }
     /**
      * Start conversion.
-     *
      * @param {Object} data input data
-     *
      * @return {String}
      */
     Js2Xml.prototype.convert = function (data) {
-        var _this = this;
-        var svg = '';
+        var xml = '';
         if (data.content) {
             this.indentLevel++;
             data.content.forEach(function (item) {
                 if (item.elem) {
-                    svg += _this.createElem(item);
-                }
-                else if (item.doctype) {
-                    svg += _this.createDoctype(item.doctype);
-                }
-                else if (item.processinginstruction) {
-                    svg += _this.createProcInst(item.processinginstruction);
+                    xml += this.createElem(item);
                 }
                 else if (item.comment) {
-                    svg += _this.createComment(item.comment);
-                }
-                else if (item.cdata) {
-                    svg += _this.createCDATA(item.cdata);
+                    xml += this.createComment(item.comment);
                 }
             }, this);
         }
         this.indentLevel--;
-        return {
-            data: svg,
-            info: {
-                width: this.width,
-                height: this.height,
-            },
-        };
+        return xml;
     };
     /**
      * Create indent string in accordance with the current node level.
@@ -132,30 +114,6 @@ var Js2Xml = /** @class */ (function () {
         return indent;
     };
     /**
-     * Create doctype tag.
-     *
-     * @param {String} doctype doctype body string
-     *
-     * @return {String}
-     */
-    Js2Xml.prototype.createDoctype = function (doctype) {
-        return this.config.doctypeStart + doctype + this.config.doctypeEnd;
-    };
-    /**
-     * Create XML Processing Instruction tag.
-     *
-     * @param {Object} instruction instruction object
-     *
-     * @return {String}
-     */
-    Js2Xml.prototype.createProcInst = function (instruction) {
-        return (this.config.procInstStart +
-            instruction.name +
-            ' ' +
-            instruction.body +
-            this.config.procInstEnd);
-    };
-    /**
      * Create comment tag.
      *
      * @param {String} comment comment body
@@ -166,32 +124,12 @@ var Js2Xml = /** @class */ (function () {
         return this.config.commentStart + comment + this.config.commentEnd;
     };
     /**
-     * Create CDATA section.
-     *
-     * @param {String} cdata CDATA body
-     *
-     * @return {String}
-     */
-    Js2Xml.prototype.createCDATA = function (cdata) {
-        return (this.createIndent() +
-            this.config.cdataStart +
-            cdata +
-            this.config.cdataEnd);
-    };
-    /**
      * Create element tag.
-     *
      * @param {Object} data element object
-     *
      * @return {String}
      */
     Js2Xml.prototype.createElem = function (data) {
-        // beautiful injection for obtaining SVG information :)
-        if (data.isElem('svg') && data.hasAttr('width') && data.hasAttr('height')) {
-            this.width = data.attr('width').value;
-            this.height = data.attr('height').value;
-        }
-        // empty element and short tag
+        // Empty element and short tag.
         if (data.isEmpty()) {
             if (this.config.useShortTags) {
                 return (this.createIndent() +
@@ -210,16 +148,16 @@ var Js2Xml = /** @class */ (function () {
                     data.elem +
                     this.config.tagCloseEnd);
             }
-            // non-empty element
         }
         else {
+            // Non-empty element.
             var tagOpenStart = this.config.tagOpenStart;
             var tagOpenEnd = this.config.tagOpenEnd;
             var tagCloseStart = this.config.tagCloseStart;
             var tagCloseEnd = this.config.tagCloseEnd;
             var openIndent = this.createIndent();
             var dataEnd = '';
-            var processedData = '' + this.convert(data).data;
+            var processedData = '' + this.convert(data);
             return (openIndent +
                 tagOpenStart +
                 data.elem +
@@ -235,9 +173,7 @@ var Js2Xml = /** @class */ (function () {
     };
     /**
      * Create element attributes.
-     *
      * @param {Object} elem attributes object
-     *
      * @return {String}
      */
     Js2Xml.prototype.createAttrs = function (elem) {

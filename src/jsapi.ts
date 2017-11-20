@@ -20,13 +20,18 @@ export class JsApi {
   prefix?: string;
   local?: string;
   attrs?: { [name: string]: Attr };
+  comment?: string;
 
-  constructor(data: Options, parentNode?: JsApi) {
-    this.elem = data.elem;
-    this.content = data.content;
-    this.prefix = data.prefix;
-    this.local = data.local;
-    this.attrs = data.attrs;
+  constructor(arg: string | Options, parentNode?: JsApi) {
+    if (typeof arg === 'string') {
+      this.comment = arg;
+    } else {
+      this.elem = arg.elem;
+      this.content = arg.content;
+      this.prefix = arg.prefix;
+      this.local = arg.local;
+      this.attrs = arg.attrs;
+    }
     this.parentNode = parentNode;
   }
 
@@ -35,15 +40,9 @@ export class JsApi {
    * @return {Object}
    */
   clone() {
-    // Deep-clone node data
-    const nodeData = JSON.parse(
-      JSON.stringify({
-        elem: this.elem,
-        prefix: this.prefix,
-        local: this.local,
-        attrs: this.attrs,
-      }),
-    );
+    // Deep-clone node data.
+    const { elem, prefix, local, attrs } = this;
+    const nodeData = JSON.parse(JSON.stringify({ elem, prefix, local, attrs }));
     const clonedNode = new JsApi(nodeData, this.parentNode);
     if (this.content) {
       clonedNode.content = this.content.map(childNode => {
@@ -113,7 +112,7 @@ export class JsApi {
       return [];
     }
     if (!Array.isArray(insertion)) {
-      insertion = Array.apply(null, arguments).slice(2);
+      insertion = Array.apply(undefined, arguments).slice(2);
     }
     insertion.forEach(function(inner) {
       inner.parentNode = this;

@@ -1,7 +1,9 @@
-export interface Plugin {
-  type: 'perItem' | 'perItemReverse' | 'full';
-  description: string;
+import { JsApi } from '../jsapi';
+
+export interface Plugin<Params = any> {
+  readonly type: 'perItem' | 'perItemReverse' | 'full';
+  readonly description: string;
   active: boolean;
-  params: any;
-  fn: Function;
+  params?: Params;
+  fn(item: JsApi, params?: Params): JsApi | undefined;
 }

@@ -1,25 +1,22 @@
-export const type = 'perItem';
+import { JsApi } from '../jsapi';
+import { Plugin } from './_types';
 
-export const active = true;
-
-export const description = 'removes comments';
-
-export const params = undefined;
+export type Params = undefined;
 
 /**
  * Remove comments.
  *
- * @example
- * <!-- Generator: Adobe Illustrator 15.0.0, SVG Export
- * Plug-In . SVG Version: 6.00 Build 0)  -->
- *
  * @param {Object} item current iteration item
  * @return {Boolean} if false, item will be filtered out
- *
- * @author Kir Belevich
  */
-export function fn(item) {
-  if (item.comment && item.comment.charAt(0) !== '!') {
-    return false;
-  }
+function fn(item: JsApi) {
+  return item.comment && item.comment.charAt(0) !== '!' ? undefined : item;
 }
+
+export const removeComments: Plugin<Params> = {
+  type: 'perItem',
+  active: true,
+  description: 'removes all comments',
+  params: undefined,
+  fn,
+};
