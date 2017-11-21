@@ -1,4 +1,7 @@
 import { Plugin } from './plugins/_types';
+export declare const plugins: {
+    [name: string]: Plugin;
+};
 export interface Options {
     plugins?: Plugin[][];
     multipass?: boolean;

@@ -19,6 +19,23 @@ var xml2js_1 = require("./xml2js");
 // import * as convertTransform from './plugins/convertTransform';
 // import * as removeUnusedNS from './plugins/removeUnusedNS';
 // import * as sortAttrs from './plugins/sortAttrs';
+exports.plugins = {
+    // The order is from https://github.com/svg/svgo/blob/master/.svgo.yml
+    removeXMLProcInst: removeXMLProcInst_1.removeXMLProcInst,
+    removeComments: removeComments_1.removeComments,
+    // cleanupAttrs,
+    // cleanupIDs,
+    // cleanupNumericValues,
+    // convertColors,
+    // removeUnknownsAndDefaults,
+    // removeUselessStrokeAndFill,
+    // removeHiddenElems,
+    collapseGroups: collapseGroups_1.collapseGroups,
+    convertPathData: convertPathData_1.convertPathData,
+    // convertTransform,
+    removeEmptyGroups: removeEmptyGroups_1.removeEmptyGroups,
+    mergePaths: mergePaths_1.mergePaths,
+};
 // Arrange plugins by type - this is what plugins() expects.
 var optimizedPluginsData = (function (plugins) {
     return plugins.map(function (item) { return [item]; }).reduce(function (arr, item) {
@@ -31,23 +48,7 @@ var optimizedPluginsData = (function (plugins) {
         }
         return arr;
     }, []);
-})([
-    // The order is from https://github.com/svg/svgo/blob/master/.svgo.yml
-    removeXMLProcInst_1.removeXMLProcInst,
-    removeComments_1.removeComments,
-    // cleanupAttrs,
-    // cleanupIDs,
-    // cleanupNumericValues,
-    // convertColors,
-    // removeUnknownsAndDefaults,
-    // removeUselessStrokeAndFill,
-    // removeHiddenElems,
-    collapseGroups_1.collapseGroups,
-    convertPathData_1.convertPathData,
-    // convertTransform,
-    removeEmptyGroups_1.removeEmptyGroups,
-    mergePaths_1.mergePaths,
-]);
+})(Array.from(Object.values(exports.plugins)));
 var Avdo = /** @class */ (function () {
     function Avdo(options) {
         if (options === void 0) { options = {}; }
