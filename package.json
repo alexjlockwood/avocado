@@ -10,15 +10,18 @@
   "scripts": {
     "prepublishOnly": "npm run build",
     "build": "./node_modules/.bin/tsc",
-    "test":
-      "./node_modules/.bin/mocha --require ts-node/register ./test/**/*.spec.ts",
+    "test": "./node_modules/.bin/mocha --require ts-node/register ./test/**/*.spec.ts",
     "test-cov": "./node_modules/.bin/nyc -e '.ts' -r text -r lcov npm run test"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/alexjlockwood/avdo"
   },
-  "keywords": ["Android", "Vector Drawable", "Animated Vector Drawable"],
+  "keywords": [
+    "Android",
+    "Vector Drawable",
+    "Animated Vector Drawable"
+  ],
   "author": "Alex Lockwood",
   "license": "MIT",
   "dependencies": {

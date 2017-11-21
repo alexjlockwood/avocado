@@ -2,3 +2,4 @@ src/
 tsconfig.json
 tslint.json
 .prettierrc
+.prettierignore
