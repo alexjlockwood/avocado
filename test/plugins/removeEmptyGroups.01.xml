@@ -1,0 +1,17 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android">
+    <group/>
+    <group>
+        <path android:pathData="..."/>
+        <group/>
+    </group>
+    <group/>
+</vector>
+
+@@@
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android">
+    <group>
+        <path android:pathData="..."/>
+    </group>
+</vector>
+
