@@ -21,21 +21,7 @@ import { xml2js } from './xml2js';
 // import * as removeUnusedNS from './plugins/removeUnusedNS';
 // import * as sortAttrs from './plugins/sortAttrs';
 
-// Arrange plugins by type - this is what plugins() expects.
-const optimizedPluginsData = (function(plugins: Plugin[]) {
-  return plugins.map(item => [item]).reduce(
-    (arr, item) => {
-      const last = arr[arr.length - 1];
-      if (last && item[0].type === last[0].type) {
-        last.push(item[0]);
-      } else {
-        arr.push(item);
-      }
-      return arr;
-    },
-    [] as Plugin[][]
-  );
-})([
+export const plugins: { [name: string]: Plugin } = {
   // The order is from https://github.com/svg/svgo/blob/master/.svgo.yml
   removeXMLProcInst,
   removeComments,
@@ -53,7 +39,23 @@ const optimizedPluginsData = (function(plugins: Plugin[]) {
   mergePaths,
   // removeUnusedNS,
   // sortAttrs,
-]);
+};
+
+// Arrange plugins by type - this is what plugins() expects.
+const optimizedPluginsData = (function(plugins: Plugin[]) {
+  return plugins.map(item => [item]).reduce(
+    (arr, item) => {
+      const last = arr[arr.length - 1];
+      if (last && item[0].type === last[0].type) {
+        last.push(item[0]);
+      } else {
+        arr.push(item);
+      }
+      return arr;
+    },
+    [] as Plugin[][]
+  );
+})(Array.from(Object.values(plugins)));
 
 export interface Options {
   plugins?: Plugin[][];
