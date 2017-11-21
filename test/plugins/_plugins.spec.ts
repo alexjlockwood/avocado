@@ -1,6 +1,3 @@
-// const SVGO = require(process.env.COVERAGE
-//   ? '../../lib-cov/svgo'
-//   : '../../lib/svgo');
 import { Avdo, plugins } from '../../src/avdo';
 import { describe, it } from 'mocha';
 
@@ -13,8 +10,8 @@ const EOL = require('os').EOL;
 const regEOL = new RegExp(EOL, 'g');
 const regFilename = /^(.*)\.(\d+)\.xml$/;
 
-describe('plugin tests', function() {
-  FS.readdirSync(__dirname).forEach(function(file) {
+describe('plugin tests', () => {
+  FS.readdirSync(__dirname).forEach(file => {
     const match = file.match(regFilename);
     let index: number;
     let name: string;
@@ -25,8 +22,8 @@ describe('plugin tests', function() {
 
       file = PATH.resolve(__dirname, file);
 
-      it(name + '.' + index, function() {
-        return readFile(file).then(function(data) {
+      it(name + '.' + index, () => {
+        return readFile(file).then(data => {
           const splitted = normalize(data).split(/\s*@@@\s*/);
           const orig = splitted[0];
           const should = splitted[1];
@@ -42,8 +39,7 @@ describe('plugin tests', function() {
             pretty: true,
           });
 
-          return avdo.optimize(orig).then(function(result) {
-            // FIXME: results.data has a '\n' at the end while it should not
+          return avdo.optimize(orig).then(result => {
             expect(normalize(result)).to.equal(should);
           });
         });
@@ -57,8 +53,8 @@ function normalize(file) {
 }
 
 function readFile(file) {
-  return new Promise(function(resolve, reject) {
-    FS.readFile(file, 'utf8', function(err, data) {
+  return new Promise((resolve, reject) => {
+    FS.readFile(file, 'utf8', (err, data) => {
       if (err) {
         return reject(err);
       }
