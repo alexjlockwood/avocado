@@ -1,3 +1,5 @@
+// Code forked and modified from svgo v1.0.3.
+
 import { JsApi } from './jsapi';
 import { Plugin } from './plugins/_types';
 import { collapseGroups } from './plugins/collapseGroups';

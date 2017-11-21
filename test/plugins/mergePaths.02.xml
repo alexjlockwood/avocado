@@ -1,0 +1,31 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:pathData="M 0,0 z" android:fillColor="#fff" android:strokeColor="#333"/>
+    <path android:pathData="M 10,10 z" android:fillColor="#fff" android:strokeColor="#333"/>
+    <path android:pathData="M 20,20" android:fillColor="#fff" android:strokeColor="#333"/>
+    <path android:pathData="M 30,30 z" android:fillColor="#fff" android:strokeColor="#333"/>
+    <path android:pathData="M 30,30 z" android:fillColor="#f00"/>
+    <path android:pathData="M 40,40 z"/>
+    <path android:pathData="m 50,50 z"/>
+    <path android:pathData="M 40,40"/>
+    <path android:pathData="m 50,50"/>
+    <path android:pathData="M 40,40 z" android:fillColor="#fff" android:strokeColor="#333"/>
+    <path android:pathData="m 50,50 z" android:fillColor="#fff" android:strokeColor="#333"/>
+    <path android:pathData="M 40,40" android:fillColor="#fff" android:strokeColor="#333"/>
+    <path android:pathData="m 50,50" android:fillColor="#fff" android:strokeColor="#333"/>
+    <path android:pathData="m 50,50 z" android:fillColor="#fff" android:strokeColor="#333"/>
+    <path android:pathData="M0 0v100h100V0z" android:fillColor="#0f0"/>
+    <path android:pathData="M200 0v100h100V0z" android:fillColor="#0f0"/>
+    <path android:pathData="M0 0v100h100V0z" android:fillColor="#00f"/>
+    <path android:pathData="M200 0v100h100V0zM0 200h100v100H0z" android:fillColor="#00f"/>
+</vector>
+
+@@@
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:pathData="M0 0zM10 10zM30 30z" android:fillColor="#fff" android:strokeColor="#333"/>
+    <path android:pathData="M 30,30 z" android:fillColor="#f00"/>
+    <path android:pathData="M40 40zM50 50zM50 50"/>
+    <path android:pathData="M40 40zM50 50zM50 50z" android:fillColor="#fff" android:strokeColor="#333"/>
+    <path android:pathData="M0 0v100h100V0zM200 0v100h100V0z" android:fillColor="#0f0"/>
+    <path android:pathData="M0 0v100h100V0zM200 0v100h100V0zM0 200h100v100H0z" android:fillColor="#00f"/>
+</vector>
