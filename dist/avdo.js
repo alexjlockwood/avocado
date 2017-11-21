@@ -1,4 +1,5 @@
 "use strict";
+// Code forked and modified from svgo v1.0.3.
 Object.defineProperty(exports, "__esModule", { value: true });
 var collapseGroups_1 = require("./plugins/collapseGroups");
 var convertPathData_1 = require("./plugins/convertPathData");

@@ -16,10 +16,6 @@ var removeLeadingZero = _tools.removeLeadingZero;
 var prevCtrlPoint;
 /**
  * Convert path string to JS representation.
- *
- * @param {String} pathString input string
- * @param {Object} params plugin params
- * @return {Array} output array
  */
 function path2js(path) {
     // TODO: avoid this caching hackery...
@@ -76,10 +72,7 @@ function path2js(path) {
                 instruction = instruction === 'M' ? 'L' : 'l';
             }
             for (var pair = paramsLength[instruction]; matchedNumData.length;) {
-                pathData.push({
-                    instruction: instruction,
-                    data: matchedNumData.splice(0, pair),
-                });
+                pathData.push({ instruction: instruction, data: matchedNumData.splice(0, pair) });
             }
         }
     });
@@ -99,10 +92,13 @@ exports.path2js = path2js;
  * @return {Array} output data
  */
 function relative2absolute(data) {
-    var currentPoint = [0, 0], subpathPoint = [0, 0], i;
+    var currentPoint = [0, 0];
+    var subpathPoint = [0, 0];
+    var i;
     return data.map(function (item) {
-        var instruction = item.instruction, itemData = item.data && item.data.slice();
-        if (instruction == 'M') {
+        var instruction = item.instruction;
+        var itemData = item.data && item.data.slice();
+        if (instruction === 'M') {
             set(currentPoint, itemData);
             set(subpathPoint, itemData);
         }
@@ -111,36 +107,36 @@ function relative2absolute(data) {
                 itemData[i] += currentPoint[i % 2];
             }
             set(currentPoint, itemData);
-            if (instruction == 'm') {
+            if (instruction === 'm') {
                 set(subpathPoint, itemData);
             }
         }
-        else if (instruction == 'a') {
+        else if (instruction === 'a') {
             itemData[5] += currentPoint[0];
             itemData[6] += currentPoint[1];
             set(currentPoint, itemData);
         }
-        else if (instruction == 'h') {
+        else if (instruction === 'h') {
             itemData[0] += currentPoint[0];
             currentPoint[0] = itemData[0];
         }
-        else if (instruction == 'v') {
+        else if (instruction === 'v') {
             itemData[0] += currentPoint[1];
             currentPoint[1] = itemData[0];
         }
         else if ('MZLCSQTA'.indexOf(instruction) > -1) {
             set(currentPoint, itemData);
         }
-        else if (instruction == 'H') {
+        else if (instruction === 'H') {
             currentPoint[0] = itemData[0];
         }
-        else if (instruction == 'V') {
+        else if (instruction === 'V') {
             currentPoint[1] = itemData[0];
         }
-        else if (instruction == 'z') {
+        else if (instruction === 'z') {
             set(currentPoint, subpathPoint);
         }
-        return instruction == 'z'
+        return instruction === 'z'
             ? { instruction: 'z' }
             : {
                 instruction: instruction.toUpperCase(),
@@ -148,7 +144,6 @@ function relative2absolute(data) {
             };
     });
 }
-exports.relative2absolute = relative2absolute;
 /**
  * Apply transformation(s) to the Path data.
  *
@@ -163,38 +158,49 @@ function applyTransforms(elem, path, params) {
     if (!elem.hasAttr('transform') ||
         !elem.attr('transform').value ||
         elem.someAttr(function (attr) {
+            // tslint:disable-next-line:no-bitwise
             return ~referencesProps.indexOf(attr.name) && ~attr.value.indexOf('url(');
         })) {
         return path;
     }
-    var matrix = transformsMultiply(transform2js(elem.attr('transform').value)), stroke = elem.computedAttr('stroke'), id = elem.computedAttr('id'), transformPrecision = params.transformPrecision, newPoint, scale;
-    if (stroke && stroke != 'none') {
+    var matrix = transformsMultiply(transform2js(elem.attr('transform').value));
+    var stroke = elem.computedAttr('stroke');
+    var id = elem.computedAttr('id');
+    var transformPrecision = params.transformPrecision;
+    var newPoint;
+    var scale;
+    if (stroke && stroke !== 'none') {
         if (!params.applyTransformsStroked ||
-            ((matrix.data[0] != matrix.data[3] ||
-                matrix.data[1] != -matrix.data[2]) &&
-                (matrix.data[0] != -matrix.data[3] || matrix.data[1] != matrix.data[2])))
+            ((matrix.data[0] !== matrix.data[3] ||
+                matrix.data[1] !== -matrix.data[2]) &&
+                (matrix.data[0] !== -matrix.data[3] ||
+                    matrix.data[1] !== matrix.data[2]))) {
             return path;
+        }
         // "stroke-width" should be inside the part with ID, otherwise it can be overrided in <use>
         if (id) {
-            var idElem = elem, hasStrokeWidth = false;
+            var idElem = elem;
+            var hasStrokeWidth = false;
             do {
-                if (idElem.hasAttr('stroke-width'))
+                if (idElem.hasAttr('stroke-width')) {
                     hasStrokeWidth = true;
+                }
             } while (!idElem.hasAttr('id', id) &&
                 !hasStrokeWidth &&
                 (idElem = idElem.parentNode));
-            if (!hasStrokeWidth)
+            if (!hasStrokeWidth) {
                 return path;
+            }
         }
         scale = +Math.sqrt(matrix.data[0] * matrix.data[0] + matrix.data[1] * matrix.data[1]).toFixed(transformPrecision);
         if (scale !== 1) {
-            var strokeWidth = elem.computedAttr('stroke-width') || defaultStrokeWidth;
+            // TODO: can we avoid the cast to string here?
+            var strokeWidth = (elem.computedAttr('stroke-width') ||
+                defaultStrokeWidth);
             if (elem.hasAttr('stroke-width')) {
                 elem.attrs['stroke-width'].value = elem.attrs['stroke-width'].value
                     .trim()
-                    .replace(regNumericValues, function (num) {
-                    return removeLeadingZero(num * scale);
-                });
+                    .replace(regNumericValues, function (num) { return removeLeadingZero(+num * scale); });
             }
             else {
                 elem.addAttr({
@@ -202,7 +208,7 @@ function applyTransforms(elem, path, params) {
                     prefix: '',
                     local: 'stroke-width',
                     value: strokeWidth.replace(regNumericValues, function (num) {
-                        return removeLeadingZero(num * scale);
+                        return removeLeadingZero(+num * scale);
                     }),
                 });
             }
@@ -237,11 +243,12 @@ function applyTransforms(elem, path, params) {
                 matrix.data[5] = 0;
             }
             else {
-                if (pathItem.instruction == 'a') {
+                if (pathItem.instruction === 'a') {
                     transformArc(pathItem.data, matrix.data);
                     // reduce number of digits in rotation angle
                     if (Math.abs(pathItem.data[2]) > 80) {
-                        var a = pathItem.data[0], rotation = pathItem.data[2];
+                        var a = pathItem.data[0];
+                        var rotation = pathItem.data[2];
                         pathItem.data[0] = pathItem.data[1];
                         pathItem.data[1] = a;
                         pathItem.data[2] = rotation + (rotation > 0 ? -90 : 90);
@@ -527,16 +534,19 @@ function intersects(path1, path2) {
         return false;
     }
     // Get a convex hull from points of each subpath. Has the most complexity O(n·log n).
-    var hullNest1 = points1.map(convexHull), hullNest2 = points2.map(convexHull);
+    var hullNest1 = points1.map(convexHull);
+    var hullNest2 = points2.map(convexHull);
     // Check intersection of every subpath of the first path with every subpath of the second.
     return hullNest1.some(function (hull1) {
-        if (hull1.length < 3)
+        if (hull1.length < 3) {
             return false;
+        }
         return hullNest2.some(function (hull2) {
-            if (hull2.length < 3)
+            if (hull2.length < 3) {
                 return false;
-            var simplex = [getSupport(hull1, hull2, [1, 0])], // create the initial simplex
-            direction = minus(simplex[0]); // set the direction to point towards the origin
+            }
+            var simplex = [getSupport(hull1, hull2, [1, 0])]; // create the initial simplex
+            var direction = minus(simplex[0]); // set the direction to point towards the origin
             var iterations = 1e4; // infinite loop protection, 10 000 iterations is more than enough
             while (true) {
                 if (iterations-- === 0) {
@@ -546,11 +556,13 @@ function intersects(path1, path2) {
                 // add a new point
                 simplex.push(getSupport(hull1, hull2, direction));
                 // see if the new point was on the correct side of the origin
-                if (dot(direction, simplex[simplex.length - 1]) <= 0)
+                if (dot(direction, simplex[simplex.length - 1]) <= 0) {
                     return false;
+                }
                 // process the simplex
-                if (processSimplex(simplex, direction))
+                if (processSimplex(simplex, direction)) {
                     return true;
+                }
             }
         });
     });
@@ -563,7 +575,9 @@ function intersects(path1, path2) {
     function supportPoint(polygon, direction) {
         var index = direction[1] >= 0
             ? direction[0] < 0 ? polygon.maxY : polygon.maxX
-            : direction[0] < 0 ? polygon.minX : polygon.minY, max = -Infinity, value;
+            : direction[0] < 0 ? polygon.minX : polygon.minY;
+        var max = -Infinity;
+        var value;
         while ((value = dot(polygon[index], direction)) > max) {
             max = value;
             index = ++index % polygon.length;
@@ -573,11 +587,13 @@ function intersects(path1, path2) {
 }
 exports.intersects = intersects;
 function processSimplex(simplex, direction) {
-    /* jshint -W004 */
-    // we only need to handle to 1-simplex and 2-simplex
-    if (simplex.length == 2) {
+    // wW only need to handle to 1-simplex and 2-simplex.
+    if (simplex.length === 2) {
         // 1-simplex
-        var a = simplex[1], b = simplex[0], AO = minus(simplex[1]), AB = sub(b, a);
+        var a = simplex[1];
+        var b = simplex[0];
+        var AO = minus(simplex[1]);
+        var AB = sub(b, a);
         // AO is in the same direction as AB
         if (dot(AO, AB) > 0) {
             // get the vector perpendicular to AB facing O
@@ -591,9 +607,14 @@ function processSimplex(simplex, direction) {
     }
     else {
         // 2-simplex
-        var a = simplex[2], // [a, b, c] = simplex
-        b = simplex[1], c = simplex[0], AB = sub(b, a), AC = sub(c, a), AO = minus(a), ACB = orth(AB, AC), // the vector perpendicular to AB facing away from C
-        ABC = orth(AC, AB); // the vector perpendicular to AC facing away from B
+        var a = simplex[2]; // [a, b, c] = simplex
+        var b = simplex[1];
+        var c = simplex[0];
+        var AB = sub(b, a);
+        var AC = sub(c, a);
+        var AO = minus(a);
+        var ACB = orth(AB, AC); // the vector perpendicular to AB facing away from C
+        var ABC = orth(AC, AB); // the vector perpendicular to AC facing away from B
         if (dot(ACB, AO) > 0) {
             if (dot(AB, AO) > 0) {
                 // region 4
@@ -618,8 +639,9 @@ function processSimplex(simplex, direction) {
                 simplex.splice(0, 2); // simplex = [a]
             }
         }
-        else
+        else {
             return true; // region 7
+        }
     }
     return false;
 }
@@ -637,7 +659,11 @@ function orth(v, from) {
     return dot(o, minus(from)) < 0 ? minus(o) : o;
 }
 function gatherPoints(points, item, index, path) {
-    var subPath = points.length && points[points.length - 1], prev = index && path[index - 1], basePoint = subPath.length && subPath[subPath.length - 1], data = item.data, ctrlPoint = basePoint;
+    var subPath = points.length && points[points.length - 1];
+    var prev = index && path[index - 1];
+    var basePoint = subPath.length && subPath[subPath.length - 1];
+    var data = item.data;
+    var ctrlPoint = basePoint;
     switch (item.instruction) {
         case 'M':
             points.push((subPath = []));
@@ -693,7 +719,7 @@ function gatherPoints(points, item, index, path) {
         case 'A':
             // Convert the arc to bezier curves and use the same approximation
             var curves = a2c.apply(0, basePoint.concat(data));
-            for (var cData; (cData = curves.splice(0, 6).map(toAbsolute)).length;) {
+            for (var cData = void 0; (cData = curves.splice(0, 6).map(toAbsolute)).length;) {
                 addPoint(subPath, [
                     0.5 * (basePoint[0] + cData[0]),
                     0.5 * (basePoint[1] + cData[1]),
@@ -706,14 +732,16 @@ function gatherPoints(points, item, index, path) {
                     0.5 * (cData[2] + cData[4]),
                     0.5 * (cData[3] + cData[5]),
                 ]);
-                if (curves.length)
+                if (curves.length) {
                     addPoint(subPath, (basePoint = cData.slice(-2)));
+                }
             }
             break;
     }
     // Save final command coordinates
-    if (data && data.length >= 2)
+    if (data && data.length >= 2) {
         addPoint(subPath, data.slice(-2));
+    }
     return points;
     function toAbsolute(n, i) {
         return n + basePoint[i % 2];
@@ -746,11 +774,10 @@ function gatherPoints(points, item, index, path) {
  * @param points An array of [X, Y] coordinates
  */
 function convexHull(points) {
-    /* jshint -W004 */
-    points.sort(function (a, b) {
-        return a[0] == b[0] ? a[1] - b[1] : a[0] - b[0];
-    });
-    var lower = [], minY = 0, bottom = 0;
+    points.sort(function (a, b) { return (a[0] === b[0] ? a[1] - b[1] : a[0] - b[0]); });
+    var lower = [];
+    var minY = 0;
+    var bottom = 0;
     for (var i = 0; i < points.length; i++) {
         while (lower.length >= 2 &&
             cross(lower[lower.length - 2], lower[lower.length - 1], points[i]) <= 0) {
@@ -762,7 +789,9 @@ function convexHull(points) {
         }
         lower.push(points[i]);
     }
-    var upper = [], maxY = points.length - 1, top = 0;
+    var upper = [];
+    var maxY = points.length - 1;
+    var top = 0;
     for (var i = points.length; i--;) {
         while (upper.length >= 2 &&
             cross(upper[upper.length - 2], upper[upper.length - 1], points[i]) <= 0) {
@@ -792,7 +821,7 @@ function cross(o, a, b) {
  */
 // jshint ignore: start
 function a2c(x1, y1, rx, ry, angle, large_arc_flag, sweep_flag, x2, y2, recursive) {
-    // for more information of where this Math came from visit:
+    // For more information of where this Math came from visit:
     // http://www.w3.org/TR/SVG11/implnote.html#ArcImplementationNotes
     var _120 = Math.PI * 120 / 180, rad = Math.PI / 180 * (+angle || 0), res = [], rotateX = function (x, y, rad) {
         return x * Math.cos(rad) - y * Math.sin(rad);

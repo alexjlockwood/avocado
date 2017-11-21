@@ -193,13 +193,14 @@ var JsApi = /** @class */ (function () {
      */
     JsApi.prototype.computedAttr = function (name, val) {
         if (!arguments.length) {
-            return;
+            return undefined;
         }
         var elem;
         for (elem = this; elem && (!elem.hasAttr(name) || !elem.attr(name).value); elem = elem.parentNode) { }
         // tslint:disable-next-line:triple-equals no-null-keyword
         if (val != null) {
-            return elem ? elem.hasAttr(name, val) : false;
+            // TODO: why return a boolean here instead of a string?
+            return elem ? elem.hasAttr(name, val) : undefined;
         }
         else if (elem && elem.hasAttr(name)) {
             return elem.attrs[name].value;

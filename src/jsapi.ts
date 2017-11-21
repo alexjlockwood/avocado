@@ -232,7 +232,7 @@ export class JsApi implements Options {
    */
   computedAttr(name: string, val?: any) {
     if (!arguments.length) {
-      return;
+      return undefined;
     }
 
     let elem: JsApi;
@@ -244,7 +244,8 @@ export class JsApi implements Options {
 
     // tslint:disable-next-line:triple-equals no-null-keyword
     if (val != null) {
-      return elem ? elem.hasAttr(name, val) : false;
+      // TODO: why return a boolean here instead of a string?
+      return elem ? elem.hasAttr(name, val) : undefined;
     } else if (elem && elem.hasAttr(name)) {
       return elem.attrs[name].value;
     } else {

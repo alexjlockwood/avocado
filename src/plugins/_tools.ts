@@ -1,75 +1,10 @@
-/**
- * Encode plain SVG data string into Data URI string.
- *
- * @param {String} str input string
- * @param {String} type Data URI type
- * @return {String} output string
- */
-export function encodeSVGDatauri(str, type) {
-  var prefix = 'data:image/svg+xml';
-
-  // base64
-  if (!type || type === 'base64') {
-    prefix += ';base64,';
-
-    str = prefix + new Buffer(str).toString('base64');
-
-    // URI encoded
-  } else if (type === 'enc') {
-    str = prefix + ',' + encodeURIComponent(str);
-
-    // unencoded
-  } else if (type === 'unenc') {
-    str = prefix + ',' + str;
-  }
-
-  return str;
-}
-
-/**
- * Decode SVG Data URI string into plain SVG string.
- *
- * @param {string} str input string
- * @return {String} output string
- */
-export function decodeSVGDatauri(str) {
-  var regexp = /data:image\/svg\+xml(;charset=[^;,]*)?(;base64)?,(.*)/;
-  var match = regexp.exec(str);
-
-  // plain string
-  if (!match) return str;
-
-  var data = match[3];
-
-  // base64
-  if (match[2]) {
-    str = new Buffer(data, 'base64').toString('utf8');
-
-    // URI encoded
-  } else if (data.charAt(0) === '%') {
-    str = decodeURIComponent(data);
-
-    // unencoded
-  } else if (data.charAt(0) === '<') {
-    str = data;
-  }
-
-  return str;
-}
-
-export function intersectArrays(a, b) {
-  return a.filter(function(n) {
-    return b.indexOf(n) > -1;
-  });
-}
-
 export function cleanupOutData(
   data: number[],
   params: { leadingZero: boolean; negativeExtraSpace: boolean },
 ) {
   let str = '';
   let delimiter: string;
-  let prev: number;
+  let prev: number | string;
 
   data.forEach((item, i) => {
     // Space delimiter by default.
@@ -83,22 +18,23 @@ export function cleanupOutData(
     // Remove floating-point numbers leading zeros.
     // 0.5 → .5
     // -0.5 → -.5
+    let itemStr: number | string = item;
     if (params.leadingZero) {
-      item = removeLeadingZero(item);
+      itemStr = removeLeadingZero(item);
     }
 
     // No extra space in front of negative number or
     // in front of a floating number if a previous number is floating too.
     if (
       params.negativeExtraSpace &&
-      (item < 0 || (String(item).charCodeAt(0) === 46 && prev % 1 !== 0))
+      (itemStr < 0 || (String(itemStr).charCodeAt(0) === 46 && +prev % 1 !== 0))
     ) {
       delimiter = '';
     }
 
     // Save prev item value.
-    prev = item;
-    str += delimiter + item;
+    prev = itemStr;
+    str += delimiter + itemStr;
   });
 
   return str;
@@ -117,11 +53,11 @@ export function cleanupOutData(
  *
  * @return {String} output number as string
  */
-export function removeLeadingZero(num) {
-  var strNum = num.toString();
-  if (0 < num && num < 1 && strNum.charCodeAt(0) == 48) {
+export function removeLeadingZero(num: number) {
+  let strNum = num.toString();
+  if (0 < num && num < 1 && strNum.charCodeAt(0) === 48) {
     strNum = strNum.slice(1);
-  } else if (-1 < num && num < 0 && strNum.charCodeAt(1) == 48) {
+  } else if (-1 < num && num < 0 && strNum.charCodeAt(1) === 48) {
     strNum = strNum.charAt(0) + strNum.slice(2);
   }
   return strNum;
