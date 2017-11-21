@@ -7,14 +7,6 @@ import { describe, it } from 'mocha';
 import { Plugin } from '../../src/plugins/_types';
 import { expect } from 'chai';
 
-// describe('Calculator', () => {
-//   describe('Add', () => {
-//     it('Should return 3 when a = 1 and b = 2', () => {
-//       expect(5).to.equal(5);
-//     });
-//   });
-// });
-
 const FS = require('fs');
 const PATH = require('path');
 const EOL = require('os').EOL;
