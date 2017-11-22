@@ -1,13 +1,10 @@
 "use strict";
 // Code forked and modified from svgo v1.0.3.
 Object.defineProperty(exports, "__esModule", { value: true });
-var collapseGroups_1 = require("./plugins/collapseGroups");
 var convertPathData_1 = require("./plugins/convertPathData");
 var js2xml_1 = require("./js2xml");
-var mergePaths_1 = require("./plugins/mergePaths");
 var _plugins_1 = require("./plugins/_plugins");
 var removeComments_1 = require("./plugins/removeComments");
-var removeEmptyGroups_1 = require("./plugins/removeEmptyGroups");
 var removeXMLProcInst_1 = require("./plugins/removeXMLProcInst");
 var xml2js_1 = require("./xml2js");
 // import * as cleanupAttrs from './plugins/cleanupAttrs';
@@ -20,8 +17,8 @@ var xml2js_1 = require("./xml2js");
 // import * as convertTransform from './plugins/convertTransform';
 // import * as removeUnusedNS from './plugins/removeUnusedNS';
 // import * as sortAttrs from './plugins/sortAttrs';
+// The order is from https://github.com/svg/svgo/blob/master/.svgo.yml
 exports.plugins = {
-    // The order is from https://github.com/svg/svgo/blob/master/.svgo.yml
     removeXMLProcInst: removeXMLProcInst_1.removeXMLProcInst,
     removeComments: removeComments_1.removeComments,
     // cleanupAttrs,
@@ -31,15 +28,12 @@ exports.plugins = {
     // removeUnknownsAndDefaults,
     // removeUselessStrokeAndFill,
     // removeHiddenElems,
-    collapseGroups: collapseGroups_1.collapseGroups,
+    // collapseGroups,
     convertPathData: convertPathData_1.convertPathData,
-    // convertTransform,
-    removeEmptyGroups: removeEmptyGroups_1.removeEmptyGroups,
-    mergePaths: mergePaths_1.mergePaths,
 };
 // Arrange plugins by type - this is what plugins() expects.
-var optimizedPluginsData = (function (plugins) {
-    return plugins.map(function (item) { return [item]; }).reduce(function (arr, item) {
+var optimizedPluginsData = (function (ps) {
+    return ps.map(function (item) { return [item]; }).reduce(function (arr, item) {
         var last = arr[arr.length - 1];
         if (last && item[0].type === last[0].type) {
             last.push(item[0]);

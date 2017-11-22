@@ -12,8 +12,8 @@ const regFilename = /^(.*)\.(\d+)\.xml$/;
 
 describe('plugin tests', () => {
   FS.readdirSync(__dirname).forEach(file => {
-    const match = file.match(regFilename);
-    let index: number;
+    const match: [string, string] = file.match(regFilename);
+    let index: string;
     let name: string;
 
     if (match) {
@@ -21,6 +21,10 @@ describe('plugin tests', () => {
       index = match[2];
 
       file = PATH.resolve(__dirname, file);
+
+      if (name !== 'convertPathData' || index !== '17') {
+        return;
+      }
 
       it(name + '.' + index, () => {
         return readFile(file).then(data => {
@@ -32,7 +36,7 @@ describe('plugin tests', () => {
 
           const plugin = plugins[name];
           if (params) {
-            plugin.params = JSON.parse(params);
+            plugin.params = { ...plugin.params, ...JSON.parse(params) };
           }
           avdo = new Avdo({
             plugins: [[plugin]],

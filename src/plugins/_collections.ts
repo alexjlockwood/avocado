@@ -1357,20 +1357,20 @@ export const elems = {
       // 'core',
       // 'graphicalEvent',
       // 'presentation',
-    ],
-    // TODO: use 'android:pathData' instead or no?
+    ] as string[],
     attrs: [
       // 'class',
       // 'style',
       // 'externalResourcesRequired',
       // 'transform',
-      'pathData',
+      // TODO: use 'android:pathData' instead or no?=
+      'android:pathData',
       // 'pathLength',
     ],
     contentGroups: [
       // 'animation',
       // 'descriptive',
-    ],
+    ] as string[],
   },
   pattern: {
     attrsGroups: ['conditionalProcessing', 'core', 'presentation', 'xlink'],

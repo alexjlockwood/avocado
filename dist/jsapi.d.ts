@@ -126,7 +126,7 @@ export declare class JsApi implements Options {
      * @param {Object} [context] callback context
      * @return {Boolean} false if there are no any attributes
      */
-    eachAttr(callback: Function, context?: any): boolean;
+    eachAttr(callback: (attr: Attr) => void, context?: any): boolean;
     /**
      * Tests whether some attribute passes the test.
      *

@@ -4,11 +4,11 @@ import { JsApi } from '../jsapi';
 import { Plugin } from './_types';
 import { cleanupOutData } from './_tools';
 
-let roundData;
+let roundData: (data: number[]) => number[];
 let precision: number;
 let error: number;
-let arcThreshold;
-let arcTolerance;
+let arcThreshold: number;
+let arcTolerance: number;
 
 export const defaultParams = {
   applyTransforms: true,
@@ -236,19 +236,7 @@ function filters(
   const pathBase = [0, 0];
   let prev: any = {};
 
-  pathRes = pathRes.filter(function(
-    this: {
-      instruction: string;
-      coords?: number[];
-      base?: number[];
-      data?: number[];
-      // TODO: avoid this caching hackery?
-      sdata?: number[];
-    },
-    item,
-    index,
-    path,
-  ) {
+  pathRes = pathRes.filter(function(item, index, path) {
     let instruction = item.instruction;
     let data = item.data;
     let next = path[index + 1];
@@ -600,7 +588,10 @@ function filters(
  * @param {Array} data input path data
  * @return {Boolean} output
  */
-function convertToMixed(path, params) {
+function convertToMixed(
+  path: { instruction: string; data?: number[]; base?: number[] }[],
+  params: Params,
+) {
   let prev = path[0];
 
   path = path.filter(function(item, index) {
@@ -646,15 +637,13 @@ function convertToMixed(path, params) {
         prev.instruction.charCodeAt(0) > 96 &&
         absoluteDataStr.length === relativeDataStr.length - 1 &&
         (data[0] < 0 ||
-          (/^0\./.test(data[0]) && prev.data[prev.data.length - 1] % 1))
+          (/^0\./.test(String(data[0])) && prev.data[prev.data.length - 1] % 1))
       )
     ) {
       item.instruction = instruction.toUpperCase();
       item.data = adata;
     }
-
     prev = item;
-
     return true;
   });
 
@@ -706,7 +695,7 @@ function getIntersection(coords: number[]) {
   const denom = a1 * b2 - a2 * b1;
 
   if (!denom) {
-    return; // parallel lines havn't an intersection
+    return undefined; // parallel lines havn't an intersection
   }
 
   const cross = [(b1 * c2 - b2 * c1) / denom, (a1 * c2 - a2 * c1) / -denom];
@@ -807,7 +796,7 @@ function getDistance(p1: number[], p2: number[]) {
  * @return {Array} Point coordinates
  */
 
-function getCubicBezierPoint(curve, t): [number, number] {
+function getCubicBezierPoint(curve: number[], t: number): [number, number] {
   const sqrT = t * t;
   const cubT = sqrT * t;
   const mt = 1 - t;
@@ -825,7 +814,7 @@ function getCubicBezierPoint(curve, t): [number, number] {
  * @return {Object|undefined} circle
  */
 
-function findCircle(curve) {
+function findCircle(curve: number[]) {
   const midPoint = getCubicBezierPoint(curve, 1 / 2);
   const m1 = [midPoint[0] / 2, midPoint[1] / 2];
   const m2 = [(midPoint[0] + curve[4]) / 2, (midPoint[1] + curve[5]) / 2];
@@ -863,7 +852,7 @@ function findCircle(curve) {
  * @param {Array} curve
  * @return {Boolean}
  */
-function isArc(curve, circle: { center: number[]; radius: number }) {
+function isArc(curve: number[], circle: { center: number[]; radius: number }) {
   const tolerance = Math.min(
     arcThreshold * error,
     arcTolerance * circle.radius / 100,
@@ -884,7 +873,10 @@ function isArc(curve, circle: { center: number[]; radius: number }) {
  * @param {Array} curve
  * @return {Boolean}
  */
-function isArcPrev(curve, circle: { center: number[]; radius: number }) {
+function isArcPrev(
+  curve: number[],
+  circle: { center: number[]; radius: number },
+) {
   return isArc(curve, {
     center: [circle.center[0] + curve[4], circle.center[1] + curve[5]],
     radius: circle.radius,
@@ -898,7 +890,10 @@ function isArcPrev(curve, circle: { center: number[]; radius: number }) {
  * @return {Number} angle
  */
 
-function findArcAngle(curve, relCircle) {
+function findArcAngle(
+  curve: number[],
+  relCircle: { center: number[]; radius: number },
+) {
   const x1 = -relCircle.center[0];
   const y1 = -relCircle.center[1];
   const x2 = curve[4] - relCircle.center[0];
@@ -915,7 +910,10 @@ function findArcAngle(curve, relCircle) {
  * @param {Array} pathData
  * @return {String}
  */
-function data2Path(params, pathData) {
+function data2Path(
+  params: Params,
+  pathData: { instruction: string; data?: number[] }[],
+) {
   return pathData.reduce((pathString, item) => {
     return (
       pathString +
@@ -931,7 +929,7 @@ function data2Path(params, pathData) {
  * @param {Array} data input data array
  * @return {Array} output data array
  */
-function round(data) {
+function round(data: number[]) {
   for (let i = data.length; i-- > 0; ) {
     data[i] = Math.round(data[i]);
   }

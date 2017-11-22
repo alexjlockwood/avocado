@@ -6,8 +6,8 @@ import { Plugin } from './_types';
  * TODO: remove namespace declarations that occur on non-root nodes?
  */
 function fn(data: JsApi) {
-  let svgElem;
-  const xmlnsCollection = [];
+  let svgElem: JsApi;
+  const xmlnsCollection: string[] = [];
 
   function removeNSfromCollection(nsName: string) {
     const pos = xmlnsCollection.indexOf(nsName);

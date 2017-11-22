@@ -1351,13 +1351,13 @@ exports.elems = {
     },
     path: {
         attrsGroups: [],
-        // TODO: use 'android:pathData' instead or no?
         attrs: [
             // 'class',
             // 'style',
             // 'externalResourcesRequired',
             // 'transform',
-            'pathData',
+            // TODO: use 'android:pathData' instead or no?=
+            'android:pathData',
         ],
         contentGroups: [],
     },

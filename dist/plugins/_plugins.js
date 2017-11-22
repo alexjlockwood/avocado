@@ -32,11 +32,11 @@ exports.processPlugins = processPlugins;
  */
 function perItem(jsApi, plugins, reverse) {
     if (reverse === void 0) { reverse = false; }
-    return (function monkeys(item) {
+    return (function recurseFn(item) {
         item.content = item.content.filter(function (i) {
             // Reverse pass.
             if (reverse && i.content) {
-                monkeys(i);
+                recurseFn(i);
             }
             // Main filter.
             var filter = true;
@@ -48,7 +48,7 @@ function perItem(jsApi, plugins, reverse) {
             }
             // Direct pass.
             if (!reverse && i.content) {
-                monkeys(i);
+                recurseFn(i);
             }
             return filter;
         });
