@@ -94,7 +94,6 @@ exports.path2js = path2js;
 function relative2absolute(data) {
     var currentPoint = [0, 0];
     var subpathPoint = [0, 0];
-    var i;
     return data.map(function (item) {
         var instruction = item.instruction;
         var itemData = item.data && item.data.slice();
@@ -103,7 +102,7 @@ function relative2absolute(data) {
             set(subpathPoint, itemData);
         }
         else if ('mlcsqt'.indexOf(instruction) > -1) {
-            for (i = 0; i < itemData.length; i++) {
+            for (var i = 0; i < itemData.length; i++) {
                 itemData[i] += currentPoint[i % 2];
             }
             set(currentPoint, itemData);
