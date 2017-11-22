@@ -1,0 +1,21 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:pathData="m 0,0"/>
+    <path android:pathData="m 0,0l 0,0"/>
+    <path android:pathData="m 0,0h 0"/>
+    <path android:pathData="m 0,0v 0"/>
+    <path android:pathData="m 0,0c 0,0 0,0 0,0 s 0,0 0,0"/>
+    <path android:pathData="m 0,0q 0,0 0,0 t 0,0"/>
+    <path android:pathData="m 0,0a 25,25 -30 0,1 0,0"/>
+</vector>
+
+@@@
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:pathData="M0 0"/>
+    <path android:pathData="M0 0"/>
+    <path android:pathData="M0 0"/>
+    <path android:pathData="M0 0"/>
+    <path android:pathData="M0 0"/>
+    <path android:pathData="M0 0"/>
+    <path android:pathData="M0 0"/>
+</vector>

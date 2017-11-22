@@ -22,10 +22,6 @@ describe('plugin tests', () => {
 
       file = PATH.resolve(__dirname, file);
 
-      if (name !== 'convertPathData' || index !== '17') {
-        return;
-      }
-
       it(name + '.' + index, () => {
         return readFile(file).then(data => {
           const splitted = normalize(data).split(/\s*@@@\s*/);
