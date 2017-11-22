@@ -112,13 +112,13 @@ export declare class JsApi implements Options {
      * @param {String} [val] attribute value
      * @return {Boolean}
      */
-    removeAttr(name: any): boolean;
+    removeAttr(name: string | string[]): boolean;
     /**
      * Add attribute.
      * @param {Object} [attr={}] attribute object
      * @return {Object|Boolean} created attribute or false if no attr was passed in
      */
-    addAttr(attr: any): false | Attr;
+    addAttr(attr: Attr): false | Attr;
     /**
      * Iterates over all attributes.
      *
@@ -134,5 +134,5 @@ export declare class JsApi implements Options {
      * @param {Object} [context] callback context
      * @return {Boolean} false if there are no any attributes
      */
-    someAttr(callback: Function, context?: any): boolean;
+    someAttr(callback: (attr: Attr) => boolean, context?: any): boolean;
 }

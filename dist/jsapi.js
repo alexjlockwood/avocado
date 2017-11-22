@@ -138,7 +138,6 @@ var JsApi = /** @class */ (function () {
             return !!this.attrs;
         }
         var callback;
-        // tslint:disable-next-line:triple-equals no-null-keyword
         switch (val != null && val.constructor && val.constructor.name) {
             case 'Number': // same as String
             case 'String':
@@ -156,7 +155,6 @@ var JsApi = /** @class */ (function () {
         }
         return this.someAttr(callback);
         function stringValueTest(attr) {
-            // tslint:disable-next-line:triple-equals
             return attr.local === localName && val == attr.value;
         }
         function regexpValueTest(attr) {
@@ -222,9 +220,11 @@ var JsApi = /** @class */ (function () {
         if (Array.isArray(name)) {
             name.forEach(this.removeAttr, this);
         }
+        // TODO: fix this cast
         if (!this.hasAttr(name)) {
             return false;
         }
+        // TODO: fix this cast
         delete this.attrs[name];
         if (!Object.keys(this.attrs).length) {
             delete this.attrs;

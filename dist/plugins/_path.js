@@ -158,8 +158,10 @@ function applyTransforms(elem, path, params) {
     if (!elem.hasAttr('transform') ||
         !elem.attr('transform').value ||
         elem.someAttr(function (attr) {
+            var refProps = referencesProps;
             // tslint:disable-next-line:no-bitwise
-            return ~referencesProps.indexOf(attr.name) && ~attr.value.indexOf('url(');
+            var res = ~refProps.indexOf(attr.name) && ~attr.value.indexOf('url(');
+            return !!res;
         })) {
         return path;
     }
@@ -472,7 +474,7 @@ function collapseRepeated(data) {
     var prev;
     var prevIndex;
     // Copy an array and modifieds item to keep original data untouched.
-    data = data.reduce(function (newPath, item) {
+    return data.reduce(function (newPath, item) {
         if (prev && item.data && item.instruction === prev.instruction) {
             // Concat previous data with current.
             if (item.instruction !== 'M') {
@@ -495,7 +497,6 @@ function collapseRepeated(data) {
         }
         return newPath;
     }, []);
-    return data;
 }
 function set(dest, source) {
     dest[0] = source[source.length - 2];
@@ -679,7 +680,9 @@ function gatherPoints(points, item, index, path) {
             prevCtrlPoint = [data[2] - data[0], data[3] - data[1]]; // Save control point for shorthand
             break;
         case 'T':
-            if (prev.instruction == 'Q' && prev.instruction == 'T') {
+            // TODO: is this a bug in svgo?
+            // @ts-ignore
+            if (prev.instruction === 'Q' && prev.instruction === 'T') {
                 ctrlPoint = [
                     basePoint[0] + prevCtrlPoint[0],
                     basePoint[1] + prevCtrlPoint[1],
@@ -699,7 +702,9 @@ function gatherPoints(points, item, index, path) {
             prevCtrlPoint = [data[4] - data[2], data[5] - data[3]]; // Save control point for shorthand
             break;
         case 'S':
-            if (prev.instruction == 'C' && prev.instruction == 'S') {
+            // TODO: is this a bug in svgo?
+            // @ts-ignore
+            if (prev.instruction === 'C' && prev.instruction === 'S') {
                 addPoint(subPath, [
                     basePoint[0] + 0.5 * prevCtrlPoint[0],
                     basePoint[1] + 0.5 * prevCtrlPoint[1],
@@ -747,24 +752,24 @@ function gatherPoints(points, item, index, path) {
         return n + basePoint[i % 2];
     }
     // Writes data about the extreme points on each axle
-    function addPoint(path, point) {
-        if (!path.length || point[1] > path[path.maxY][1]) {
-            path.maxY = path.length;
+    function addPoint(p, point) {
+        if (!p.length || point[1] > p[p.maxY][1]) {
+            p.maxY = p.length;
             points.maxY = points.length ? Math.max(point[1], points.maxY) : point[1];
         }
-        if (!path.length || point[0] > path[path.maxX][0]) {
-            path.maxX = path.length;
+        if (!p.length || point[0] > p[p.maxX][0]) {
+            p.maxX = p.length;
             points.maxX = points.length ? Math.max(point[0], points.maxX) : point[0];
         }
-        if (!path.length || point[1] < path[path.minY][1]) {
-            path.minY = path.length;
+        if (!p.length || point[1] < p[p.minY][1]) {
+            p.minY = p.length;
             points.minY = points.length ? Math.min(point[1], points.minY) : point[1];
         }
-        if (!path.length || point[0] < path[path.minX][0]) {
-            path.minX = path.length;
+        if (!p.length || point[0] < p[p.minX][0]) {
+            p.minX = p.length;
             points.minX = points.length ? Math.min(point[0], points.minX) : point[0];
         }
-        path.push(point);
+        p.push(point);
     }
 }
 /**
@@ -816,37 +821,55 @@ function convexHull(points) {
 function cross(o, a, b) {
     return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
 }
-/* Based on code from Snap.svg (Apache 2 license). http://snapsvg.io/
+/*
+ * Based on code from Snap.svg (Apache 2 license). http://snapsvg.io/
  * Thanks to Dmitry Baranovskiy for his great work!
  */
-// jshint ignore: start
 function a2c(x1, y1, rx, ry, angle, large_arc_flag, sweep_flag, x2, y2, recursive) {
     // For more information of where this Math came from visit:
     // http://www.w3.org/TR/SVG11/implnote.html#ArcImplementationNotes
-    var _120 = Math.PI * 120 / 180, rad = Math.PI / 180 * (+angle || 0), res = [], rotateX = function (x, y, rad) {
-        return x * Math.cos(rad) - y * Math.sin(rad);
-    }, rotateY = function (x, y, rad) {
-        return x * Math.sin(rad) + y * Math.cos(rad);
+    var _120 = Math.PI * 120 / 180;
+    var rad = Math.PI / 180 * (+angle || 0);
+    var res = [];
+    var rotateX = function (x, y, r) {
+        return x * Math.cos(r) - y * Math.sin(r);
     };
+    var rotateY = function (x, y, r) {
+        return x * Math.sin(r) + y * Math.cos(r);
+    };
+    var f1;
+    var f2;
+    var cx;
+    var cy;
     if (!recursive) {
         x1 = rotateX(x1, y1, -rad);
         y1 = rotateY(x1, y1, -rad);
         x2 = rotateX(x2, y2, -rad);
         y2 = rotateY(x2, y2, -rad);
-        var x = (x1 - x2) / 2, y = (y1 - y2) / 2;
+        var x = (x1 - x2) / 2;
+        var y = (y1 - y2) / 2;
         var h = x * x / (rx * rx) + y * y / (ry * ry);
         if (h > 1) {
             h = Math.sqrt(h);
             rx = h * rx;
             ry = h * ry;
         }
-        var rx2 = rx * rx, ry2 = ry * ry, k = (large_arc_flag == sweep_flag ? -1 : 1) *
-            Math.sqrt(Math.abs((rx2 * ry2 - rx2 * y * y - ry2 * x * x) /
-                (rx2 * y * y + ry2 * x * x))), cx = k * rx * y / ry + (x1 + x2) / 2, cy = k * -ry * x / rx + (y1 + y2) / 2, f1 = Math.asin(+((y1 - cy) / ry).toFixed(9)), f2 = Math.asin(+((y2 - cy) / ry).toFixed(9));
+        var rx2 = rx * rx;
+        var ry2 = ry * ry;
+        var k = (large_arc_flag === sweep_flag ? -1 : 1) *
+            Math.sqrt(Math.abs((rx2 * ry2 - rx2 * y * y - ry2 * x * x) / (rx2 * y * y + ry2 * x * x)));
+        cx = k * rx * y / ry + (x1 + x2) / 2;
+        cy = k * -ry * x / rx + (y1 + y2) / 2;
+        f1 = Math.asin(+((y1 - cy) / ry).toFixed(9));
+        f2 = Math.asin(+((y2 - cy) / ry).toFixed(9));
         f1 = x1 < cx ? Math.PI - f1 : f1;
         f2 = x2 < cx ? Math.PI - f2 : f2;
-        f1 < 0 && (f1 = Math.PI * 2 + f1);
-        f2 < 0 && (f2 = Math.PI * 2 + f2);
+        if (f1 < 0) {
+            f1 = Math.PI * 2 + f1;
+        }
+        if (f2 < 0) {
+            f2 = Math.PI * 2 + f2;
+        }
         if (sweep_flag && f1 > f2) {
             f1 = f1 - Math.PI * 2;
         }
@@ -862,7 +885,9 @@ function a2c(x1, y1, rx, ry, angle, large_arc_flag, sweep_flag, x2, y2, recursiv
     }
     var df = f2 - f1;
     if (Math.abs(df) > _120) {
-        var f2old = f2, x2old = x2, y2old = y2;
+        var f2old = f2;
+        var x2old = x2;
+        var y2old = y2;
         f2 = f1 + _120 * (sweep_flag && f2 > f1 ? 1 : -1);
         x2 = cx + rx * Math.cos(f2);
         y2 = cy + ry * Math.sin(f2);
@@ -874,7 +899,14 @@ function a2c(x1, y1, rx, ry, angle, large_arc_flag, sweep_flag, x2, y2, recursiv
         ]);
     }
     df = f2 - f1;
-    var c1 = Math.cos(f1), s1 = Math.sin(f1), c2 = Math.cos(f2), s2 = Math.sin(f2), t = Math.tan(df / 4), hx = 4 / 3 * rx * t, hy = 4 / 3 * ry * t, m = [
+    var c1 = Math.cos(f1);
+    var s1 = Math.sin(f1);
+    var c2 = Math.cos(f2);
+    var s2 = Math.sin(f2);
+    var t = Math.tan(df / 4);
+    var hx = 4 / 3 * rx * t;
+    var hy = 4 / 3 * ry * t;
+    var m = [
         -hx * s1,
         hy * c1,
         x2 + hx * s2 - x1,
@@ -887,13 +919,13 @@ function a2c(x1, y1, rx, ry, angle, large_arc_flag, sweep_flag, x2, y2, recursiv
     }
     else {
         res = m.concat(res);
-        var newres = [];
+        var newRes = [];
         for (var i = 0, n = res.length; i < n; i++) {
-            newres[i] =
+            newRes[i] =
                 i % 2
                     ? rotateY(res[i - 1], res[i], rad)
                     : rotateX(res[i], res[i + 1], rad);
         }
-        return newres;
+        return newRes;
     }
 }
