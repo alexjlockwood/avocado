@@ -32,11 +32,11 @@ export function processPlugins(item: JsApi, plugins: Plugin[][]) {
  * @return {Object} output data
  */
 function perItem(jsApi: JsApi, plugins: Plugin[], reverse = false) {
-  return (function monkeys(item) {
+  return (function recurseFn(item) {
     item.content = item.content.filter(i => {
       // Reverse pass.
       if (reverse && i.content) {
-        monkeys(i);
+        recurseFn(i);
       }
       // Main filter.
       let filter = true;
@@ -48,7 +48,7 @@ function perItem(jsApi: JsApi, plugins: Plugin[], reverse = false) {
       }
       // Direct pass.
       if (!reverse && i.content) {
-        monkeys(i);
+        recurseFn(i);
       }
       return filter;
     });

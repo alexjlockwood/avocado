@@ -23,8 +23,8 @@ import { xml2js } from './xml2js';
 // import * as removeUnusedNS from './plugins/removeUnusedNS';
 // import * as sortAttrs from './plugins/sortAttrs';
 
+// The order is from https://github.com/svg/svgo/blob/master/.svgo.yml
 export const plugins: { [name: string]: Plugin } = {
-  // The order is from https://github.com/svg/svgo/blob/master/.svgo.yml
   removeXMLProcInst,
   removeComments,
   // cleanupAttrs,
@@ -44,8 +44,8 @@ export const plugins: { [name: string]: Plugin } = {
 };
 
 // Arrange plugins by type - this is what plugins() expects.
-const optimizedPluginsData = (function(plugins: Plugin[]) {
-  return plugins.map(item => [item]).reduce(
+const optimizedPluginsData = (function(ps: Plugin[]) {
+  return ps.map(item => [item]).reduce(
     (arr, item) => {
       const last = arr[arr.length - 1];
       if (last && item[0].type === last[0].type) {
