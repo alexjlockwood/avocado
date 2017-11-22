@@ -1,0 +1,15 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:pathData="M 10.3467,50.09 L 10.0000,50.20"/>
+    <path android:pathData="m 10 10 l 1 1 M 20 20"/>
+    <path android:pathData="m 0 0 l .1133 1 l .1133 2 l .1133 3"/>
+    <path android:pathData="m 0 0 l .0025 3 .0025 2 .0025 3 .0025 2"/>
+</vector>
+
+@@@
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:pathData="M10.347 50.09L10 50.2"/>
+    <path android:pathData="M10 10l1 1m9 9"/>
+    <path android:pathData="M0 0l.113 1 .114 2L.34 6"/>
+    <path android:pathData="M0 0l.003 3 .002 2 .003 3 .002 2"/>
+</vector>

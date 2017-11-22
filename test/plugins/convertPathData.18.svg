@@ -1,0 +1,9 @@
+<svg xmlns:android="http://schemas.android.com/apk/res/android" android:width="36dp" android:height="36dp" android:viewportWidth="36" android:viewportHeight="36">
+    <path d="M32 4a4 4 0 0 0-4-4H8a4 4 0 0 1-4 4v28a4 4 0 0 1 4 4h20a4 4 0 0 0 4-4V4z" fill="#888" transform="matrix(1 0 0 -1 0 36)"/>
+</svg>
+
+@@@
+
+<svg xmlns:android="http://schemas.android.com/apk/res/android" android:width="36dp" android:height="36dp" android:viewportWidth="36" android:viewportHeight="36">
+    <path d="M32 32a4 4 0 0 1-4 4H8a4 4 0 0 0-4-4V4a4 4 0 0 0 4-4h20a4 4 0 0 1 4 4v28z" fill="#888"/>
+</svg>

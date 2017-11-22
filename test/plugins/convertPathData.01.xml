@@ -1,0 +1,37 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:pathData="M 10,50"/>
+    <path android:pathData="M 10 50"/>
+    <path android:pathData="M10 50"/>
+    <path android:pathData="M10,50"/>
+    <path android:pathData="M10-3.05176e-005"/>
+    <path android:pathData="M10-50.2.30-2"/>
+    <path android:pathData="M10-50l.2.30"/>
+    <path android:pathData="M 10 , 50"/>
+    <path android:pathData="M -10,-50"/>
+    <path android:pathData="M -10 -50"/>
+    <path android:pathData="M-10 -50"/>
+    <path android:pathData="M-10-50"/>
+    <path android:pathData="M-10,-50"/>
+    <path android:pathData="M -10 , -50"/>
+    <path android:pathData="..."/>
+</vector>
+
+@@@
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:pathData="M10 50"/>
+    <path android:pathData="M10 50"/>
+    <path android:pathData="M10 50"/>
+    <path android:pathData="M10 50"/>
+    <path android:pathData="M10 0"/>
+    <path android:pathData="M10-50.2L.3-2"/>
+    <path android:pathData="M10-50l.2.3"/>
+    <path android:pathData="M10 50"/>
+    <path android:pathData="M-10-50"/>
+    <path android:pathData="M-10-50"/>
+    <path android:pathData="M-10-50"/>
+    <path android:pathData="M-10-50"/>
+    <path android:pathData="M-10-50"/>
+    <path android:pathData="M-10-50"/>
+    <path android:pathData="..."/>
+</vector>
