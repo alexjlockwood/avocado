@@ -84,12 +84,16 @@ export class Avdo {
           resolve(result);
         }
       };
-      const onFail = error => reject(error);
+      const onFail = (error: any) => reject(error);
       this.optimizeOnce(xml, onSuccess, onFail);
     });
   }
 
-  private optimizeOnce(xml: string, onSuccess, onFail) {
+  private optimizeOnce(
+    xml: string,
+    onSuccess: (result: string) => void,
+    onFail: (error: string) => void,
+  ) {
     const { options } = this;
     xml2js(
       xml,

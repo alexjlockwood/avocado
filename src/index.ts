@@ -35,7 +35,6 @@ import * as PROGRAM from 'commander';
 import { Avdo, Options } from './avdo';
 
 import { js2xml } from './js2xml';
-import { xml2js } from './xml2js';
 
 import FS = require('fs');
 import PATH = require('path');

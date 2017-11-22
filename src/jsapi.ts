@@ -170,8 +170,7 @@ export class JsApi implements Options {
     if (!arguments.length) {
       return !!this.attrs;
     }
-    let callback: Function;
-    // tslint:disable-next-line:triple-equals no-null-keyword
+    let callback: (attr: Attr) => boolean;
     switch (val != null && val.constructor && val.constructor.name) {
       case 'Number': // same as String
       case 'String':
@@ -189,22 +188,21 @@ export class JsApi implements Options {
     }
     return this.someAttr(callback);
 
-    function stringValueTest(attr) {
-      // tslint:disable-next-line:triple-equals
+    function stringValueTest(attr: Attr) {
       return attr.local === localName && val == attr.value;
     }
 
-    function regexpValueTest(attr) {
+    function regexpValueTest(attr: Attr) {
       const valRegExp = val as RegExp;
       return attr.local === localName && valRegExp.test(attr.value);
     }
 
-    function funcValueTest(attr) {
+    function funcValueTest(attr: Attr) {
       const valFn = val as Function;
       return attr.local === localName && valFn(attr.value);
     }
 
-    function nameTest(attr) {
+    function nameTest(attr: Attr) {
       return attr.local === localName;
     }
   }
@@ -259,17 +257,19 @@ export class JsApi implements Options {
    * @param {String} [val] attribute value
    * @return {Boolean}
    */
-  removeAttr(name) {
+  removeAttr(name: string | string[]) {
     if (!arguments.length) {
       return false;
     }
     if (Array.isArray(name)) {
       name.forEach(this.removeAttr, this);
     }
-    if (!this.hasAttr(name)) {
+    // TODO: fix this cast
+    if (!this.hasAttr(name as any)) {
       return false;
     }
-    delete this.attrs[name];
+    // TODO: fix this cast
+    delete this.attrs[name as any];
     if (!Object.keys(this.attrs).length) {
       delete this.attrs;
     }
@@ -281,8 +281,8 @@ export class JsApi implements Options {
    * @param {Object} [attr={}] attribute object
    * @return {Object|Boolean} created attribute or false if no attr was passed in
    */
-  addAttr(attr) {
-    attr = attr || {};
+  addAttr(attr: Attr) {
+    attr = attr || ({} as Attr);
     if (
       attr.name === undefined ||
       attr.prefix === undefined ||
@@ -319,7 +319,7 @@ export class JsApi implements Options {
    * @param {Object} [context] callback context
    * @return {Boolean} false if there are no any attributes
    */
-  someAttr(callback: Function, context?: any) {
+  someAttr(callback: (attr: Attr) => boolean, context?: any) {
     if (!this.hasAttr()) {
       return false;
     }

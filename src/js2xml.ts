@@ -1,7 +1,7 @@
 import { EOL } from 'os';
 import { JsApi } from './jsapi';
 
-const entities = {
+const entities: { [key: string]: string } = {
   '&': '&amp;',
   "'": '&apos;',
   '"': '&quot;',
@@ -171,7 +171,6 @@ class Js2Xml {
       const openIndent = this.createIndent();
       const dataEnd = '';
       const processedData = '' + this.convert(data);
-
       return (
         openIndent +
         tagOpenStart +
@@ -195,7 +194,7 @@ class Js2Xml {
    */
   private createAttrs(elem: JsApi) {
     let attrs = '';
-    elem.eachAttr(function(this: Js2Xml, attr) {
+    elem.eachAttr(function(this: Js2Xml, attr: Attr) {
       if (attr.value !== undefined) {
         attrs +=
           ' ' +

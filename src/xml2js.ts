@@ -15,7 +15,7 @@ const saxOptions: SAX.SAXOptions = {
  * @param {Function} callback
  */
 export function xml2js(
-  data,
+  data: string,
   onSuccess: (jsApi: JsApi) => void,
   onFail: (error: string) => void,
 ) {
