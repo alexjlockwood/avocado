@@ -1,5 +1,6 @@
+import { Attr, JsApi } from './jsapi';
+
 import { EOL } from 'os';
-import { JsApi } from './jsapi';
 
 const entities: { [key: string]: string } = {
   '&': '&amp;',
