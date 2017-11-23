@@ -29,7 +29,9 @@
     "sax": "^1.2.4"
   },
   "devDependencies": {
+    "@types/chai": "^4.0.5",
     "@types/commander": "^2.11.0",
+    "@types/mocha": "^2.2.44",
     "@types/node": "^8.0.53",
     "@types/sax": "^1.0.0",
     "chai": "^4.1.2",

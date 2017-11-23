@@ -1,18 +1,17 @@
 import { Avdo, plugins } from '../../src/lib/avdo';
-import { describe, it } from 'mocha';
 
 import { Plugin } from '../../src/plugins/_types';
 import { expect } from 'chai';
 
-const FS = require('fs');
-const PATH = require('path');
-const EOL = require('os').EOL;
-const regEOL = new RegExp(EOL, 'g');
+import FS = require('fs');
+import PATH = require('path');
+import OS = require('os');
+const regEOL = new RegExp(OS.EOL, 'g');
 const regFilename = /^(.*)\.(\d+)\.xml$/;
 
 describe('plugin tests', () => {
   FS.readdirSync(__dirname).forEach(file => {
-    const match: [string, string] = file.match(regFilename);
+    const match = file.match(regFilename);
     let index: string;
     let name: string;
 
@@ -48,12 +47,12 @@ describe('plugin tests', () => {
   });
 });
 
-function normalize(file) {
+function normalize(file: string) {
   return file.trim().replace(regEOL, '\n');
 }
 
-function readFile(file) {
-  return new Promise((resolve, reject) => {
+function readFile(file: string) {
+  return new Promise<string>((resolve, reject) => {
     FS.readFile(file, 'utf8', (err, data) => {
       if (err) {
         return reject(err);

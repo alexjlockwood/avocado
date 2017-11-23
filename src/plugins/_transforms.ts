@@ -72,35 +72,35 @@ export function transformsMultiply(transforms) {
  * @type {Object}
  */
 export const mth = {
-  rad: function(deg) {
+  rad: function(deg: number) {
     return deg * Math.PI / 180;
   },
 
-  deg: function(rad) {
+  deg: function(rad: number) {
     return rad * 180 / Math.PI;
   },
 
-  cos: function(deg) {
+  cos: function(deg: number) {
     return Math.cos(this.rad(deg));
   },
 
-  acos: function(val, floatPrecision) {
+  acos: function(val: number, floatPrecision: number) {
     return +this.deg(Math.acos(val)).toFixed(floatPrecision);
   },
 
-  sin: function(deg) {
+  sin: function(deg: number) {
     return Math.sin(this.rad(deg));
   },
 
-  asin: function(val, floatPrecision) {
+  asin: function(val: number, floatPrecision: number) {
     return +this.deg(Math.asin(val)).toFixed(floatPrecision);
   },
 
-  tan: function(deg) {
+  tan: function(deg: number) {
     return Math.tan(this.rad(deg));
   },
 
-  atan: function(val, floatPrecision) {
+  atan: function(val: number, floatPrecision: number) {
     return +this.deg(Math.atan(val)).toFixed(floatPrecision);
   },
 };
@@ -273,7 +273,7 @@ function transformToMatrix(transform) {
  * @param {Array} transform transformation matrix
  * @return {Array} arc transformed input arc
  */
-export function transformArc(arc, transform) {
+export function transformArc(arc: number[], transform: number[]) {
   let a = arc[0];
   let b = arc[1];
   const rot = arc[2] * Math.PI / 180;
@@ -335,7 +335,7 @@ export function transformArc(arc, transform) {
  * @param {Array} b matrix B data
  * @return {Array} result
  */
-function multiplyTransformMatrices(a, b) {
+function multiplyTransformMatrices(a: number[], b: number[]) {
   return [
     a[0] * b[0] + a[2] * b[1],
     a[1] * b[0] + a[3] * b[1],
