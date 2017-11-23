@@ -1,6 +1,6 @@
 {
   "name": "avdo",
-  "version": "0.1-alpha",
+  "version": "0.1.0-alpha",
   "description": "Vector Drawable & Animated Vector Drawable optimizer",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
