@@ -357,6 +357,17 @@ function checkIsDir(path: string) {
 }
 
 /**
+ * Write an error and exit.
+ * @param {Error} error
+ * @return {Promise} a promise for running tests
+ */
+function printErrorAndExit(error: any) {
+  console.error(error);
+  process.exit(1);
+  return Promise.reject(error); // for tests
+}
+
+/**
  * Show list of available plugins with short description.
  */
 // function showAvailablePlugins() {
@@ -370,17 +381,6 @@ function checkIsDir(path: string) {
 //     .join('\n');
 //   console.log(list);
 // }
-
-/**
- * Write an error and exit.
- * @param {Error} error
- * @return {Promise} a promise for running tests
- */
-function printErrorAndExit(error: any) {
-  console.error(error);
-  process.exit(1);
-  return Promise.reject(error); // for tests
-}
 
 /*
 npm run build && \
@@ -409,101 +409,3 @@ node bin/avdo --multipass -s \
   </group>
 </vector>'
 */
-
-// /**
-//  * Optimize SVG data.
-//  * @param {string} data SVG content to optimize
-//  * @param {string} output where to write optimized file
-//  * @param {string} [input] input file name (being used if output is a directory)
-//  * @param {Object} [options] options
-//  * @return {Promise}
-//  */
-// function processXml(
-//   data: string,
-//   output: string,
-//   input?: string,
-//   options: { quiet?: boolean } = {},
-// ) {
-//   const startTime = Date.now();
-//   const prevFileSize = Buffer.byteLength(data, 'utf8');
-//   return new Avdo().optimize(data).then(result => {
-//     const resultFileSize = Buffer.byteLength(result, 'utf8');
-//     const processingTime = Date.now() - startTime;
-//     return writeOutput(input, output, result).then(
-//       () => {
-//         if (options && !options.quiet && output !== '-') {
-//           if (input) {
-//             console.log(`\n${PATH.basename(input)}:`);
-//           }
-//           printTimeInfo(processingTime);
-//           printProfitInfo(prevFileSize, resultFileSize);
-//         }
-//       },
-//       error =>
-//         Promise.reject(
-//           new Error(
-//             error.code === 'ENOTDIR'
-//               ? `Error: output '${output}' is not a directory.`
-//               : error,
-//           ),
-//         ),
-//     );
-//   });
-// }
-
-// function printTimeInfo(timeMillis: number) {
-//   console.log(`Done in ${timeMillis} ms!`);
-// }
-
-// function printProfitInfo(inBytes: number, outBytes: number) {
-//   const profitPercents = 100 - outBytes * 100 / inBytes;
-//   console.log(
-//     Math.round(inBytes / 1024 * 1000) / 1000 +
-//       ' KiB' +
-//       (profitPercents < 0 ? ' + ' : ' - ') +
-//       (String(Math.abs(Math.round(profitPercents * 10) / 10) + '%') as any)
-//         .green +
-//       ' = ' +
-//       Math.round(outBytes / 1024 * 1000) / 1000 +
-//       ' KiB',
-//   );
-//   console.log(inBytes, outBytes);
-// }
-
-// /**
-//  * Write result of an optimization.
-//  * @param {string} input
-//  * @param {string} output output file name. '-' for stdout
-//  * @param {string} data data to write
-//  * @return {Promise}
-//  */
-// function writeOutput(input: string, output: string, data: string) {
-//   if (output === '-') {
-//     console.log(data);
-//     return Promise.resolve();
-//   }
-//   return writeFile(output, data, 'utf8').catch(error =>
-//     checkWriteFileError(input, output, data, error),
-//   );
-// }
-
-// /**
-//  * Check for saving file error. If the output is a dir, then write file there.
-//  * @param {string} input
-//  * @param {string} output
-//  * @param {string} data
-//  * @param {Error} error
-//  * @return {Promise}
-//  */
-// function checkWriteFileError(
-//   input: string,
-//   output: string,
-//   data: string,
-//   error: any,
-// ) {
-//   if (error.code === 'EISDIR' && input) {
-//     return writeFile(PATH.resolve(output, PATH.basename(input)), data, 'utf8');
-//   } else {
-//     return Promise.reject(error);
-//   }
-// }
