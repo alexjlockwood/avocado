@@ -795,9 +795,9 @@ interface MinMax {
 
 function gatherPoints(
   points: Array<number[][] & Partial<MinMax>> & Partial<MinMax>,
-  item: { instruction: string; data: number[] },
+  item: { instruction: string; data?: number[] },
   index: number,
-  path: { instruction: string; data: number[] }[],
+  path: { instruction: string; data?: number[] }[],
 ) {
   let subPath = points.length && points[points.length - 1];
   const prev = index && path[index - 1];
