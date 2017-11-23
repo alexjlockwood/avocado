@@ -186,7 +186,7 @@ function processDirectory(
         ),
       )
     : Promise.reject(
-        new Error(`No SVG files have been found in '${dir}' directory.`),
+        new Error(`No XML files were found in directory: '${dir}'`),
       );
 }
 
