@@ -1,4 +1,4 @@
-import { Avdo, plugins } from '../../src/avdo';
+import { Avdo, plugins } from '../../src/lib/avdo';
 import { describe, it } from 'mocha';
 
 import { Plugin } from '../../src/plugins/_types';

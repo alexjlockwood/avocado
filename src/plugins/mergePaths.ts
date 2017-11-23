@@ -1,6 +1,6 @@
 import { intersects, js2path, path2js } from './_path';
 
-import { JsApi } from '../jsapi';
+import { JsApi } from '../lib/jsapi';
 import { Plugin } from './_types';
 
 export interface Params {

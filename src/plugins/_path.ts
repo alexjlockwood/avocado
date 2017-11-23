@@ -2,7 +2,7 @@ import * as _collections from './_collections';
 import * as _tools from './_tools';
 import * as _transforms from './_transforms';
 
-import { JsApi } from '../jsapi';
+import { JsApi } from '../lib/jsapi';
 
 const regPathInstructions = /([MmLlHhVvCcSsQqTtAaZz])\s*/;
 const regPathData = /[-+]?(?:\d*\.\d+|\d+\.?)([eE][-+]?\d+)?/g;

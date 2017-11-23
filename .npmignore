@@ -1,5 +1,7 @@
+.editorconfig
+.prettierrc
+.prettierignore
+.travis.yml
 src/
 tsconfig.json
 tslint.json
-.prettierrc
-.prettierignore

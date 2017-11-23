@@ -1,4 +1,4 @@
-import { JsApi } from '../jsapi';
+import { JsApi } from '../lib/jsapi';
 
 export interface Plugin<Params = any> {
   readonly type: 'perItem' | 'perItemReverse' | 'full';

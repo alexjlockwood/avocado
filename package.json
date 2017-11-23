@@ -39,5 +39,8 @@
     "prettier": "^1.8.2",
     "ts-node": "^3.3.0",
     "typescript": "^2.6.1"
+  },
+  "engines": {
+    "node": ">=6.12.0"
   }
 }

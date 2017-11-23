@@ -1,15 +1,15 @@
 // Code forked and modified from svgo v1.0.3.
 
 import { JsApi } from './jsapi';
-import { Plugin } from './plugins/_types';
-import { collapseGroups } from './plugins/collapseGroups';
-import { convertPathData } from './plugins/convertPathData';
+import { Plugin } from '../plugins/_types';
+import { collapseGroups } from '../plugins/collapseGroups';
+import { convertPathData } from '../plugins/convertPathData';
 import { js2xml } from './js2xml';
-import { mergePaths } from './plugins/mergePaths';
-import { processPlugins } from './plugins/_plugins';
-import { removeComments } from './plugins/removeComments';
-import { removeEmptyGroups } from './plugins/removeEmptyGroups';
-import { removeXMLProcInst } from './plugins/removeXMLProcInst';
+import { mergePaths } from '../plugins/mergePaths';
+import { processPlugins } from '../plugins/_plugins';
+import { removeComments } from '../plugins/removeComments';
+import { removeEmptyGroups } from '../plugins/removeEmptyGroups';
+import { removeXMLProcInst } from '../plugins/removeXMLProcInst';
 import { xml2js } from './xml2js';
 
 // import * as cleanupAttrs from './plugins/cleanupAttrs';
@@ -62,14 +62,18 @@ const optimizedPluginsData = (function(ps: Plugin[]) {
 export interface Options {
   plugins?: Plugin[][];
   multipass?: boolean;
-  // TODO: make it possible to configure indentation too
+  // TODO: make it possible to configure indentation too?
   pretty?: boolean;
 }
 
 export class Avdo {
-  constructor(private readonly options: Options = {}) {
-    options.plugins = options.plugins || optimizedPluginsData;
-  }
+  constructor(
+    private readonly options: Options = {
+      plugins: optimizedPluginsData,
+      multipass: true,
+      pretty: true,
+    },
+  ) {}
 
   optimize(xml: string): Promise<string> {
     return new Promise((resolve, reject) => {
