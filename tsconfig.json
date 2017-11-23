@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "alwaysStrict": true,
     "declaration": true,
     "lib": ["dom", "es2017"],
     "module": "commonjs",
