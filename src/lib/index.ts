@@ -204,7 +204,12 @@ function optimizeFile(
 ) {
   return readFile(file, 'utf8').then(
     data => processSVGData(config, data, output, file),
-    error => checkOptimizeFileError(config, file, output, error),
+    error => {
+      if (error.code === 'EISDIR') {
+        return optimizeFolder(config, file, output);
+      }
+      return checkOptimizeFileError(config, file, output, error);
+    },
   );
 }
 
@@ -313,9 +318,7 @@ function checkOptimizeFileError(
   output: string,
   error: { code: string; path: string },
 ) {
-  if (error.code === 'EISDIR') {
-    return optimizeFolder(config, input, output);
-  } else if (error.code === 'ENOENT') {
+  if (error.code === 'ENOENT') {
     return Promise.reject(
       new Error(`Error: no such file or directory '${error.path}'.`),
     );
