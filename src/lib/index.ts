@@ -47,7 +47,7 @@ export async function run() {
     )
     .option(
       '-d, --dir <dir>',
-      'optimizes and rewrite all *.xml files in a directory',
+      'optimize and rewrite all *.xml files in a directory',
     )
     .option('-q, --quiet', 'only output error messages')
     // TODO: add precision option
