@@ -1,4 +1,5 @@
-import { JsApi } from '../../src/lib/jsapi';
+import { Attr, JsApi } from '../../src/lib/jsapi';
+
 import { xml2js } from '../../src/lib/xml2js';
 
 import FS = require('fs');
@@ -234,187 +235,192 @@ describe('xml2js', () => {
         });
       });
 
-      //     describe('attr()', () => {
-      //       it('svg should have property "attr"', () => {
-      //         return root.content[3].should.have.property('attr');
-      //       });
+      describe('attr()', () => {
+        it('svg should have property "attr"', () => {
+          return root.content[2].should.have.property('attr');
+        });
 
-      //       it('svg.attr("xmlns") should be an instance of Object', () => {
-      //         return root.content[3].attr('xmlns').should.be.an.instanceOf(Object);
-      //       });
+        it('svg.attr("xmlns") should be an instance of Object', () => {
+          return root.content[2].attr('xmlns').should.be.an.instanceOf(Object);
+        });
 
-      //       it('svg.attr("xmlns", "http://www.w3.org/2000/svg") should be an instance of Object', () => {
-      //         return root.content[3]
-      //           .attr('xmlns', 'http://www.w3.org/2000/svg')
-      //           .should.be.an.instanceOf(Object);
-      //       });
+        it('svg.attr("xmlns", "http://www.w3.org/2000/svg") should be an instance of Object', () => {
+          return root.content[2]
+            .attr('xmlns', 'http://www.w3.org/2000/svg')
+            .should.be.an.instanceOf(Object);
+        });
 
-      //       it('svg.attr("xmlns", "trololo") should be an undefined', () => {
-      //         return SHOULD.not.exist(root.content[3].attr('xmlns', 'trololo'));
-      //       });
+        it('svg.attr("xmlns", "trololo") should be an undefined', () => {
+          return SHOULD.not.exist(root.content[2].attr('xmlns', 'trololo'));
+        });
 
-      //       it('svg.attr("trololo") should be an undefined', () => {
-      //         return SHOULD.not.exist(root.content[3].attr('trololo'));
-      //       });
+        it('svg.attr("trololo") should be an undefined', () => {
+          return SHOULD.not.exist(root.content[2].attr('trololo'));
+        });
 
-      //       it('svg.attr() should be undefined', () => {
-      //         return SHOULD.not.exist(root.content[3].attr());
-      //       });
-      //     });
+        it('svg.attr() should be undefined', () => {
+          return SHOULD.not.exist(root.content[2].attr(undefined));
+        });
+      });
 
-      //     describe('removeAttr()', () => {
-      //       it('svg should have property "removeAttr"', () => {
-      //         return root.content[3].should.have.property('removeAttr');
-      //       });
+      describe('removeAttr()', () => {
+        it('svg should have property "removeAttr"', () => {
+          return root.content[2].should.have.property('removeAttr');
+        });
 
-      //       it('svg.removeAttr("width") should be true', () => {
-      //         root.content[3].removeAttr('width').should.be.true;
+        it('svg.removeAttr("width") should be true', () => {
+          return (
+            root.content[2].removeAttr('width').should.be.true &&
+            root.content[2].hasAttr('width').should.be.false
+          );
+        });
 
-      //         return root.content[3].hasAttr('width').should.be.false;
-      //       });
+        it('svg.removeAttr("height", "120px") should be true', () => {
+          return (
+            root.content[2].removeAttr(['height', '120px']).should.be.true &&
+            root.content[2].hasAttr('height').should.be.false
+          );
+        });
 
-      //       it('svg.removeAttr("height", "120px") should be true', () => {
-      //         root.content[3].removeAttr('height', '120px').should.be.true;
+        it('svg.removeAttr("x", "1px") should be false', () => {
+          return (
+            root.content[2].removeAttr(['x', '1px']).should.be.false &&
+            root.content[2].hasAttr('x').should.be.true
+          );
+        });
 
-      //         return root.content[3].hasAttr('height').should.be.false;
-      //       });
+        it('svg.removeAttr("z") should be false', () => {
+          return root.content[2].removeAttr('z').should.be.false;
+        });
 
-      //       it('svg.removeAttr("x", "1px") should be false', () => {
-      //         root.content[3].removeAttr('x', '1px').should.be.false;
+        it('svg.removeAttr() should be false', () => {
+          return root.content[2].removeAttr([]).should.be.false;
+        });
+      });
 
-      //         return root.content[3].hasAttr('x').should.be.true;
-      //       });
+      describe('addAttr()', () => {
+        const attr: Attr = {
+          name: 'test',
+          value: '3',
+          prefix: '',
+          local: 'test',
+        };
 
-      //       it('svg.removeAttr("z") should be false', () => {
-      //         return root.content[3].removeAttr('z').should.be.false;
-      //       });
+        it('svg should have property "addAttr"', () => {
+          return root.content[2].should.have.property('addAttr');
+        });
 
-      //       it('svg.removeAttr() should be false', () => {
-      //         return root.content[3].removeAttr().should.be.false;
-      //       });
-      //     });
+        it('svg.addAttr(attr) should be an instance of Object', () => {
+          return root.content[2].addAttr(attr).should.be.an.instanceOf(Object);
+        });
 
-      //     describe('addAttr()', () => {
-      //       var attr = {
-      //         name: 'test',
-      //         value: 3,
-      //         prefix: '',
-      //         local: 'test',
-      //       };
+        it('svg.content[1].content[0].addAttr(attr) should be an instance of Object', () => {
+          return root.content[2].content[1].content[0]
+            .addAttr(attr)
+            .should.be.an.instanceOf(Object);
+        });
 
-      //       it('svg should have property "addAttr"', () => {
-      //         return root.content[3].should.have.property('addAttr');
-      //       });
+        it('svg.addAttr({ name: "trololo" }) should be false', () => {
+          return root.content[2].addAttr({ name: 'trololo' } as Attr).should.be
+            .false;
+        });
 
-      //       it('svg.addAttr(attr) should be an instance of Object', () => {
-      //         return root.content[3].addAttr(attr).should.be.an.instanceOf(Object);
-      //       });
+        it('svg.addAttr({ name: "trololo", value: 3 }) should be false', () => {
+          return root.content[2].addAttr({
+            name: 'trololo',
+            value: '3',
+            prefix: '',
+            local: '',
+          }).should.be.false;
+        });
 
-      //       it('svg.content[1].content[0].addAttr(attr) should be an instance of Object', () => {
-      //         return root.content[3].content[1].content[0]
-      //           .addAttr(attr)
-      //           .should.be.an.instanceOf(Object);
-      //       });
+        it('svg.addAttr({ name: "trololo", value: 3, prefix: "" }) should be false', () => {
+          return root.content[2].addAttr({
+            name: 'trololo',
+            value: '3',
+            prefix: '',
+            local: '',
+          }).should.be.false;
+        });
 
-      //       it('svg.addAttr({ name: "trololo" }) should be false', () => {
-      //         return root.content[3].addAttr({ name: 'trololo' }).should.be.false;
-      //       });
+        it('svg.addAttr({ name: "trololo", value: 3, local: "trololo" }) should be false', () => {
+          return root.content[2].addAttr({
+            name: 'trololo',
+            value: '3',
+            prefix: '',
+            local: 'trololo',
+          }).should.be.false;
+        });
 
-      //       it('svg.addAttr({ name: "trololo", value: 3 }) should be false', () => {
-      //         return root.content[3].addAttr({ name: 'trololo', value: 3 }).should
-      //           .be.false;
-      //       });
+        it('svg.addAttr() should be false', () => {
+          return root.content[2].addAttr({} as Attr).should.be.false;
+        });
+      });
 
-      //       it('svg.addAttr({ name: "trololo", value: 3, prefix: "" }) should be false', () => {
-      //         return root.content[3].addAttr({
-      //           name: 'trololo',
-      //           value: 3,
-      //           prefix: '',
-      //         }).should.be.false;
-      //       });
+      describe('eachAttr()', () => {
+        it('svg should have property "eachAttr"', () => {
+          return root.content[2].should.have.property('eachAttr');
+        });
 
-      //       it('svg.addAttr({ name: "trololo", value: 3, local: "trololo" }) should be false', () => {
-      //         return root.content[3].addAttr({
-      //           name: 'trololo',
-      //           value: 3,
-      //           local: 'trololo',
-      //         }).should.be.false;
-      //       });
+        it('svg.content[0].eachAttr(() => {}) should be true', () => {
+          return (
+            root.content[2].content[2].eachAttr(attr => (attr['test'] = 1))
+              .should.be.true &&
+            root.content[2].content[2].attr('style')['test'].should.equal(1)
+          );
+        });
 
-      //       it('svg.addAttr() should be false', () => {
-      //         return root.content[3].addAttr().should.be.false;
-      //       });
-      //     });
+        it('svg.content[1].eachAttr(() => {}) should be false', () => {
+          return root.content[2].content[1].eachAttr(undefined).should.be.false;
+        });
+      });
+    });
+  });
 
-      //     describe('eachAttr()', () => {
-      //       it('svg should have property "eachAttr"', () => {
-      //         return root.content[3].should.have.property('eachAttr');
-      //       });
+  describe('malformed svg', () => {
+    const filepath = PATH.resolve(__dirname, './test.bad.xml');
+    let root: JsApi;
+    let error;
+    let caughtError;
 
-      //       it('svg.content[0].eachAttr(() => {}) should be true', () => {
-      //         root.content[3].content[0].eachAttr(function(attr) {
-      //           attr.test = 1;
-      //         }).should.be.true;
-
-      //         return root.content[3].content[0].attr('type').test.should.equal(1);
-      //       });
-
-      //       it('svg.content[1].eachAttr(() => {}) should be false', () => {
-      //         return root.content[3].content[1].eachAttr().should.be.false;
-      //       });
-      //     });
-      //   });
+    before(done => {
+      FS.readFile(filepath, 'utf8', function(err, data) {
+        if (err) {
+          throw err;
+        }
+        try {
+          xml2js(
+            data,
+            result => {
+              root = result;
+            },
+            e => {
+              caughtError = e;
+            },
+          );
+        } catch (e) {
+          error = e;
+        }
+        done();
+      });
     });
 
-    // describe('malformed svg', () => {
-    //   var filepath = PATH.resolve(__dirname, './test.bad.xml'),
-    //     root,
-    //     error;
+    describe('caughtError', () => {
+      it('should be an instance of String', () => {
+        return caughtError.should.an.instanceOf(String);
+      });
 
-    //   before(function(done) {
-    //     FS.readFile(filepath, 'utf8', function(err, data) {
-    //       if (err) {
-    //         throw err;
-    //       }
+      it('should be "Error in parsing SVG: Unexpected close tag"', () => {
+        return caughtError.should.equal(
+          'Error in parsing XML: Unexpected close tag\nLine: 10\nColumn: 15\nChar: >',
+        );
+      });
+    });
 
-    //       try {
-    //         xml2js(
-    //           data,
-    //           function(result) {
-    //             root = result;
-    //           },
-    //           _ => {},
-    //         );
-    //       } catch (e) {
-    //         error = e;
-    //       }
-
-    //       done();
-    //     });
-    //   });
-
-    //   describe('root', () => {
-    //     it('should have property "error"', () => {
-    //       return root.should.have.property('error');
-    //     });
-    //   });
-
-    //   describe('root.error', () => {
-    //     it('should be an instance of String', () => {
-    //       return root.error.should.an.instanceOf(String);
-    //     });
-
-    //     it('should be "Error in parsing SVG: Unexpected close tag"', () => {
-    //       return root.error.should.equal(
-    //         'Error in parsing SVG: Unexpected close tag\nLine: 10\nColumn: 15\nChar: >',
-    //       );
-    //     });
-    //   });
-
-    //   describe('error', () => {
-    //     it('should not be thrown', () => {
-    //       return SHOULD.not.exist(error);
-    //     });
-    //   });
+    describe('error', () => {
+      it('should not be thrown', () => {
+        return SHOULD.not.exist(error);
+      });
+    });
   });
 });
