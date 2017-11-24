@@ -39,7 +39,7 @@ describe('plugin tests', () => {
           });
 
           return avdo.optimize(orig).then(result => {
-            expect(normalize(result)).to.equal(should);
+            normalize(result).should.be.equal(should);
           });
         });
       });
