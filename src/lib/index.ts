@@ -61,7 +61,7 @@ export async function run() {
   let output: string[] = cli.output;
 
   if (
-    (!input || input[0] === '-') &&
+    (!input.length || input[0] === '-') &&
     !cli.string &&
     !cli.dir &&
     process.stdin.isTTY === true
