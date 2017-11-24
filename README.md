@@ -28,17 +28,17 @@ npm install -g avdo
 ## Usage
 
 ```text
-  Usage: avdo [options] [file]
+Usage: avdo [options] [file]
 
-  Options:
+Options:
 
-    -V, --version          output the version number
-    -s, --string <string>  input VD or AVD string
-    -i, --input <file>     input file/directory, or "-" for STDIN
-    -o, --output <file>    output file/directory (same as the input file by default), or "-" for STDOUT
-    -d, --dir <dir>        optimizes and rewrite all *.xml files in a directory
-    -q, --quiet            only output error messages
-    -h, --help             output usage information
+  -V, --version          output the version number
+  -s, --string <string>  input VD or AVD string
+  -i, --input <file>     input file/directory, or "-" for STDIN
+  -o, --output <file>    output file/directory (same as the input file by default), or "-" for STDOUT
+  -d, --dir <dir>        optimizes and rewrite all *.xml files in a directory
+  -q, --quiet            only output error messages
+  -h, --help             output usage information
 ```
 
 ### Examples
