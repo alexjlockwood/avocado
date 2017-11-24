@@ -127,7 +127,7 @@ export class JsApi implements Options {
     if (!Array.isArray(insertion)) {
       insertion = Array.apply(undefined, arguments).slice(2);
     }
-    insertion.forEach(function(inner) {
+    insertion.forEach(function(this: JsApi, inner) {
       inner.parentNode = this;
     }, this);
     return this.content.splice.apply(
