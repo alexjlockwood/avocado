@@ -1,8 +1,8 @@
 # avdo
 
 [![Build status][travis-badge]][travis-badge-url]
-[![Coverage status][coveralls-badge]][coveralls-badge-url]
 [![npm version][npm-badge]][npm-badge-url]
+[![Coverage status][coveralls-badge]][coveralls-badge-url]
 
 ---
 
