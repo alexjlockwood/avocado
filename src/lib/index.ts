@@ -157,32 +157,23 @@ function optimizeDirectory(
   if (!config.quiet) {
     console.log(`Processing directory '${dir}':\n`);
   }
-  return readDirFn(dir).then(files =>
-    processDirectory(config, dir, files, output),
-  );
-}
-
-function processDirectory(
-  config: { quiet: boolean },
-  dir: string,
-  files: string[],
-  output: string,
-) {
-  // Take only *.xml files.
-  const svgFiles = files.filter(name => /\.xml$/.test(name));
-  return svgFiles.length
-    ? Promise.all(
-        svgFiles.map(name =>
-          optimizeFile(
-            config,
-            path.resolve(dir, name),
-            path.resolve(output, name),
+  return readDirFn(dir).then(files => {
+    // Take only *.xml files.
+    const svgFiles = files.filter(name => /\.xml$/.test(name));
+    return svgFiles.length
+      ? Promise.all(
+          svgFiles.map(name =>
+            optimizeFile(
+              config,
+              path.resolve(dir, name),
+              path.resolve(output, name),
+            ),
           ),
-        ),
-      )
-    : Promise.reject(
-        new Error(`No XML files were found in directory: '${dir}'`),
-      );
+        )
+      : Promise.reject(
+          new Error(`No XML files were found in directory: '${dir}'`),
+        );
+  });
 }
 
 function optimizeFile(
@@ -302,9 +293,9 @@ function checkWriteFileError(
 /**
  * Synchronously check if path is a directory. Tolerant to errors like ENOENT.
  */
-function checkIsDir(path: string) {
+function checkIsDir(filePath: string) {
   try {
-    return fs.lstatSync(path).isDirectory();
+    return fs.lstatSync(filePath).isDirectory();
   } catch (e) {
     return false;
   }

@@ -57,7 +57,7 @@ const optimizedPluginsData = (function(ps: Plugin[]) {
     },
     [] as Plugin[][]
   );
-})(Array.from(Object.values(plugins)));
+})(Object.keys(plugins).map(k => plugins[k]));
 
 export interface Options {
   plugins?: Plugin[][];
