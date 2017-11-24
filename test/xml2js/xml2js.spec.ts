@@ -380,8 +380,8 @@ describe('xml2js', () => {
   describe('malformed svg', () => {
     const filepath = PATH.resolve(__dirname, './test.bad.xml');
     let root: JsApi;
-    let error;
-    let caughtError;
+    let error: any;
+    let caughtError: string;
 
     before(done => {
       FS.readFile(filepath, 'utf8', function(err, data) {
