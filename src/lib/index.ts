@@ -60,8 +60,6 @@ export async function run() {
   const input: string[] = cli.input ? [cli.input] : cli.args;
   let output: string[] = cli.output ? [cli.output] : undefined;
 
-  console.log(cli.output);
-
   if (
     (!input.length || input[0] === '-') &&
     !cli.string &&
