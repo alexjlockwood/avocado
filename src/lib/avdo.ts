@@ -32,8 +32,7 @@ export const plugins: { [name: string]: Plugin } = {
   // sortAttrs,
 };
 
-// Arrange plugins by type - this is what plugins() expects.
-const optimizedPluginsData = (function(ps: Plugin[]) {
+const batchedPlugins = (function(ps: Plugin[]) {
   return ps.map(item => [item]).reduce(
     (arr, item) => {
       const last = arr[arr.length - 1];
@@ -58,7 +57,7 @@ export interface Options {
 export class Avdo {
   constructor(
     private readonly options: Options = {
-      plugins: optimizedPluginsData,
+      plugins: batchedPlugins,
       multipass: true,
       pretty: true,
     },
@@ -67,17 +66,18 @@ export class Avdo {
   optimize(xml: string) {
     return new Promise<string>((resolve, reject) => {
       const maxPassCount = this.options.multipass ? 10 : 1;
-      let counter = 0;
+      let numPasses = 0;
       let prevResultSize = Number.POSITIVE_INFINITY;
+      const onFail = (error: string) => reject(error);
       const onSuccess = (result: string) => {
-        if (++counter < maxPassCount && result.length < prevResultSize) {
+        numPasses++;
+        if (numPasses < maxPassCount && result.length < prevResultSize) {
           prevResultSize = result.length;
           this.optimizeOnce(result, onSuccess, onFail);
         } else {
           resolve(result);
         }
       };
-      const onFail = (error: any) => reject(error);
       this.optimizeOnce(xml, onSuccess, onFail);
     });
   }

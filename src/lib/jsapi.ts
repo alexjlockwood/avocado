@@ -82,17 +82,17 @@ export class JsApi implements Options {
     return !!this.elem && this.elem === elemNames;
   }
 
-  /**
-   * Renames an element.
-   * @param {String} name new element name
-   * @return {Object} element
-   */
-  renameElem(name: string) {
-    if (name && typeof name === 'string') {
-      this.elem = this.local = name;
-    }
-    return this;
-  }
+  // /**
+  //  * Renames an element.
+  //  * @param {String} name new element name
+  //  * @return {Object} element
+  //  */
+  // renameElem(name: string) {
+  //   if (name && typeof name === 'string') {
+  //     this.elem = this.local = name;
+  //   }
+  //   return this;
+  // }
 
   /**
    * Determine if element is empty.
@@ -102,16 +102,16 @@ export class JsApi implements Options {
     return !this.content || !this.content.length;
   }
 
-  /**
-   * Find the closest ancestor of the current element.
-   * @param elemName
-   * @return {Object}
-   */
-  closestElem(elemName: string) {
-    let node: JsApi = this;
-    while ((node = node.parentNode) && !node.isElem(elemName)) {}
-    return node;
-  }
+  // /**
+  //  * Find the closest ancestor of the current element.
+  //  * @param elemName
+  //  * @return {Object}
+  //  */
+  // closestElem(elemName: string) {
+  //   let node: JsApi = this;
+  //   while ((node = node.parentNode) && !node.isElem(elemName)) {}
+  //   return node;
+  // }
 
   /**
    * Changes content by removing elements and/or adding new elements.
@@ -155,57 +155,57 @@ export class JsApi implements Options {
     return !!this.attrs[name];
   }
 
-  /**
-   * Determine if element has an attribute by local name
-   * (any, or by name or by name + value).
-   *
-   * @param {String} [localName] local attribute name
-   * @param {Number|String|RegExp|Function} [val] attribute value (will be toString()'ed or executed, otherwise ignored)
-   * @return {Boolean}
-   */
-  hasAttrLocal(localName?: string, val?: number | string | RegExp | Function) {
-    if (!this.attrs || !Object.keys(this.attrs).length) {
-      return false;
-    }
-    if (!arguments.length) {
-      return !!this.attrs;
-    }
-    let callback: (attr: Attr) => boolean;
-    switch (val != null && val.constructor && val.constructor.name) {
-      case 'Number': // same as String
-      case 'String':
-        callback = stringValueTest;
-        break;
-      case 'RegExp':
-        callback = regexpValueTest;
-        break;
-      case 'Function':
-        callback = funcValueTest;
-        break;
-      default:
-        callback = nameTest;
-        break;
-    }
-    return this.someAttr(callback);
+  // /**
+  //  * Determine if element has an attribute by local name
+  //  * (any, or by name or by name + value).
+  //  *
+  //  * @param {String} [localName] local attribute name
+  //  * @param {Number|String|RegExp|Function} [val] attribute value (will be toString()'ed or executed, otherwise ignored)
+  //  * @return {Boolean}
+  //  */
+  // hasAttrLocal(localName?: string, val?: number | string | RegExp | Function) {
+  //   if (!this.attrs || !Object.keys(this.attrs).length) {
+  //     return false;
+  //   }
+  //   if (!arguments.length) {
+  //     return !!this.attrs;
+  //   }
+  //   let callback: (attr: Attr) => boolean;
+  //   switch (val != null && val.constructor && val.constructor.name) {
+  //     case 'Number': // same as String
+  //     case 'String':
+  //       callback = stringValueTest;
+  //       break;
+  //     case 'RegExp':
+  //       callback = regexpValueTest;
+  //       break;
+  //     case 'Function':
+  //       callback = funcValueTest;
+  //       break;
+  //     default:
+  //       callback = nameTest;
+  //       break;
+  //   }
+  //   return this.someAttr(callback);
 
-    function stringValueTest(attr: Attr) {
-      return attr.local === localName && val == attr.value;
-    }
+  //   function stringValueTest(attr: Attr) {
+  //     return attr.local === localName && val == attr.value;
+  //   }
 
-    function regexpValueTest(attr: Attr) {
-      const valRegExp = val as RegExp;
-      return attr.local === localName && valRegExp.test(attr.value);
-    }
+  //   function regexpValueTest(attr: Attr) {
+  //     const valRegExp = val as RegExp;
+  //     return attr.local === localName && valRegExp.test(attr.value);
+  //   }
 
-    function funcValueTest(attr: Attr) {
-      const valFn = val as Function;
-      return attr.local === localName && valFn(attr.value);
-    }
+  //   function funcValueTest(attr: Attr) {
+  //     const valFn = val as Function;
+  //     return attr.local === localName && valFn(attr.value);
+  //   }
 
-    function nameTest(attr: Attr) {
-      return attr.local === localName;
-    }
-  }
+  //   function nameTest(attr: Attr) {
+  //     return attr.local === localName;
+  //   }
+  // }
 
   /**
    * Get a specific attribute from an element (by name or name + value).
