@@ -6,8 +6,8 @@
 
 ---
 
-**Important note**: this tool is currently in alpha, meaning there may be breaking changes
-in the future and that it probably isn't ready for production use yet.
+**Important note**: This tool is currently in **alpha** and is not yet ready
+to be used in production. Note that there may be breaking changes in the future as well.
 
 ---
 
