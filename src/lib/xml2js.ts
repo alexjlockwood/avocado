@@ -62,7 +62,7 @@ export function xml2js(
   };
 
   sax.onerror = function(error) {
-    error.message = 'Error in parsing SVG: ' + error.message;
+    error.message = 'Error in parsing XML: ' + error.message;
     if (error.message.indexOf('Unexpected end') < 0) {
       throw error;
     }
