@@ -6,8 +6,11 @@
 
 ---
 
-**Important note**: This tool is currently in **alpha** and is not yet ready
-to be used in production. Note that there may be breaking changes in the future as well.
+**Important note**:
+
+This tool is currently in **alpha** and is not yet ready to be used in production.
+
+Note that there may be breaking changes in the future as well.
 
 ---
 
@@ -16,7 +19,7 @@ to be used in production. Note that there may be breaking changes in the future 
 
 ## Installation
 
-You can install `avdo` using [npm][npm] using the following command:
+You can install `avdo` using [npm][npm] w/ the following command:
 
 ```sh
 npm install -g avdo
