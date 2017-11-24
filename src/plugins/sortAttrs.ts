@@ -31,8 +31,6 @@
 //  *
 //  * @param {Object} item current iteration item
 //  * @param {Object} params plugin params
-//  *
-//  * @author Nikolay Frantsev
 //  */
 // export function fn(item, params) {
 //   var attrs = [],

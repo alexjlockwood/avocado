@@ -61,8 +61,6 @@
 //  * @param {Object} item current iteration item
 //  * @param {Object} params plugin params
 //  * @return {Boolean} if false, item will be filtered out
-//  *
-//  * @author Kir Belevich
 //  */
 // export function fn(item, params) {
 //   // elems w/o namespace prefix

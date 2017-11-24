@@ -34,8 +34,6 @@
 //  *
 //  * @param {Object} item current iteration item
 //  * @param {Object} params plugin params
-//  *
-//  * @author Kir Belevich
 //  */
 // export function fn(data, params) {
 //   var currentID,
