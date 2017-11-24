@@ -41,6 +41,36 @@ npm install -g avdo
     -h, --help             output usage information
 ```
 
+### Examples
+
+with files:
+
+```sh
+# Optimize (and overwrite) a VD/AVD file.
+avdo vector.xml
+
+# Optimize (and overwrite) multiple VD/AVD files.
+avdo *.xml
+
+# Optimize a VD/AVD file and write the output to a new file.
+avdo vector.xml -o vector.min.xml
+
+# Optimize a VD/AVD using standard input and standard output.
+cat vector.xml | avdo -i - -o - > vector.min.xml
+
+# Optimize (and overwrite) all of the VD/AVD files in a directory.
+avdo -d path/to/directory
+
+# Optimize all VD/AVD files in a directory and write them to a new directory.
+avdo -d path/to/input/directory -o path/to/output/directory
+
+# Optimize all files ending with '.xml' and write them to a new directory.
+avdo *.xml -o path/to/output/directory
+
+# Pass a string as input and write the output to a new file.
+avdo -s '<vector>...</vector>' -o vector.min.xml
+```
+
 ## Build instructions
 
 If you want to contribute, first be sure to install the latest version of
