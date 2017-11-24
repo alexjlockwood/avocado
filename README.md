@@ -43,8 +43,6 @@ npm install -g avdo
 
 ### Examples
 
-with files:
-
 ```sh
 # Optimize (and overwrite) a VD/AVD file.
 avdo vector.xml
@@ -75,8 +73,8 @@ avdo -s '<vector>...</vector>' -o vector.min.xml
 
 If you want to contribute, first be sure to install the latest version of
 [`Node.js`](https://nodejs.org/) and [`npm`](https://www.npmjs.com/).
-I recommend using [vscode][vscode] as your IDE, as it has great,
-out-of-the-box support for TypeScript.
+If you're not sure what IDE to use, I highly recommend checking out
+[vscode][vscode].
 
 Then clone this repository and in the root directory, run:
 
