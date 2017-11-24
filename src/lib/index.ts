@@ -58,7 +58,9 @@ export async function run() {
     .parse(process.argv);
 
   const input: string[] = cli.input ? [cli.input] : cli.args;
-  let output: string[] = cli.output;
+  let output: string[] = cli.output ? [cli.output] : undefined;
+
+  console.log(cli.output);
 
   if (
     (!input.length || input[0] === '-') &&
@@ -79,9 +81,7 @@ export async function run() {
     const nodeVersion = String(pkgJson.engines.node).match(/\d*(\.\d+)*/)[0];
     if (parseFloat(process.versions.node) < parseFloat(nodeVersion)) {
       await printErrorAndExit(
-        `Error: ${pkgJson.name} requires Node.js version ${
-          nodeVersion
-        } or higher.`,
+        `${pkgJson.name} requires Node.js version ${nodeVersion} or higher.`,
       );
       return;
     }
@@ -222,7 +222,7 @@ function processData(
         Promise.reject(
           new Error(
             error.code === 'ENOTDIR'
-              ? `Error: output '${output}' is not a directory.`
+              ? `Output '${output}' is not a directory.`
               : error,
           ),
         ),
@@ -267,7 +267,7 @@ function checkOptimizeFileError(
 ) {
   if (error.code === 'ENOENT') {
     return Promise.reject(
-      new Error(`Error: no such file or directory '${error.path}'.`),
+      new Error(`No such file or directory '${error.path}'.`),
     );
   }
   return Promise.reject(error);
