@@ -1,4 +1,4 @@
-// Code forked and modified from svgo v1.0.3.
+// Plugin code based off of svgo v1.0.3.
 
 import { JsApi } from './jsapi';
 import { Plugin } from '../plugins/_types';
@@ -11,17 +11,6 @@ import { removeComments } from '../plugins/removeComments';
 import { removeEmptyGroups } from '../plugins/removeEmptyGroups';
 import { removeXMLProcInst } from '../plugins/removeXMLProcInst';
 import { xml2js } from './xml2js';
-
-// import * as cleanupAttrs from './plugins/cleanupAttrs';
-// import * as cleanupIDs from './plugins/cleanupIDs';
-// import * as cleanupNumericValues from './plugins/cleanupNumericValues';
-// import * as convertColors from './plugins/convertColors';
-// import * as removeUnknownsAndDefaults from './plugins/removeUnknownsAndDefaults';
-// import * as removeUselessStrokeAndFill from './plugins/removeUselessStrokeAndFill';
-// import * as removeHiddenElems from './plugins/removeHiddenElems';
-// import * as convertTransform from './plugins/convertTransform';
-// import * as removeUnusedNS from './plugins/removeUnusedNS';
-// import * as sortAttrs from './plugins/sortAttrs';
 
 // The order is from https://github.com/svg/svgo/blob/master/.svgo.yml
 export const plugins: { [name: string]: Plugin } = {
@@ -59,10 +48,10 @@ const optimizedPluginsData = (function(ps: Plugin[]) {
   );
 })(Object.keys(plugins).map(k => plugins[k]));
 
+// TODO: make it possible to configure indentation too?
 export interface Options {
   plugins?: Plugin[][];
   multipass?: boolean;
-  // TODO: make it possible to configure indentation too?
   pretty?: boolean;
 }
 
@@ -75,8 +64,8 @@ export class Avdo {
     },
   ) {}
 
-  optimize(xml: string): Promise<string> {
-    return new Promise((resolve, reject) => {
+  optimize(xml: string) {
+    return new Promise<string>((resolve, reject) => {
       const maxPassCount = this.options.multipass ? 10 : 1;
       let counter = 0;
       let prevResultSize = Number.POSITIVE_INFINITY;
@@ -98,12 +87,11 @@ export class Avdo {
     onSuccess: (result: string) => void,
     onFail: (error: string) => void,
   ) {
-    const { options } = this;
     xml2js(
       xml,
       jsApi => {
-        jsApi = processPlugins(jsApi, options.plugins);
-        onSuccess(js2xml(jsApi, { pretty: options.pretty }));
+        jsApi = processPlugins(jsApi, this.options.plugins);
+        onSuccess(js2xml(jsApi, { pretty: this.options.pretty }));
       },
       error => onFail(error),
     );
