@@ -17,6 +17,22 @@ const cleanupOutData = _tools.cleanupOutData;
 const removeLeadingZero = _tools.removeLeadingZero;
 let prevCtrlPoint: number[];
 
+export interface PathItem {
+  instruction: string;
+  data?: number[];
+  coords?: number[];
+  base?: number[];
+}
+
+export type Point = [number, number];
+
+export type Curve = [number, number, number, number, number, number];
+
+export interface Circle {
+  center: Point;
+  radius: number;
+}
+
 /**
  * Convert path string to JS representation.
  */
@@ -97,12 +113,155 @@ export function path2js(path: JsApi) {
 }
 
 /**
+ * Convert absolute path data coordinates to relative.
+ *
+ * @param {Array} path input path data
+ * @param {Object} params plugin params
+ * @return {Array} output path data
+ */
+export function convertToRelative(path: PathItem[]) {
+  const point = [0, 0];
+  const subpathPoint = [0, 0];
+  let baseItem: PathItem;
+
+  path.forEach((item, index) => {
+    let instruction = item.instruction;
+    const data = item.data;
+
+    // data !== !z
+    if (data) {
+      // already relative
+      // recalculate current point
+      if ('mcslqta'.indexOf(instruction) > -1) {
+        point[0] += data[data.length - 2];
+        point[1] += data[data.length - 1];
+
+        if (instruction === 'm') {
+          subpathPoint[0] = point[0];
+          subpathPoint[1] = point[1];
+          baseItem = item;
+        }
+      } else if (instruction === 'h') {
+        point[0] += data[0];
+      } else if (instruction === 'v') {
+        point[1] += data[0];
+      }
+
+      // convert absolute path data coordinates to relative
+      // if "M" was not transformed from "m"
+      // M → m
+      if (instruction === 'M') {
+        if (index > 0) {
+          instruction = 'm';
+        }
+
+        data[0] -= point[0];
+        data[1] -= point[1];
+
+        subpathPoint[0] = point[0] += data[0];
+        subpathPoint[1] = point[1] += data[1];
+
+        baseItem = item;
+      } else if ('LT'.indexOf(instruction) > -1) {
+        // L → l
+        // T → t
+        instruction = instruction.toLowerCase();
+
+        // x y
+        // 0 1
+        data[0] -= point[0];
+        data[1] -= point[1];
+
+        point[0] += data[0];
+        point[1] += data[1];
+
+        // C → c
+      } else if (instruction === 'C') {
+        instruction = 'c';
+
+        // x1 y1 x2 y2 x y
+        // 0  1  2  3  4 5
+        data[0] -= point[0];
+        data[1] -= point[1];
+        data[2] -= point[0];
+        data[3] -= point[1];
+        data[4] -= point[0];
+        data[5] -= point[1];
+
+        point[0] += data[4];
+        point[1] += data[5];
+
+        // S → s
+        // Q → q
+      } else if ('SQ'.indexOf(instruction) > -1) {
+        instruction = instruction.toLowerCase();
+
+        // x1 y1 x y
+        // 0  1  2 3
+        data[0] -= point[0];
+        data[1] -= point[1];
+        data[2] -= point[0];
+        data[3] -= point[1];
+
+        point[0] += data[2];
+        point[1] += data[3];
+
+        // A → a
+      } else if (instruction === 'A') {
+        instruction = 'a';
+
+        // rx ry x-axis-rotation large-arc-flag sweep-flag x y
+        // 0  1  2               3              4          5 6
+        data[5] -= point[0];
+        data[6] -= point[1];
+
+        point[0] += data[5];
+        point[1] += data[6];
+
+        // H → h
+      } else if (instruction === 'H') {
+        instruction = 'h';
+
+        data[0] -= point[0];
+
+        point[0] += data[0];
+
+        // V → v
+      } else if (instruction === 'V') {
+        instruction = 'v';
+
+        data[0] -= point[1];
+
+        point[1] += data[0];
+      }
+
+      item.instruction = instruction;
+      item.data = data;
+
+      // store absolute coordinates for later use
+      item.coords = point.slice(-2);
+    } else if (instruction === 'z') {
+      // !data === z, reset current point
+      if (baseItem) {
+        item.coords = baseItem.coords;
+      }
+      point[0] = subpathPoint[0];
+      point[1] = subpathPoint[1];
+    }
+
+    item.base = index > 0 ? path[index - 1].coords : [0, 0];
+  });
+
+  return path;
+}
+
+/**
  * Convert relative Path data to absolute.
  *
  * @param {Array} data input data
  * @return {Array} output data
  */
-function relative2absolute(data: { instruction: string; data?: number[] }[]) {
+function relative2absolute(data: PathItem[]) {
   const currentPoint = [0, 0];
   const subpathPoint = [0, 0];
 
@@ -158,8 +317,9 @@ function relative2absolute(data: { instruction: string; data?: number[] }[]) {
  * @return {Array} output path data
  */
 export function applyTransforms(
+  group: JsApi,
   elem: JsApi,
-  path: Item[],
+  path: PathItem[],
   params: { transformPrecision: number; applyTransformsStroked: boolean },
 ) {
   // if there are no 'stroke' attr and references to other objects such as
@@ -177,7 +337,13 @@ export function applyTransforms(
     return path;
   }
 
-  const matrix = transformsMultiply(transform2js(elem.attr('transform').value));
+  const groupAttrs = getGroupAttrs(group);
+  const matrix = {
+    name: 'matrix',
+    data: groupToMatrix(groupAttrs),
+  };
+
+  // const matrix = transformsMultiply(transform2js(elem.attr('transform').value));
   const stroke = elem.computedAttr('stroke');
   const id = elem.computedAttr('id');
   const transformPrecision = params.transformPrecision;
@@ -314,9 +480,110 @@ export function applyTransforms(
   });
 
   // remove transform attr
-  elem.removeAttr('transform');
+  // elem.removeAttr('transform');
 
   return path;
+}
+
+export function getGroupAttrs(group: JsApi) {
+  const px = getGroupAttr(group, 'pivotX', 0);
+  const py = getGroupAttr(group, 'pivotY', 0);
+  const sx = getGroupAttr(group, 'scaleX', 1);
+  const sy = getGroupAttr(group, 'scaleY', 1);
+  const tx = getGroupAttr(group, 'translateX', 0);
+  const ty = getGroupAttr(group, 'translateY', 0);
+  const r = getGroupAttr(group, 'rotation', 0);
+  return { px, py, sx, sy, tx, ty, r };
+}
+
+function getGroupAttr(
+  group: JsApi,
+  attrLocalName: string,
+  defaultValue: number,
+) {
+  const attrName = `android:${attrLocalName}`;
+  const result = group.hasAttr(attrName)
+    ? +group.attr(attrName).value
+    : defaultValue;
+  return result;
+}
+
+function removeGroupAttrs(group: JsApi) {
+  group.removeAttr('android:pivotX');
+  group.removeAttr('android:pivotY');
+  group.removeAttr('android:scaleX');
+  group.removeAttr('android:scaleY');
+  group.removeAttr('android:translateX');
+  group.removeAttr('android:translateY');
+  group.removeAttr('android:rotation');
+}
+
+export type Matrix = [number, number, number, number, number, number];
+
+export interface GroupTransform {
+  sx: number;
+  sy: number;
+  r: number;
+  tx: number;
+  ty: number;
+  px: number;
+  py: number;
+}
+
+/**
+ * Extracts the x/y scaling from the transformation matrix.
+ */
+export function getScaling(matrix: Matrix) {
+  const [a, b, c, d] = matrix;
+  const sx = (a >= 0 ? 1 : -1) * Math.hypot(a, c);
+  const sy = (d >= 0 ? 1 : -1) * Math.hypot(b, d);
+  return { sx, sy };
+}
+/**
+ * Extracts the rotation in degrees from the transformation matrix.
+ */
+export function getRotation(matrix: Matrix) {
+  return { r: 180 / Math.PI * Math.atan2(-matrix[2], matrix[0]) };
+}
+
+/**
+ * Extracts the x/y translation from the transformation matrix.
+ */
+export function getTranslation(matrix: Matrix) {
+  return { tx: matrix[4], ty: matrix[5] };
+}
+
+function flattenMatrices(matrices: Matrix[]) {
+  const identity: Matrix = [1, 0, 0, 1, 0, 0];
+  return matrices.reduce((m1, m2) => {
+    // [a c e]   [a' c' e']
+    // [b d f] * [b' d' f']
+    // [0 0 1]   [0  0  1 ]
+    return [
+      m1[0] * m2[0] + m1[2] * m2[1],
+      m1[1] * m2[0] + m1[3] * m2[1],
+      m1[0] * m2[2] + m1[2] * m2[3],
+      m1[1] * m2[2] + m1[3] * m2[3],
+      m1[0] * m2[4] + m1[2] * m2[5] + m1[4],
+      m1[1] * m2[4] + m1[3] * m2[5] + m1[5],
+    ];
+  }, identity);
+}
+
+function groupToMatrix({ sx, sy, r, tx, ty, px, py }: GroupTransform) {
+  const cosr = Math.cos(r * Math.PI / 180);
+  const sinr = Math.sin(r * Math.PI / 180);
+  return flattenMatrices([
+    [1, 0, 0, 1, px, py],
+    [1, 0, 0, 1, tx, ty],
+    [cosr, sinr, -sinr, cosr, 0, 0],
+    [sx, 0, 0, sy, 0, 0],
+    [1, 0, 0, 1, -px, -py],
+  ]);
+}
+
+export function flattenGroups(groups: GroupTransform[]) {
+  return flattenMatrices(groups.map(groupToMatrix));
 }
 
 /**
@@ -545,7 +812,7 @@ function computeQuadraticFirstDerivativeRoot(a: number, b: number, c: number) {
  */
 export function js2path(
   path: JsApi,
-  data: Array<{ instruction: string; data?: number[] }>,
+  data: PathItem[],
   params: {
     collapseRepeated: boolean;
     leadingZero: boolean;
@@ -562,18 +829,11 @@ export function js2path(
   }, '');
 }
 
-export interface Item {
-  instruction: string;
-  data?: number[];
-  coords?: number[];
-  base?: number[];
-}
-
 /**
  * Collapse repeated instructions data.
  */
-function collapseRepeated(data: Item[]) {
-  let prev: Item;
+function collapseRepeated(data: PathItem[]) {
+  let prev: PathItem;
   let prevIndex: number;
 
   // Copy an array and modifieds item to keep original data untouched.
@@ -599,7 +859,7 @@ function collapseRepeated(data: Item[]) {
       }
       return newPath;
     },
-    [] as Item[],
+    [] as PathItem[],
   );
 }
 
@@ -618,10 +878,7 @@ function set(dest: number[], source: number[]) {
  * @param {Array} path2 JS path representation
  * @return {Boolean}
  */
-export function intersects(
-  path1: { instruction: string; data?: number[] }[],
-  path2: { instruction: string; data?: number[] }[],
-) {
+export function intersects(path1: PathItem[], path2: PathItem[]) {
   if (path1.length < 3 || path2.length < 3) {
     return false; // Nothing to fill.
   }
@@ -795,9 +1052,9 @@ interface MinMax {
 
 function gatherPoints(
   points: Array<number[][] & Partial<MinMax>> & Partial<MinMax>,
-  item: { instruction: string; data?: number[] },
+  item: PathItem,
   index: number,
-  path: { instruction: string; data?: number[] }[],
+  path: PathItem[],
 ) {
   let subPath = points.length && points[points.length - 1];
   const prev = index && path[index - 1];

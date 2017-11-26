@@ -13,7 +13,13 @@ function fn(item: JsApi) {
   }
   item.content.forEach((g, i) => {
     // Collapse non-empty groups with no attributes.
-    if (g.isElem('group') && !g.isEmpty() && !g.hasAttr()) {
+    if (
+      g.isElem('group') &&
+      !g.isEmpty() &&
+      !g.hasAttr() &&
+      // TODO: figure out if there is a good way to optimize groups w/ clip-paths...
+      !g.content.some(c => c.isElem('clip-path'))
+    ) {
       item.spliceContent(i, 1, g.content);
     }
   });

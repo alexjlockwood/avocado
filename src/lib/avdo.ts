@@ -2,6 +2,7 @@
 
 import { JsApi } from './jsapi';
 import { Plugin } from '../plugins/_types';
+import { bakeGroupTransforms } from '../plugins/bakeGroupTransforms';
 import { collapseGroups } from '../plugins/collapseGroups';
 import { convertPathData } from '../plugins/convertPathData';
 import { js2xml } from './js2xml';
@@ -23,6 +24,7 @@ export const plugins: { [name: string]: Plugin } = {
   // removeUnknownsAndDefaults,
   // removeUselessStrokeAndFill,
   // removeHiddenElems,
+  bakeGroupTransforms,
   collapseGroups,
   convertPathData,
   // convertTransform,

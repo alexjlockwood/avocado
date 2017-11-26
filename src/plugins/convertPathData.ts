@@ -1,4 +1,13 @@
-import { applyTransforms, js2path, path2js } from './_path';
+import {
+  Circle,
+  Curve,
+  PathItem,
+  Point,
+  applyTransforms,
+  convertToRelative,
+  js2path,
+  path2js,
+} from './_path';
 
 import { JsApi } from '../lib/jsapi';
 import { Plugin } from './_types';
@@ -58,9 +67,9 @@ function fn(item: JsApi, params: Params) {
   }
 
   convertToRelative(data);
-  if (params.applyTransforms) {
-    data = applyTransforms(item, data, params);
-  }
+  // if (params.applyTransforms) {
+  //   data = applyTransforms(item, data, params);
+  // }
   data = filters(data, params);
   if (params.utilizeAbsolute) {
     data = convertToMixed(data, params);
@@ -70,165 +79,9 @@ function fn(item: JsApi, params: Params) {
   return item;
 }
 
-/**
- * Convert absolute path data coordinates to relative.
- *
- * @param {Array} path input path data
- * @param {Object} params plugin params
- * @return {Array} output path data
- */
-function convertToRelative(
-  path: {
-    instruction: string;
-    coords?: number[];
-    base?: number[];
-    data?: number[];
-  }[],
-) {
-  const point = [0, 0];
-  const subpathPoint = [0, 0];
-  let baseItem: { instruction: string; coords?: number[]; data?: number[] };
-
-  path.forEach((item, index) => {
-    let instruction = item.instruction;
-    const data = item.data;
-
-    // data !== !z
-    if (data) {
-      // already relative
-      // recalculate current point
-      if ('mcslqta'.indexOf(instruction) > -1) {
-        point[0] += data[data.length - 2];
-        point[1] += data[data.length - 1];
-
-        if (instruction === 'm') {
-          subpathPoint[0] = point[0];
-          subpathPoint[1] = point[1];
-          baseItem = item;
-        }
-      } else if (instruction === 'h') {
-        point[0] += data[0];
-      } else if (instruction === 'v') {
-        point[1] += data[0];
-      }
-
-      // convert absolute path data coordinates to relative
-      // if "M" was not transformed from "m"
-      // M → m
-      if (instruction === 'M') {
-        if (index > 0) {
-          instruction = 'm';
-        }
-
-        data[0] -= point[0];
-        data[1] -= point[1];
-
-        subpathPoint[0] = point[0] += data[0];
-        subpathPoint[1] = point[1] += data[1];
-
-        baseItem = item;
-      } else if ('LT'.indexOf(instruction) > -1) {
-        // L → l
-        // T → t
-        instruction = instruction.toLowerCase();
-
-        // x y
-        // 0 1
-        data[0] -= point[0];
-        data[1] -= point[1];
-
-        point[0] += data[0];
-        point[1] += data[1];
-
-        // C → c
-      } else if (instruction === 'C') {
-        instruction = 'c';
-
-        // x1 y1 x2 y2 x y
-        // 0  1  2  3  4 5
-        data[0] -= point[0];
-        data[1] -= point[1];
-        data[2] -= point[0];
-        data[3] -= point[1];
-        data[4] -= point[0];
-        data[5] -= point[1];
-
-        point[0] += data[4];
-        point[1] += data[5];
-
-        // S → s
-        // Q → q
-      } else if ('SQ'.indexOf(instruction) > -1) {
-        instruction = instruction.toLowerCase();
-
-        // x1 y1 x y
-        // 0  1  2 3
-        data[0] -= point[0];
-        data[1] -= point[1];
-        data[2] -= point[0];
-        data[3] -= point[1];
-
-        point[0] += data[2];
-        point[1] += data[3];
-
-        // A → a
-      } else if (instruction === 'A') {
-        instruction = 'a';
-
-        // rx ry x-axis-rotation large-arc-flag sweep-flag x y
-        // 0  1  2               3              4          5 6
-        data[5] -= point[0];
-        data[6] -= point[1];
-
-        point[0] += data[5];
-        point[1] += data[6];
-
-        // H → h
-      } else if (instruction === 'H') {
-        instruction = 'h';
-
-        data[0] -= point[0];
-
-        point[0] += data[0];
-
-        // V → v
-      } else if (instruction === 'V') {
-        instruction = 'v';
-
-        data[0] -= point[1];
-
-        point[1] += data[0];
-      }
-
-      item.instruction = instruction;
-      item.data = data;
-
-      // store absolute coordinates for later use
-      item.coords = point.slice(-2);
-    } else if (instruction === 'z') {
-      // !data === z, reset current point
-      if (baseItem) {
-        item.coords = baseItem.coords;
-      }
-      point[0] = subpathPoint[0];
-      point[1] = subpathPoint[1];
-    }
-
-    item.base = index > 0 ? path[index - 1].coords : [0, 0];
-  });
-
-  return path;
-}
-
 function filters(
-  pathRes: {
-    instruction: string;
-    coords?: number[];
-    base?: number[];
-    data?: number[];
-    // TODO: avoid this caching hackery?
-    sdata?: number[];
-  }[],
+  // TODO: avoid this caching hackery?
+  pathRes: Array<PathItem & { sdata?: number[] }>,
   params: Params,
 ) {
   const stringify = data2Path.bind(undefined, params);
@@ -243,7 +96,7 @@ function filters(
 
     if (data) {
       let sdata = data;
-      let circle;
+      let circle: Circle;
 
       if (instruction === 's') {
         sdata = [0, 0].concat(data);
@@ -263,7 +116,7 @@ function filters(
         params.makeArcs &&
         (instruction === 'c' || instruction === 's') &&
         isConvex(sdata) &&
-        (circle = findCircle(sdata))
+        (circle = findCircle(sdata as Curve))
       ) {
         const r = roundData([circle.radius])[0];
         let angle = findArcAngle(sdata, circle);
@@ -276,7 +129,7 @@ function filters(
         };
         const output = [arc];
         // relative coordinates to adjust the found circle
-        const relCenter = [
+        const relCenter: Point = [
           circle.center[0] - sdata[4],
           circle.center[1] - sdata[5],
         ];
@@ -313,16 +166,17 @@ function filters(
         let j = index;
         // tslint:disable-next-line:no-bitwise
         for (; (next = path[++j]) && ~'cs'.indexOf(next.instruction); ) {
-          let nextData = next.data;
+          let nextDataTemp = next.data;
           if (next.instruction === 's') {
             nextLonghand = makeLonghand(
               { instruction: 's', data: next.data.slice() },
               path[j - 1].data,
             );
-            nextData = nextLonghand.data;
-            nextLonghand.data = nextData.slice(0, 2);
+            nextDataTemp = nextLonghand.data;
+            nextLonghand.data = nextDataTemp.slice(0, 2);
             suffix = stringify([nextLonghand]);
           }
+          const nextData = nextDataTemp as Curve;
           if (isConvex(nextData) && isArc(nextData, relCircle)) {
             angle += findArcAngle(nextData, relCircle);
             if (angle - 2 * Math.PI > 1e-3) {
@@ -588,10 +442,7 @@ function filters(
  * @param {Array} data input path data
  * @return {Boolean} output
  */
-function convertToMixed(
-  path: { instruction: string; data?: number[]; base?: number[] }[],
-  params: Params,
-) {
+function convertToMixed(path: PathItem[], params: Params) {
   let prev = path[0];
 
   path = path.filter(function(item, index) {
@@ -683,7 +534,7 @@ function isConvex(data: number[]) {
  * @param {Array} coords 8 numbers for 4 pairs of coordinates (x,y)
  * @return {Array|undefined} output coordinate of lines' crosspoint
  */
-function getIntersection(coords: number[]) {
+function getIntersection(coords: number[]): Point | undefined {
   // Prev line equation parameters.
   const a1 = coords[1] - coords[3]; // y1 - y2
   const b1 = coords[2] - coords[0]; // x2 - x1
@@ -698,7 +549,10 @@ function getIntersection(coords: number[]) {
     return undefined; // parallel lines havn't an intersection
   }
 
-  const cross = [(b1 * c2 - b2 * c1) / denom, (a1 * c2 - a2 * c1) / -denom];
+  const cross: Point = [
+    (b1 * c2 - b2 * c1) / denom,
+    (a1 * c2 - a2 * c1) / -denom,
+  ];
   if (
     !isNaN(cross[0]) &&
     !isNaN(cross[1]) &&
@@ -783,7 +637,7 @@ function makeLonghand<T extends { instruction: string; data?: number[] }>(
 /**
  * Returns distance between two points.
  */
-function getDistance(p1: number[], p2: number[]) {
+function getDistance(p1: Point, p2: Point) {
   return Math.sqrt(Math.pow(p1[0] - p2[0], 2) + Math.pow(p1[1] - p2[1], 2));
 }
 
@@ -796,7 +650,7 @@ function getDistance(p1: number[], p2: number[]) {
  * @return {Array} Point coordinates
  */
 
-function getCubicBezierPoint(curve: number[], t: number): [number, number] {
+function getCubicBezierPoint(curve: Curve, t: number): Point {
   const sqrT = t * t;
   const cubT = sqrT * t;
   const mt = 1 - t;
@@ -814,7 +668,7 @@ function getCubicBezierPoint(curve: number[], t: number): [number, number] {
  * @return {Object|undefined} circle
  */
 
-function findCircle(curve: number[]) {
+function findCircle(curve: Curve) {
   const midPoint = getCubicBezierPoint(curve, 1 / 2);
   const m1 = [midPoint[0] / 2, midPoint[1] / 2];
   const m2 = [(midPoint[0] + curve[4]) / 2, (midPoint[1] + curve[5]) / 2];
@@ -852,7 +706,7 @@ function findCircle(curve: number[]) {
  * @param {Array} curve
  * @return {Boolean}
  */
-function isArc(curve: number[], circle: { center: number[]; radius: number }) {
+function isArc(curve: Curve, circle: Circle) {
   const tolerance = Math.min(
     arcThreshold * error,
     arcTolerance * circle.radius / 100,
@@ -873,10 +727,7 @@ function isArc(curve: number[], circle: { center: number[]; radius: number }) {
  * @param {Array} curve
  * @return {Boolean}
  */
-function isArcPrev(
-  curve: number[],
-  circle: { center: number[]; radius: number },
-) {
+function isArcPrev(curve: Curve, circle: Circle) {
   return isArc(curve, {
     center: [circle.center[0] + curve[4], circle.center[1] + curve[5]],
     radius: circle.radius,
@@ -890,10 +741,7 @@ function isArcPrev(
  * @return {Number} angle
  */
 
-function findArcAngle(
-  curve: number[],
-  relCircle: { center: number[]; radius: number },
-) {
+function findArcAngle(curve: number[], relCircle: Circle) {
   const x1 = -relCircle.center[0];
   const y1 = -relCircle.center[1];
   const x2 = curve[4] - relCircle.center[0];
@@ -910,10 +758,7 @@ function findArcAngle(
  * @param {Array} pathData
  * @return {String}
  */
-function data2Path(
-  params: Params,
-  pathData: { instruction: string; data?: number[] }[],
-) {
+function data2Path(params: Params, pathData: PathItem[]) {
   return pathData.reduce((pathString, item) => {
     return (
       pathString +
