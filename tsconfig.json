@@ -4,7 +4,9 @@
     "declaration": true,
     "lib": ["es2015"],
     "module": "commonjs",
-    // "noImplicitAny": false,
+    "noImplicitAny": true,
+    // TODO: reenable strict null checks at some point
+    "strictNullChecks": false,
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "outDir": "./dist",

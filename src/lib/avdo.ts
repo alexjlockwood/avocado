@@ -51,7 +51,7 @@ const batchedPlugins = (function(ps: Plugin[]) {
 
 // TODO: make it possible to configure indentation too?
 export interface Options {
-  plugins?: Plugin[][];
+  plugins: Plugin[][];
   multipass?: boolean;
   pretty?: boolean;
 }

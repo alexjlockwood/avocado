@@ -1,15 +1,11 @@
 import * as _collections from './_collections';
 import * as _tools from './_tools';
-import * as _transforms from './_transforms';
 
 import { JsApi } from '../lib/jsapi';
 
 const regPathInstructions = /([MmLlHhVvCcSsQqTtAaZz])\s*/;
 const regPathData = /[-+]?(?:\d*\.\d+|\d+\.?)([eE][-+]?\d+)?/g;
 const regNumericValues = /[-+]?(\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?/;
-const transform2js = _transforms.transform2js;
-const transformsMultiply = _transforms.transformsMultiply;
-const transformArc = _transforms.transformArc;
 const referencesProps = _collections.referencesProps;
 const defaultStrokeWidth =
   _collections.attrsGroupsDefaults.presentation['stroke-width'];
@@ -343,7 +339,6 @@ export function applyTransforms(
     data: groupToMatrix(groupAttrs),
   };
 
-  // const matrix = transformsMultiply(transform2js(elem.attr('transform').value));
   const stroke = elem.computedAttr('stroke');
   const id = elem.computedAttr('id');
   const transformPrecision = params.transformPrecision;
@@ -553,7 +548,7 @@ export function getTranslation(matrix: Matrix) {
   return { tx: matrix[4], ty: matrix[5] };
 }
 
-function flattenMatrices(matrices: Matrix[]) {
+function flattenMatrices(...matrices: Matrix[]) {
   const identity: Matrix = [1, 0, 0, 1, 0, 0];
   return matrices.reduce((m1, m2) => {
     // [a c e]   [a' c' e']
@@ -573,17 +568,17 @@ function flattenMatrices(matrices: Matrix[]) {
 function groupToMatrix({ sx, sy, r, tx, ty, px, py }: GroupTransform) {
   const cosr = Math.cos(r * Math.PI / 180);
   const sinr = Math.sin(r * Math.PI / 180);
-  return flattenMatrices([
+  return flattenMatrices(
     [1, 0, 0, 1, px, py],
     [1, 0, 0, 1, tx, ty],
     [cosr, sinr, -sinr, cosr, 0, 0],
     [sx, 0, 0, sy, 0, 0],
     [1, 0, 0, 1, -px, -py],
-  ]);
+  );
 }
 
 export function flattenGroups(groups: GroupTransform[]) {
-  return flattenMatrices(groups.map(groupToMatrix));
+  return flattenMatrices(...groups.map(groupToMatrix));
 }
 
 /**
@@ -1347,4 +1342,69 @@ function a2c(
     }
     return newRes;
   }
+}
+
+/**
+ * Applies transformation to an arc. To do so, we represent ellipse as a matrix, multiply it
+ * by the transformation matrix and use a singular value decomposition to represent in a form
+ * rotate(θ)·scale(a b)·rotate(φ). This gives us new ellipse params a, b and θ.
+ * SVD is being done with the formulae provided by Wolffram|Alpha (svd {{m0, m2}, {m1, m3}})
+ *
+ * @param {Array} arc [a, b, rotation in deg]
+ * @param {Array} transform transformation matrix
+ * @return {Array} arc transformed input arc
+ */
+function transformArc(arc: number[], transform: Matrix) {
+  let a = arc[0];
+  let b = arc[1];
+  const rot = arc[2] * Math.PI / 180;
+  const cos = Math.cos(rot);
+  const sin = Math.sin(rot);
+  let h =
+    Math.pow(arc[5] * cos + arc[6] * sin, 2) / (4 * a * a) +
+    Math.pow(arc[6] * cos - arc[5] * sin, 2) / (4 * b * b);
+  if (h > 1) {
+    h = Math.sqrt(h);
+    a *= h;
+    b *= h;
+  }
+  const ellipse: Matrix = [a * cos, a * sin, -b * sin, b * cos, 0, 0];
+  const m = flattenMatrices(transform, ellipse);
+  // Decompose the new ellipse matrix.
+  const lastCol = m[2] * m[2] + m[3] * m[3];
+  const squareSum = m[0] * m[0] + m[1] * m[1] + lastCol;
+  const root = Math.sqrt(
+    (Math.pow(m[0] - m[3], 2) + Math.pow(m[1] + m[2], 2)) *
+      (Math.pow(m[0] + m[3], 2) + Math.pow(m[1] - m[2], 2)),
+  );
+
+  if (!root) {
+    // circle
+    arc[0] = arc[1] = Math.sqrt(squareSum / 2);
+    arc[2] = 0;
+  } else {
+    const majorAxisSqr = (squareSum + root) / 2;
+    const minorAxisSqr = (squareSum - root) / 2;
+    const major = Math.abs(majorAxisSqr - lastCol) > 1e-6;
+    const s = (major ? majorAxisSqr : minorAxisSqr) - lastCol;
+    const rowsSum = m[0] * m[2] + m[1] * m[3];
+    const term1 = m[0] * s + m[2] * rowsSum;
+    const term2 = m[1] * s + m[3] * rowsSum;
+    arc[0] = Math.sqrt(majorAxisSqr);
+    arc[1] = Math.sqrt(minorAxisSqr);
+    arc[2] =
+      ((major ? term2 < 0 : term1 > 0) ? -1 : 1) *
+      Math.acos(
+        (major ? term1 : term2) / Math.sqrt(term1 * term1 + term2 * term2),
+      ) *
+      180 /
+      Math.PI;
+  }
+
+  if (transform[0] < 0 !== transform[3] < 0) {
+    // Flip the sweep flag if coordinates are being flipped horizontally XOR vertically
+    arc[4] = 1 - arc[4];
+  }
+
+  return arc;
 }

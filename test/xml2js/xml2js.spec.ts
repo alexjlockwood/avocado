@@ -364,9 +364,14 @@ describe('xml2js', () => {
 
         it('svg.content[0].eachAttr(() => {}) should be true', () => {
           return (
-            root.content[2].content[2].eachAttr(attr => (attr['test'] = 1))
-              .should.be.true &&
-            root.content[2].content[2].attr('style')['test'].should.equal(1)
+            // TODO: fix implicit any error
+            root.content[2].content[2].eachAttr(
+              attr => ((attr as any).test = 1),
+            ).should.be.true &&
+            // TODO: fix implicit any error
+            (root.content[2].content[2].attr('style') as any).test.should.equal(
+              1,
+            )
           );
         });
 

@@ -147,11 +147,12 @@ export async function run() {
   }
 }
 
+// TODO: fix implicit any error
 function optimizeDirectory(
   config: { quiet: boolean },
   dir: string,
   output: string,
-) {
+): any {
   if (!config.quiet) {
     console.log(`Processing directory '${dir}':\n`);
   }
@@ -174,6 +175,7 @@ function optimizeDirectory(
   });
 }
 
+// TODO: fix implicit any error
 function optimizeFile(
   config: { quiet: boolean },
   file: string,
