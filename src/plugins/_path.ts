@@ -320,18 +320,18 @@ export function applyTransforms(
 ) {
   // if there are no 'stroke' attr and references to other objects such as
   // gradiends or clip-path which are also subjects to transform.
-  if (
-    !elem.hasAttr('transform') ||
-    !elem.attr('transform').value ||
-    elem.someAttr(attr => {
-      const refProps = referencesProps;
-      // tslint:disable-next-line:no-bitwise
-      const res = ~refProps.indexOf(attr.name) && ~attr.value.indexOf('url(');
-      return !!res;
-    })
-  ) {
-    return path;
-  }
+  // if (
+  //   !elem.hasAttr('transform') ||
+  //   !elem.attr('transform').value ||
+  //   elem.someAttr(attr => {
+  //     const refProps = referencesProps;
+  //     // tslint:disable-next-line:no-bitwise
+  //     const res = ~refProps.indexOf(attr.name) && ~attr.value.indexOf('url(');
+  //     return !!res;
+  //   })
+  // ) {
+  //   return path;
+  // }
 
   const groupAttrs = getGroupAttrs(group);
   const matrix = {

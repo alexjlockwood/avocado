@@ -17,20 +17,20 @@ export interface Options {
 }
 
 export class JsApi implements Options {
-  content?: JsApi[];
+  content: JsApi[];
   parentNode?: JsApi;
-  elem?: string;
-  prefix?: string;
-  local?: string;
+  readonly elem?: string;
+  readonly prefix?: string;
+  readonly local?: string;
   attrs?: { [name: string]: Attr };
-  comment?: { text: string };
-  processingInstruction?: { name: string; body: string };
+  readonly comment?: { text: string };
+  readonly processingInstruction?: { name: string; body: string };
 
   // TODO: avoid this caching hackery
   pathJS?: Array<{ instruction: string; data?: number[] }>;
 
   constructor(arg: Options) {
-    this.content = arg.content;
+    this.content = arg.content || [];
     this.parentNode = arg.parentNode;
     this.elem = arg.elem;
     this.prefix = arg.prefix;
@@ -38,33 +38,6 @@ export class JsApi implements Options {
     this.attrs = arg.attrs;
     this.comment = arg.comment;
     this.processingInstruction = arg.processingInstruction;
-  }
-
-  /**
-   * Perform a deep clone of this node.
-   */
-  clone() {
-    // Deep-clone node data.
-    const nodeData = JSON.parse(
-      JSON.stringify({
-        elem: this.elem,
-        prefix: this.prefix,
-        local: this.local,
-        attrs: this.attrs,
-        comment: this.comment,
-        processingInstruction: this.processingInstruction,
-        pathJS: this.pathJS,
-      }),
-    );
-    const clonedNode = new JsApi({ ...nodeData, parentNode: this.parentNode });
-    if (this.content) {
-      clonedNode.content = this.content.map(childNode => {
-        const clonedChild = childNode.clone();
-        clonedChild.parentNode = clonedNode;
-        return clonedChild;
-      });
-    }
-    return clonedNode;
   }
 
   /**
@@ -81,18 +54,6 @@ export class JsApi implements Options {
     }
     return !!this.elem && this.elem === elemNames;
   }
-
-  // /**
-  //  * Renames an element.
-  //  * @param {String} name new element name
-  //  * @return {Object} element
-  //  */
-  // renameElem(name: string) {
-  //   if (name && typeof name === 'string') {
-  //     this.elem = this.local = name;
-  //   }
-  //   return this;
-  // }
 
   /**
    * Determine if element is empty.
@@ -154,58 +115,6 @@ export class JsApi implements Options {
     }
     return !!this.attrs[name];
   }
-
-  // /**
-  //  * Determine if element has an attribute by local name
-  //  * (any, or by name or by name + value).
-  //  *
-  //  * @param {String} [localName] local attribute name
-  //  * @param {Number|String|RegExp|Function} [val] attribute value (will be toString()'ed or executed, otherwise ignored)
-  //  * @return {Boolean}
-  //  */
-  // hasAttrLocal(localName?: string, val?: number | string | RegExp | Function) {
-  //   if (!this.attrs || !Object.keys(this.attrs).length) {
-  //     return false;
-  //   }
-  //   if (!arguments.length) {
-  //     return !!this.attrs;
-  //   }
-  //   let callback: (attr: Attr) => boolean;
-  //   switch (val != null && val.constructor && val.constructor.name) {
-  //     case 'Number': // same as String
-  //     case 'String':
-  //       callback = stringValueTest;
-  //       break;
-  //     case 'RegExp':
-  //       callback = regexpValueTest;
-  //       break;
-  //     case 'Function':
-  //       callback = funcValueTest;
-  //       break;
-  //     default:
-  //       callback = nameTest;
-  //       break;
-  //   }
-  //   return this.someAttr(callback);
-
-  //   function stringValueTest(attr: Attr) {
-  //     return attr.local === localName && val == attr.value;
-  //   }
-
-  //   function regexpValueTest(attr: Attr) {
-  //     const valRegExp = val as RegExp;
-  //     return attr.local === localName && valRegExp.test(attr.value);
-  //   }
-
-  //   function funcValueTest(attr: Attr) {
-  //     const valFn = val as Function;
-  //     return attr.local === localName && valFn(attr.value);
-  //   }
-
-  //   function nameTest(attr: Attr) {
-  //     return attr.local === localName;
-  //   }
-  // }
 
   /**
    * Get a specific attribute from an element (by name or name + value).
@@ -310,24 +219,5 @@ export class JsApi implements Options {
       callback.call(context, this.attrs[name]);
     }
     return true;
-  }
-
-  /**
-   * Tests whether some attribute passes the test.
-   *
-   * @param {Function} callback callback
-   * @param {Object} [context] callback context
-   * @return {Boolean} false if there are no any attributes
-   */
-  someAttr(callback: (attr: Attr) => boolean, context?: any) {
-    if (!this.hasAttr()) {
-      return false;
-    }
-    for (const name of Object.keys(this.attrs)) {
-      if (callback.call(context, this.attrs[name])) {
-        return true;
-      }
-    }
-    return false;
   }
 }
