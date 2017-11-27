@@ -20,6 +20,7 @@ function fn(item: JsApi, params: Params) {
   let prevContentItem: JsApi;
   let prevContentItemKeys: string[];
 
+  // TODO: figure out how to deal with clip paths!
   item.content = item.content.filter(contentItem => {
     if (
       prevContentItem &&
