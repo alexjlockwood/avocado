@@ -14,6 +14,7 @@ import { JsApi } from '../lib/jsapi';
 import { Plugin } from './_types';
 
 export const defaultParams = {
+  floatPrecision: 3,
   transformPrecision: 5,
   applyTransformsStroked: true,
 };
@@ -35,6 +36,48 @@ function fn(item: JsApi, params: Params) {
   ) {
     return item;
   }
+
+  const { floatPrecision } = params;
+  const error = +Math.pow(0.1, floatPrecision).toFixed(floatPrecision);
+
+  /**
+   * Decrease accuracy of floating-point numbers
+   * in path data keeping a specified number of decimals.
+   * Smart rounds values like 2.3491 to 2.35 instead of 2.349.
+   * Doesn't apply "smartness" if the number precision fits already.
+   *
+   * @param {Array} data input data array
+   * @return {Array} output data array
+   */
+  function strongRound(data: number[]) {
+    for (let i = data.length; i-- > 0; ) {
+      if (+data[i].toFixed(floatPrecision) !== data[i]) {
+        const rounded = +data[i].toFixed(floatPrecision - 1);
+        data[i] =
+          +Math.abs(rounded - data[i]).toFixed(floatPrecision + 1) >= error
+            ? +data[i].toFixed(floatPrecision)
+            : rounded;
+      }
+    }
+    return data;
+  }
+
+  /**
+   * Simple rounding function if precision is 0.
+   *
+   * @param {Array} data input data array
+   * @return {Array} output data array
+   */
+  function round(data: number[]) {
+    for (let i = data.length; i-- > 0; ) {
+      data[i] = Math.round(data[i]);
+    }
+    return data;
+  }
+
+  const roundData =
+    floatPrecision > 0 && floatPrecision < 20 ? strongRound : round;
+
   const g1Attrs = getGroupAttrs(item);
   item.content.forEach(i => {
     if (i.isElem('group')) {
@@ -64,6 +107,7 @@ function fn(item: JsApi, params: Params) {
       }
       convertToRelative(data);
       data = applyTransforms(item, i, data, params);
+      data.forEach(d => roundData(d.data));
       js2path(i, data, {
         collapseRepeated: false,
         negativeExtraSpace: false,
