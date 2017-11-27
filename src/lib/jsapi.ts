@@ -60,19 +60,8 @@ export class JsApi implements Options {
    * @return {Boolean}
    */
   isEmpty() {
-    return !this.content || !this.content.length;
+    return !this.content.length;
   }
-
-  // /**
-  //  * Find the closest ancestor of the current element.
-  //  * @param elemName
-  //  * @return {Object}
-  //  */
-  // closestElem(elemName: string) {
-  //   let node: JsApi = this;
-  //   while ((node = node.parentNode) && !node.isElem(elemName)) {}
-  //   return node;
-  // }
 
   /**
    * Changes content by removing elements and/or adding new elements.
@@ -82,9 +71,6 @@ export class JsApi implements Options {
    * @return {Array} Removed elements.
    */
   spliceContent(start: number, n: number, insertion: JsApi[]) {
-    if (arguments.length < 2) {
-      return [];
-    }
     if (!Array.isArray(insertion)) {
       insertion = Array.apply(undefined, arguments).slice(2);
     }
