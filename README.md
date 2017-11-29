@@ -100,3 +100,4 @@ npm run test
   [npm-badge-url]: https://www.npmjs.com/package/avdo
   [svgo]: https://github.com/svg/svgo
   [vscode]: https://code.visualstudio.com/
+  [npm]: https://www.npmjs.com/get-npm
