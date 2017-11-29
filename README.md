@@ -6,11 +6,9 @@
 
 ---
 
-**Important note**:
+**DISCLAIMER**:
 
-This tool is currently in **alpha** and is not yet ready to be used in production.
-
-Note that there may be breaking changes in the future as well.
+This tool is currently in **alpha** and may not yet be ready for production use. Note that there may be breaking changes in the future as well.
 
 ---
 
