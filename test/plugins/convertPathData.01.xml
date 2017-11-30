@@ -35,3 +35,7 @@
     <path android:pathData="M-10-50"/>
     <path android:pathData="..."/>
 </vector>
+
+@@@
+
+{ "leadingZero": true }

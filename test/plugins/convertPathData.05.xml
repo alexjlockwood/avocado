@@ -13,3 +13,7 @@
     <path android:pathData="M0 0l.113 1 .114 2L.34 6"/>
     <path android:pathData="M0 0l.003 3 .002 2 .003 3 .002 2"/>
 </vector>
+
+@@@
+
+{ "leadingZero": true }

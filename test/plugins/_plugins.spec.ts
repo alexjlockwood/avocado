@@ -30,17 +30,19 @@ describe('plugin tests', () => {
           let avdo: Avdo;
 
           const plugin = plugins[name];
+          const origParams = plugin.params;
           if (params) {
-            plugin.params = { ...plugin.params, ...JSON.parse(params) };
+            plugin.params = { ...origParams, ...JSON.parse(params) };
           }
           avdo = new Avdo({
             plugins: [[plugin]],
             pretty: true,
           });
-
-          return avdo.optimize(orig).then(result => {
-            normalize(result).should.be.equal(should);
+          const result = avdo.optimize(orig).then(res => {
+            normalize(res).should.be.equal(should);
           });
+          plugin.params = origParams;
+          return result;
         });
       });
     }

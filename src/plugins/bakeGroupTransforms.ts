@@ -109,8 +109,8 @@ function fn(item: JsApi, params: Params) {
       data = applyTransforms(item, i, data, params);
       data.forEach(d => roundData(d.data));
       js2path(i, data, {
-        collapseRepeated: false,
-        negativeExtraSpace: false,
+        collapseRepeated: true,
+        negativeExtraSpace: true,
         leadingZero: false,
       });
     }

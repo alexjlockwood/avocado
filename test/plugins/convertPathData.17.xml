@@ -10,4 +10,4 @@
 
 @@@
 
-{ "floatPrecision": 8 }
+{ "floatPrecision": 8, "leadingZero": true }

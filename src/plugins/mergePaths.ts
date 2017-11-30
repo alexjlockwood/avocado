@@ -65,7 +65,7 @@ export const mergePaths: Plugin<Params> = {
   description: 'merges multiple paths into one, if possible',
   params: {
     collapseRepeated: true,
-    leadingZero: true,
+    leadingZero: false,
     negativeExtraSpace: true,
   },
   fn,

@@ -34,7 +34,7 @@ export const defaultParams = {
   removeUseless: true,
   collapseRepeated: true,
   utilizeAbsolute: true,
-  leadingZero: true,
+  leadingZero: false,
   negativeExtraSpace: true,
 };
 
@@ -67,9 +67,6 @@ function fn(item: JsApi, params: Params) {
   }
 
   convertToRelative(data);
-  // if (params.applyTransforms) {
-  //   data = applyTransforms(item, data, params);
-  // }
   data = filters(data, params);
   if (params.utilizeAbsolute) {
     data = convertToMixed(data, params);

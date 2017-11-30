@@ -21,3 +21,7 @@
     <path android:pathData="M15 23.54a8.493 8.493 0 0 1-5.25-1.807"/>
     <path android:pathData="M-9.5 82.311a4.81 4.81 0 1 1 .002-9.622A4.81 4.81 0 0 1-9.5 82.31z"/>
 </vector>
+
+@@@
+
+{ "leadingZero": true }
