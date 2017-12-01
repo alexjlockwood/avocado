@@ -107,7 +107,11 @@ function fn(item: JsApi, params: Params) {
       }
       convertToRelative(data);
       data = applyTransforms(item, i, data, params);
-      data.forEach(d => roundData(d.data));
+      data.forEach(d => {
+        if (d.data) {
+          roundData(d.data);
+        }
+      });
       js2path(i, data, {
         collapseRepeated: true,
         negativeExtraSpace: true,

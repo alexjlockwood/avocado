@@ -1,0 +1,13 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="23dp" android:height="10dp" android:viewportWidth="23" android:viewportHeight="10">
+    <group android:translateX="12">
+        <path android:pathData="M1.494 10a0.499 0.499 0 1 1 0-1l-0.364-0.009L6.618 9C7.38 9 8 8.428 8 7.724l-0.025-5.418c0-0.707-0.62-1.281-1.38-1.281l-5.101-0.008a0.5 0.5 0 0 1 0-1l5.101 0.008 c1.312 0 2.38 1.023 2.38 2.279L9 7.722C9 8.979 7.93 10 6.617 10H1.494z"/>
+    </group>
+</vector>
+
+@@@
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="23dp" android:height="10dp" android:viewportWidth="23" android:viewportHeight="10">
+    <group>
+        <path android:pathData="M13.494 10a0.5 0.5 0 1 1 0-1l-0.364-0.009 5.488 0.009c0.762 0 1.382-0.572 1.382-1.276l-0.025-5.418c0-0.707-0.62-1.281-1.38-1.281l-5.101-0.008a0.5 0.5 0 0 1 0-1l5.101 0.008c1.312 0 2.38 1.023 2.38 2.279l0.025 5.418c0 1.257-1.07 2.278-2.383 2.278l-5.123 0z"/>
+    </group>
+</vector>
