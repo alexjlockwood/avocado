@@ -10,6 +10,7 @@ import { mergePaths } from '../plugins/mergePaths';
 import { processPlugins } from '../plugins/_plugins';
 import { removeComments } from '../plugins/removeComments';
 import { removeEmptyGroups } from '../plugins/removeEmptyGroups';
+import { removeHiddenElems } from '../plugins/removeHiddenElems';
 import { removeXMLProcInst } from '../plugins/removeXMLProcInst';
 import { xml2js } from './xml2js';
 
@@ -23,7 +24,7 @@ export const plugins: { [name: string]: Plugin } = {
   // convertColors,
   // removeUnknownsAndDefaults,
   // removeUselessStrokeAndFill,
-  // removeHiddenElems,
+  removeHiddenElems,
   bakeGroupTransforms,
   collapseGroups,
   convertPathData,
