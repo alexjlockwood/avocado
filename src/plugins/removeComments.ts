@@ -12,7 +12,7 @@ function fn(item: JsApi) {
 
 export const removeComments: Plugin<Params> = {
   type: 'perItem',
-  active: true,
+  active: false,
   description: 'removes all comments',
   params: undefined,
   fn,
