@@ -30,6 +30,8 @@ describe('plugin tests', () => {
           let avdo: Avdo;
 
           const plugin = plugins[name];
+          const origActive = plugin.active;
+          plugin.active = true;
           const origParams = plugin.params;
           if (params) {
             plugin.params = { ...origParams, ...JSON.parse(params) };
@@ -41,6 +43,7 @@ describe('plugin tests', () => {
           const result = avdo.optimize(orig).then(res => {
             normalize(res).should.be.equal(should);
           });
+          plugin.active = origActive;
           plugin.params = origParams;
           return result;
         });
