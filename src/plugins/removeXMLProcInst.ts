@@ -12,7 +12,7 @@ function fn(item: JsApi) {
 
 export const removeXMLProcInst: Plugin<undefined> = {
   type: 'perItem',
-  active: true,
+  active: false,
   description: 'removes XML processing instructions',
   params: undefined,
   fn,
