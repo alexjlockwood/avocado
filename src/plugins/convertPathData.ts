@@ -48,7 +48,7 @@ export type Params = typeof defaultParams;
 function fn(item: JsApi, params: Params) {
   if (
     !(item.isElem('path') || item.isElem('clip-path')) ||
-    // TODO: properly reference the attribute using the correct namespace
+    // TODO: don't optimize the path if it has a name?
     !item.hasAttr('android:pathData')
   ) {
     return item;
