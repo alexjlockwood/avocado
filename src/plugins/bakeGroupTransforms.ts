@@ -23,8 +23,6 @@ export type Params = typeof defaultParams;
 
 /**
  * Bakes group transforms into paths.
- * TODO: figure out what to do with group/path names
- * TODO: figure out what to do with clip-paths?
  */
 function fn(item: JsApi, params: Params) {
   if (
@@ -32,7 +30,9 @@ function fn(item: JsApi, params: Params) {
     !item.hasAttr() ||
     item.hasAttr('android:name') ||
     item.isEmpty() ||
-    item.content.some(i => i.hasAttr('android:name'))
+    item.content.some(i => i.hasAttr('android:name')) ||
+    // TODO: are there some cases where we can bake group transforms into a clip-path?
+    item.content.some(i => i.isElem('clip-path'))
   ) {
     return item;
   }
