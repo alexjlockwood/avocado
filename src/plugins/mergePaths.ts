@@ -25,10 +25,10 @@ function fn(item: JsApi, params: Params) {
     if (
       prevContentItem &&
       prevContentItem.isElem('path') &&
-      prevContentItem.isEmpty() &&
+      !prevContentItem.hasAttr('android:name') &&
       prevContentItem.hasAttr('android:pathData') &&
       contentItem.isElem('path') &&
-      contentItem.isEmpty() &&
+      !contentItem.hasAttr('android:name') &&
       contentItem.hasAttr('android:pathData')
     ) {
       if (!prevContentItemKeys) {
