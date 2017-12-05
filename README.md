@@ -4,14 +4,6 @@
 [![npm version][npm-badge]][npm-badge-url]
 [![Coverage status][coveralls-badge]][coveralls-badge-url]
 
----
-
-**DISCLAIMER**:
-
-This tool is currently in **alpha** and may not yet be ready for production use. Note that there may be breaking changes in the future as well.
-
----
-
 `avdo` is a command line tool (similar to [`svgo`][svgo]) that optimizes Android
 `VectorDrawable` (VD) and `AnimatedVectorDrawable` (AVD) xml files.
 
