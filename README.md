@@ -41,10 +41,10 @@ avdo vector.xml
 avdo *.xml
 
 # Optimize a VD/AVD file and write the output to a new file.
-avdo vector.xml -o vector.min.xml
+avdo vector.xml -o vector_min.xml
 
 # Optimize a VD/AVD using standard input and standard output.
-cat vector.xml | avdo -i - -o - > vector.min.xml
+cat vector.xml | avdo -i - -o - > vector_min.xml
 
 # Optimize (and overwrite) all of the VD/AVD files in a directory.
 avdo -d path/to/directory
@@ -56,7 +56,7 @@ avdo -d path/to/input/directory -o path/to/output/directory
 avdo *.xml -o path/to/output/directory
 
 # Pass a string as input and write the output to a new file.
-avdo -s '<vector>...</vector>' -o vector.min.xml
+avdo -s '<vector>...</vector>' -o vector_min.xml
 ```
 
 `avdo` rewrites the `VectorDrawable` using the smallest number of `<group>`s and `<path>`s possible, reducing their file sizes and making them faster to parse and draw at runtime. The example below shows the contents of a `VectorDrawable` before and after being run through `avdo`.
