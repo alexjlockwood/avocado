@@ -48,7 +48,8 @@ export type Params = typeof defaultParams;
 function fn(item: JsApi, params: Params) {
   if (
     !(item.isElem('path') || item.isElem('clip-path')) ||
-    // TODO: don't optimize the path if it has a name?
+    // TODO: detect if a path w/ a name can be optimized (i.e. if it isn't being morphed)
+    item.hasAttr('android:name') ||
     !item.hasAttr('android:pathData')
   ) {
     return item;
