@@ -111,9 +111,10 @@ After:
 
 ```xml
 <vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="108dp" android:height="108dp" android:viewportHeight="108" android:viewportWidth="108">
-  <path android:fillColor="#26A69A" android:pathData="M0 0h108v108H0z" />
-  <path android:fillColor="#00000000" android:pathData="M-13.5-27v162m15-162v162m15-162v162m15-162v162m15-162v162m15-162v162M69 0v108M79 0v108M89 0v108M99 0v108m63 63h108m-108 10h108m-108 10h108m-108 10h108m-108 10h108m-108 10h108M54 123h108M54 133h108M54 143h108M54 153h108M73 83h70M73 93h70m-70 10h70m-70 10h70m-70 10h70m-70 10h70M83 73v70m10-70v70m10-70v70m10-70v70m10-70v70m10-70v70" android:strokeColor="#33FFFFFF" android:strokeWidth="0.8" />
+    <path android:fillColor="#26A69A" android:pathData="M0 0h108v108H0z"/>
+    <path android:pathData="M-13.5-27v162m15-162v162m15-162v162m15-162v162m15-162v162m15-162v162M69 0v108M79 0v108M89 0v108M99 0v108m63 63h108m-108 10h108m-108 10h108m-108 10h108m-108 10h108m-108 10h108M54 123h108M54 133h108M54 143h108M54 153h108M73 83h70M73 93h70m-70 10h70m-70 10h70m-70 10h70m-70 10h70M83 73v70m10-70v70m10-70v70m10-70v70m10-70v70m10-70v70" android:strokeColor="#33FFFFFF" android:strokeWidth="0.8"/>
 </vector>
+
 ```
 
 ## Build instructions
