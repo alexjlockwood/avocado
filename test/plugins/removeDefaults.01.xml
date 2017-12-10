@@ -1,0 +1,35 @@
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:alpha="1.0"
+    android:autoMirrored="false"
+    android:tintMode="src_in">
+    <group
+        android:pivotX="0.0"
+        android:pivotY="0.0"
+        android:rotation="0.0"
+        android:scaleX="1.0"
+        android:scaleY="1.0"
+        android:translateX="0.0"
+        android:translateY="0.0">
+        <path
+            android:fillAlpha="1.0"
+            android:fillColor="#00000000"
+            android:fillType="nonZero"
+            android:strokeAlpha="1.0"
+            android:strokeColor="#00000000"
+            android:strokeLineCap="butt"
+            android:strokeLineJoin="miter"
+            android:strokeMiterLimit="4"
+            android:trimPathStart="0.0"
+            android:trimPathEnd="1.0"
+            android:trimPathOffset="0.0"/>
+    </group>
+</vector>
+
+@@@
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android">
+    <group>
+        <path/>
+    </group>
+</vector>

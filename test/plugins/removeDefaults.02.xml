@@ -1,0 +1,35 @@
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:alpha="0.5"
+    android:autoMirrored="true"
+    android:tintMode="multiply">
+    <group
+        android:pivotX="0.5"
+        android:pivotY="0.5"
+        android:rotation="0.5"
+        android:scaleX="0.5"
+        android:scaleY="0.5"
+        android:translateX="0.5"
+        android:translateY="0.5">
+        <path
+            android:fillAlpha="0.5"
+            android:fillColor="#ff000000"
+            android:fillType="evenOdd"
+            android:strokeAlpha="0.5"
+            android:strokeColor="#ff000000"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:strokeMiterLimit="10"
+            android:trimPathStart="0.25"
+            android:trimPathEnd="0.75"
+            android:trimPathOffset="0.5"/>
+    </group>
+</vector>
+
+@@@
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:alpha="0.5" android:autoMirrored="true" android:tintMode="multiply">
+    <group android:pivotX="0.5" android:pivotY="0.5" android:rotation="0.5" android:scaleX="0.5" android:scaleY="0.5" android:translateX="0.5" android:translateY="0.5">
+        <path android:fillAlpha="0.5" android:fillColor="#ff000000" android:fillType="evenOdd" android:strokeAlpha="0.5" android:strokeColor="#ff000000" android:strokeLineCap="round" android:strokeLineJoin="round" android:strokeMiterLimit="10" android:trimPathStart="0.25" android:trimPathEnd="0.75" android:trimPathOffset="0.5"/>
+    </group>
+</vector>

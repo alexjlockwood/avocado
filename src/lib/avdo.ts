@@ -9,6 +9,7 @@ import { js2xml } from './js2xml';
 import { mergePaths } from '../plugins/mergePaths';
 import { processPlugins } from '../plugins/_plugins';
 import { removeComments } from '../plugins/removeComments';
+import { removeDefaults } from '../plugins/removeDefaults';
 import { removeEmptyGroups } from '../plugins/removeEmptyGroups';
 import { removeHiddenElems } from '../plugins/removeHiddenElems';
 import { removeXMLProcInst } from '../plugins/removeXMLProcInst';
@@ -22,7 +23,7 @@ export const plugins: { [name: string]: Plugin } = {
   // cleanupIDs,
   // cleanupNumericValues,
   // convertColors,
-  // removeUnknownsAndDefaults,
+  removeDefaults,
   // removeUselessStrokeAndFill,
   removeHiddenElems,
   bakeGroupTransforms,
