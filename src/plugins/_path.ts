@@ -339,69 +339,69 @@ export function applyTransforms(
     data: groupToMatrix(groupAttrs),
   };
 
-  const stroke = elem.computedAttr('stroke');
-  const id = elem.computedAttr('id');
+  // const stroke = elem.computedAttr('stroke');
+  // const id = elem.computedAttr('id');
   const transformPrecision = params.transformPrecision;
   let newPoint: number[];
-  let scale: number;
+  // let scale: number;
 
-  if (stroke && stroke !== 'none') {
-    if (
-      !params.applyTransformsStroked ||
-      ((matrix.data[0] !== matrix.data[3] ||
-        matrix.data[1] !== -matrix.data[2]) &&
-        (matrix.data[0] !== -matrix.data[3] ||
-          matrix.data[1] !== matrix.data[2]))
-    ) {
-      return path;
-    }
+  // if (stroke && stroke !== 'none') {
+  //   if (
+  //     !params.applyTransformsStroked ||
+  //     ((matrix.data[0] !== matrix.data[3] ||
+  //       matrix.data[1] !== -matrix.data[2]) &&
+  //       (matrix.data[0] !== -matrix.data[3] ||
+  //         matrix.data[1] !== matrix.data[2]))
+  //   ) {
+  //     return path;
+  //   }
 
-    // "stroke-width" should be inside the part with ID, otherwise it can be overrided in <use>
-    if (id) {
-      let idElem = elem;
-      let hasStrokeWidth = false;
-      do {
-        if (idElem.hasAttr('stroke-width')) {
-          hasStrokeWidth = true;
-        }
-      } while (
-        !idElem.hasAttr('id', id) &&
-        !hasStrokeWidth &&
-        (idElem = idElem.parentNode)
-      );
-      if (!hasStrokeWidth) {
-        return path;
-      }
-    }
+  //   // "stroke-width" should be inside the part with ID, otherwise it can be overrided in <use>
+  //   if (id) {
+  //     let idElem = elem;
+  //     let hasStrokeWidth = false;
+  //     do {
+  //       if (idElem.hasAttr('stroke-width')) {
+  //         hasStrokeWidth = true;
+  //       }
+  //     } while (
+  //       !idElem.hasAttr('id', id) &&
+  //       !hasStrokeWidth &&
+  //       (idElem = idElem.parentNode)
+  //     );
+  //     if (!hasStrokeWidth) {
+  //       return path;
+  //     }
+  //   }
 
-    scale = +Math.sqrt(
-      matrix.data[0] * matrix.data[0] + matrix.data[1] * matrix.data[1],
-    ).toFixed(transformPrecision);
+  //   scale = +Math.sqrt(
+  //     matrix.data[0] * matrix.data[0] + matrix.data[1] * matrix.data[1],
+  //   ).toFixed(transformPrecision);
 
-    if (scale !== 1) {
-      // TODO: can we avoid the cast to string here?
-      const strokeWidth = (elem.computedAttr('stroke-width') ||
-        defaultStrokeWidth) as string;
+  //   if (scale !== 1) {
+  //     // TODO: can we avoid the cast to string here?
+  //     const strokeWidth = (elem.computedAttr('stroke-width') ||
+  //       defaultStrokeWidth) as string;
 
-      if (elem.hasAttr('stroke-width')) {
-        elem.attrs['stroke-width'].value = elem.attrs['stroke-width'].value
-          .trim()
-          .replace(regNumericValues, num => removeLeadingZero(+num * scale));
-      } else {
-        elem.addAttr({
-          name: 'stroke-width',
-          prefix: '',
-          local: 'stroke-width',
-          value: strokeWidth.replace(regNumericValues, num =>
-            removeLeadingZero(+num * scale),
-          ),
-        });
-      }
-    }
-  } else if (id) {
-    // Stroke and stroke-width can be redefined with <use>
-    return path;
-  }
+  //     if (elem.hasAttr('stroke-width')) {
+  //       elem.attrs['stroke-width'].value = elem.attrs['stroke-width'].value
+  //         .trim()
+  //         .replace(regNumericValues, num => removeLeadingZero(+num * scale));
+  //     } else {
+  //       elem.addAttr({
+  //         name: 'stroke-width',
+  //         prefix: '',
+  //         local: 'stroke-width',
+  //         value: strokeWidth.replace(regNumericValues, num =>
+  //           removeLeadingZero(+num * scale),
+  //         ),
+  //       });
+  //     }
+  //   }
+  // } else if (id) {
+  //   // Stroke and stroke-width can be redefined with <use>
+  //   return path;
+  // }
 
   path.forEach(pathItem => {
     if (pathItem.data) {
