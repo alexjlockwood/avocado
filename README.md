@@ -61,7 +61,7 @@ avdo -s '<vector>...</vector>' -o vector_min.xml
 
 `avdo` rewrites the `VectorDrawable` using the smallest number of `<group>`s and `<path>`s possible, reducing their file sizes and making them faster to parse and draw at runtime. The example below shows the contents of a `VectorDrawable` before and after being run through `avdo`.
 
-Before:
+#### Before
 
 ```xml
 <vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="108dp" android:height="108dp" android:viewportHeight="108" android:viewportWidth="108">
@@ -107,7 +107,7 @@ Before:
 </vector>
 ```
 
-After:
+#### After
 
 ```xml
 <vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="108dp" android:height="108dp" android:viewportHeight="108" android:viewportWidth="108">
