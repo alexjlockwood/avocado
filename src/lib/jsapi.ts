@@ -123,28 +123,28 @@ export class JsApi implements Options {
    * @param {String} name attribute name
    * @return {Object|Undefined}
    */
-  computedAttr(name: string, val?: any) {
-    if (!arguments.length) {
-      return undefined;
-    }
+  // computedAttr(name: string, val?: any) {
+  //   if (!arguments.length) {
+  //     return undefined;
+  //   }
 
-    let elem: JsApi;
-    for (
-      elem = this;
-      elem && (!elem.hasAttr(name) || !elem.attr(name).value);
-      elem = elem.parentNode
-    ) {}
+  //   let elem: JsApi;
+  //   for (
+  //     elem = this;
+  //     elem && (!elem.hasAttr(name) || !elem.attr(name).value);
+  //     elem = elem.parentNode
+  //   ) {}
 
-    // tslint:disable-next-line:triple-equals no-null-keyword
-    if (val != null) {
-      // TODO: why return a boolean here instead of a string?
-      return elem ? elem.hasAttr(name, val) : undefined;
-    } else if (elem && elem.hasAttr(name)) {
-      return elem.attrs[name].value;
-    } else {
-      return undefined;
-    }
-  }
+  //   // tslint:disable-next-line:triple-equals no-null-keyword
+  //   if (val != null) {
+  //     // TODO: why return a boolean here instead of a string?
+  //     return elem ? elem.hasAttr(name, val) : undefined;
+  //   } else if (elem && elem.hasAttr(name)) {
+  //     return elem.attrs[name].value;
+  //   } else {
+  //     return undefined;
+  //   }
+  // }
 
   /**
    * Remove a specific attribute.
