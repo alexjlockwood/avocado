@@ -599,208 +599,208 @@ function transformPoint(matrix: number[], x: number, y: number) {
  * Compute Cubic Bézier bounding box.
  * @see http://processingjs.nihongoresources.com/bezierinfo/
  */
-export function computeCubicBoundingBox(
-  xa: number,
-  ya: number,
-  xb: number,
-  yb: number,
-  xc: number,
-  yc: number,
-  xd: number,
-  yd: number,
-) {
-  let minx = Number.POSITIVE_INFINITY;
-  let miny = Number.POSITIVE_INFINITY;
-  let maxx = Number.NEGATIVE_INFINITY;
-  let maxy = Number.NEGATIVE_INFINITY;
-  let ts: number[];
-  let t: number;
-  let x: number;
-  let y: number;
-  let i: number;
+// export function computeCubicBoundingBox(
+//   xa: number,
+//   ya: number,
+//   xb: number,
+//   yb: number,
+//   xc: number,
+//   yc: number,
+//   xd: number,
+//   yd: number,
+// ) {
+//   let minx = Number.POSITIVE_INFINITY;
+//   let miny = Number.POSITIVE_INFINITY;
+//   let maxx = Number.NEGATIVE_INFINITY;
+//   let maxy = Number.NEGATIVE_INFINITY;
+//   let ts: number[];
+//   let t: number;
+//   let x: number;
+//   let y: number;
+//   let i: number;
 
-  // X
-  if (xa < minx) {
-    minx = xa;
-  }
-  if (xa > maxx) {
-    maxx = xa;
-  }
-  if (xd < minx) {
-    minx = xd;
-  }
-  if (xd > maxx) {
-    maxx = xd;
-  }
+//   // X
+//   if (xa < minx) {
+//     minx = xa;
+//   }
+//   if (xa > maxx) {
+//     maxx = xa;
+//   }
+//   if (xd < minx) {
+//     minx = xd;
+//   }
+//   if (xd > maxx) {
+//     maxx = xd;
+//   }
 
-  ts = computeCubicFirstDerivativeRoots(xa, xb, xc, xd);
+//   ts = computeCubicFirstDerivativeRoots(xa, xb, xc, xd);
 
-  for (i = 0; i < ts.length; i++) {
-    t = ts[i];
-    if (t >= 0 && t <= 1) {
-      x = computeCubicBaseValue(t, xa, xb, xc, xd);
-      if (x < minx) {
-        minx = x;
-      }
-      if (x > maxx) {
-        maxx = x;
-      }
-    }
-  }
+//   for (i = 0; i < ts.length; i++) {
+//     t = ts[i];
+//     if (t >= 0 && t <= 1) {
+//       x = computeCubicBaseValue(t, xa, xb, xc, xd);
+//       if (x < minx) {
+//         minx = x;
+//       }
+//       if (x > maxx) {
+//         maxx = x;
+//       }
+//     }
+//   }
 
-  // Y
-  if (ya < miny) {
-    miny = ya;
-  }
-  if (ya > maxy) {
-    maxy = ya;
-  }
-  if (yd < miny) {
-    miny = yd;
-  }
-  if (yd > maxy) {
-    maxy = yd;
-  }
+//   // Y
+//   if (ya < miny) {
+//     miny = ya;
+//   }
+//   if (ya > maxy) {
+//     maxy = ya;
+//   }
+//   if (yd < miny) {
+//     miny = yd;
+//   }
+//   if (yd > maxy) {
+//     maxy = yd;
+//   }
 
-  ts = computeCubicFirstDerivativeRoots(ya, yb, yc, yd);
+//   ts = computeCubicFirstDerivativeRoots(ya, yb, yc, yd);
 
-  for (i = 0; i < ts.length; i++) {
-    t = ts[i];
-    if (t >= 0 && t <= 1) {
-      y = computeCubicBaseValue(t, ya, yb, yc, yd);
-      if (y < miny) {
-        miny = y;
-      }
-      if (y > maxy) {
-        maxy = y;
-      }
-    }
-  }
+//   for (i = 0; i < ts.length; i++) {
+//     t = ts[i];
+//     if (t >= 0 && t <= 1) {
+//       y = computeCubicBaseValue(t, ya, yb, yc, yd);
+//       if (y < miny) {
+//         miny = y;
+//       }
+//       if (y > maxy) {
+//         maxy = y;
+//       }
+//     }
+//   }
 
-  return { minx, miny, maxx, maxy };
-}
+//   return { minx, miny, maxx, maxy };
+// }
 
 // Compute the value for the cubic bezier function at time t.
-function computeCubicBaseValue(
-  t: number,
-  a: number,
-  b: number,
-  c: number,
-  d: number,
-) {
-  const mt = 1 - t;
-  return (
-    mt * mt * mt * a + 3 * mt * mt * t * b + 3 * mt * t * t * c + t * t * t * d
-  );
-}
+// function computeCubicBaseValue(
+//   t: number,
+//   a: number,
+//   b: number,
+//   c: number,
+//   d: number,
+// ) {
+//   const mt = 1 - t;
+//   return (
+//     mt * mt * mt * a + 3 * mt * mt * t * b + 3 * mt * t * t * c + t * t * t * d
+//   );
+// }
 
 // Compute the value for the first derivative of the cubic bezier function at time t.
-function computeCubicFirstDerivativeRoots(
-  a: number,
-  b: number,
-  c: number,
-  d: number,
-) {
-  const result = [-1, -1];
-  const tl = -a + 2 * b - c;
-  const tr = -Math.sqrt(-a * (c - d) + b * b - b * (c + d) + c * c);
-  const dn = -a + 3 * b - 3 * c + d;
-  if (dn !== 0) {
-    result[0] = (tl + tr) / dn;
-    result[1] = (tl - tr) / dn;
-  }
-  return result;
-}
+// function computeCubicFirstDerivativeRoots(
+//   a: number,
+//   b: number,
+//   c: number,
+//   d: number,
+// ) {
+//   const result = [-1, -1];
+//   const tl = -a + 2 * b - c;
+//   const tr = -Math.sqrt(-a * (c - d) + b * b - b * (c + d) + c * c);
+//   const dn = -a + 3 * b - 3 * c + d;
+//   if (dn !== 0) {
+//     result[0] = (tl + tr) / dn;
+//     result[1] = (tl - tr) / dn;
+//   }
+//   return result;
+// }
 
 /**
  * Compute Quadratic Bézier bounding box.
  *
  * @see http://processingjs.nihongoresources.com/bezierinfo/
  */
-export function computeQuadraticBoundingBox(
-  xa: number,
-  ya: number,
-  xb: number,
-  yb: number,
-  xc: number,
-  yc: number,
-) {
-  let minx = Number.POSITIVE_INFINITY;
-  let miny = Number.POSITIVE_INFINITY;
-  let maxx = Number.NEGATIVE_INFINITY;
-  let maxy = Number.NEGATIVE_INFINITY;
-  let t: number;
-  let x: number;
-  let y: number;
+// export function computeQuadraticBoundingBox(
+//   xa: number,
+//   ya: number,
+//   xb: number,
+//   yb: number,
+//   xc: number,
+//   yc: number,
+// ) {
+//   let minx = Number.POSITIVE_INFINITY;
+//   let miny = Number.POSITIVE_INFINITY;
+//   let maxx = Number.NEGATIVE_INFINITY;
+//   let maxy = Number.NEGATIVE_INFINITY;
+//   let t: number;
+//   let x: number;
+//   let y: number;
 
-  // X
-  if (xa < minx) {
-    minx = xa;
-  }
-  if (xa > maxx) {
-    maxx = xa;
-  }
-  if (xc < minx) {
-    minx = xc;
-  }
-  if (xc > maxx) {
-    maxx = xc;
-  }
+//   // X
+//   if (xa < minx) {
+//     minx = xa;
+//   }
+//   if (xa > maxx) {
+//     maxx = xa;
+//   }
+//   if (xc < minx) {
+//     minx = xc;
+//   }
+//   if (xc > maxx) {
+//     maxx = xc;
+//   }
 
-  t = computeQuadraticFirstDerivativeRoot(xa, xb, xc);
-  if (t >= 0 && t <= 1) {
-    x = computeQuadraticBaseValue(t, xa, xb, xc);
-    if (x < minx) {
-      minx = x;
-    }
-    if (x > maxx) {
-      maxx = x;
-    }
-  }
+//   t = computeQuadraticFirstDerivativeRoot(xa, xb, xc);
+//   if (t >= 0 && t <= 1) {
+//     x = computeQuadraticBaseValue(t, xa, xb, xc);
+//     if (x < minx) {
+//       minx = x;
+//     }
+//     if (x > maxx) {
+//       maxx = x;
+//     }
+//   }
 
-  // Y
-  if (ya < miny) {
-    miny = ya;
-  }
-  if (ya > maxy) {
-    maxy = ya;
-  }
-  if (yc < miny) {
-    miny = yc;
-  }
-  if (yc > maxy) {
-    maxy = yc;
-  }
+//   // Y
+//   if (ya < miny) {
+//     miny = ya;
+//   }
+//   if (ya > maxy) {
+//     maxy = ya;
+//   }
+//   if (yc < miny) {
+//     miny = yc;
+//   }
+//   if (yc > maxy) {
+//     maxy = yc;
+//   }
 
-  t = computeQuadraticFirstDerivativeRoot(ya, yb, yc);
-  if (t >= 0 && t <= 1) {
-    y = computeQuadraticBaseValue(t, ya, yb, yc);
-    if (y < miny) {
-      miny = y;
-    }
-    if (y > maxy) {
-      maxy = y;
-    }
-  }
+//   t = computeQuadraticFirstDerivativeRoot(ya, yb, yc);
+//   if (t >= 0 && t <= 1) {
+//     y = computeQuadraticBaseValue(t, ya, yb, yc);
+//     if (y < miny) {
+//       miny = y;
+//     }
+//     if (y > maxy) {
+//       maxy = y;
+//     }
+//   }
 
-  return { minx, miny, maxx, maxy };
-}
+//   return { minx, miny, maxx, maxy };
+// }
 
 // Compute the value for the quadratic bezier function at time t.
-function computeQuadraticBaseValue(t: number, a: number, b: number, c: number) {
-  const mt = 1 - t;
-  return mt * mt * a + 2 * mt * t * b + t * t * c;
-}
+// function computeQuadraticBaseValue(t: number, a: number, b: number, c: number) {
+//   const mt = 1 - t;
+//   return mt * mt * a + 2 * mt * t * b + t * t * c;
+// }
 
 // Compute the value for the first derivative of the quadratic bezier function at time t.
-function computeQuadraticFirstDerivativeRoot(a: number, b: number, c: number) {
-  let t = -1;
-  const denominator = a - 2 * b + c;
-  if (denominator !== 0) {
-    t = (a - b) / denominator;
-  }
-  return t;
-}
+// function computeQuadraticFirstDerivativeRoot(a: number, b: number, c: number) {
+//   let t = -1;
+//   const denominator = a - 2 * b + c;
+//   if (denominator !== 0) {
+//     t = (a - b) / denominator;
+//   }
+//   return t;
+// }
 
 /**
  * Convert path array to string.
