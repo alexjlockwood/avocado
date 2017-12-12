@@ -503,16 +503,6 @@ function getGroupAttr(
   return result;
 }
 
-function removeGroupAttrs(group: JsApi) {
-  group.removeAttr('android:pivotX');
-  group.removeAttr('android:pivotY');
-  group.removeAttr('android:scaleX');
-  group.removeAttr('android:scaleY');
-  group.removeAttr('android:translateX');
-  group.removeAttr('android:translateY');
-  group.removeAttr('android:rotation');
-}
-
 export type Matrix = [number, number, number, number, number, number];
 
 export interface GroupTransform {
