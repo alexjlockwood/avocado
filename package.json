@@ -1,6 +1,6 @@
 {
   "name": "avdo",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "description": "Vector Drawable & Animated Vector Drawable optimization tool",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -26,7 +26,8 @@
   "license": "MIT",
   "dependencies": {
     "commander": "^2.12.2",
-    "sax": "^1.2.4"
+    "sax": "^1.2.4",
+    "util.promisify": "^1.0.0"
   },
   "devDependencies": {
     "@types/chai": "^4.0.10",

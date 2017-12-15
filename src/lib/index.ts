@@ -11,11 +11,18 @@ import { js2xml } from './js2xml';
 
 import fs = require('fs');
 import path = require('path');
-import util = require('util');
+const promisify = require('util.promisify');
 
-const readFileFn = util.promisify(fs.readFile);
-const readDirFn = util.promisify(fs.readdir);
-const writeFileFn = util.promisify(fs.writeFile);
+const readFileFn: ((
+  path: string,
+  options: string,
+) => Promise<string>) = promisify(fs.readFile);
+const readDirFn: (path: string) => Promise<string[]> = promisify(fs.readdir);
+const writeFileFn: (
+  path: string,
+  data: any,
+  options?: string,
+) => Promise<void> = promisify(fs.writeFile);
 
 let avdo: Avdo;
 
