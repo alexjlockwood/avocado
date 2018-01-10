@@ -12,4 +12,4 @@
 
 @@@
 
-{ "floatPrecision": 2, "leadingZero": true }
+{ "floatPrecision": 2, "leadingZero": true, "makeArcs": { "threshold": 2.5, "tolerance": 0.5 } }

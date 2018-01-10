@@ -22,10 +22,11 @@ let arcTolerance: number;
 export const defaultParams = {
   applyTransforms: true,
   applyTransformsStroked: true,
-  makeArcs: {
-    threshold: 2.5, // Coefficient of rounding error.
-    tolerance: 0.5, // Percentage of radius.
-  },
+  makeArcs: undefined as { threshold: number; tolerance: number },
+  // {
+  //   threshold: 2.5, // Coefficient of rounding error.
+  //   tolerance: 0.5, // Percentage of radius.
+  // },
   straightCurves: true,
   lineShorthands: true,
   curveSmoothShorthands: true,

@@ -12,4 +12,4 @@
 
 @@@
 
-{ "floatPrecision": 0 }
+{ "floatPrecision": 0, "makeArcs": { "threshold": 2.5, "tolerance": 0.5 } }

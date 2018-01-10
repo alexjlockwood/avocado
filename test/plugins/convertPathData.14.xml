@@ -24,4 +24,4 @@
 
 @@@
 
-{ "leadingZero": true }
+{ "leadingZero": true, "makeArcs": { "threshold": 2.5, "tolerance": 0.5 } }
