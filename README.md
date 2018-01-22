@@ -1,24 +1,24 @@
-# avdo
+# avocado
 
 [![Build status][travis-badge]][travis-badge-url]
 [![npm version][npm-badge]][npm-badge-url]
 [![Coverage status][coveralls-badge]][coveralls-badge-url]
 
-`avdo` is a command line tool (similar to [`svgo`][svgo]) that optimizes Android
+`avocado` is a command line tool (similar to [`svgo`][svgo]) that optimizes Android
 `VectorDrawable` (VD) and `AnimatedVectorDrawable` (AVD) xml files.
 
 ## Installation
 
-You can install `avdo` using [npm][npm] w/ the following command:
+You can install `avocado` using [npm][npm] w/ the following command:
 
 ```sh
-npm install -g avdo
+npm install -g avocado
 ```
 
 ## Usage
 
 ```text
-Usage: avdo [options] [file]
+Usage: avocado [options] [file]
 
 Options:
 
@@ -35,31 +35,31 @@ Options:
 
 ```sh
 # Optimize (and overwrite) a VD/AVD file.
-avdo vector.xml
+avocado vector.xml
 
 # Optimize (and overwrite) multiple VD/AVD files.
-avdo *.xml
+avocado *.xml
 
 # Optimize a VD/AVD file and write the output to a new file.
-avdo vector.xml -o vector_min.xml
+avocado vector.xml -o vector_min.xml
 
 # Optimize a VD/AVD using standard input and standard output.
-cat vector.xml | avdo -i - -o - > vector_min.xml
+cat vector.xml | avocado -i - -o - > vector_min.xml
 
 # Optimize (and overwrite) all of the VD/AVD files in a directory.
-avdo -d path/to/directory
+avocado -d path/to/directory
 
 # Optimize all VD/AVD files in a directory and write them to a new directory.
-avdo -d path/to/input/directory -o path/to/output/directory
+avocado -d path/to/input/directory -o path/to/output/directory
 
 # Optimize all files ending with '.xml' and write them to a new directory.
-avdo *.xml -o path/to/output/directory
+avocado *.xml -o path/to/output/directory
 
 # Pass a string as input and write the output to a new file.
-avdo -s '<vector>...</vector>' -o vector_min.xml
+avocado -s '<vector>...</vector>' -o vector_min.xml
 ```
 
-`avdo` rewrites the `VectorDrawable` using the smallest number of `<group>`s and `<path>`s possible, reducing their file sizes and making them faster to parse and draw at runtime. The example below shows the contents of a `VectorDrawable` before and after being run through `avdo`.
+`avocado` rewrites the `VectorDrawable` using the smallest number of `<group>`s and `<path>`s possible, reducing their file sizes and making them faster to parse and draw at runtime. The example below shows the contents of a `VectorDrawable` before and after being run through `avocado`.
 
 #### Before
 
@@ -142,12 +142,12 @@ To test the tool, run:
 npm run test
 ```
 
-  [travis-badge]: https://travis-ci.org/alexjlockwood/avdo.svg?branch=master
-  [travis-badge-url]: https://travis-ci.org/alexjlockwood/avdo
-  [coveralls-badge]: https://coveralls.io/repos/github/alexjlockwood/avdo/badge.svg?branch=master
-  [coveralls-badge-url]: https://coveralls.io/github/alexjlockwood/avdo?branch=master
-  [npm-badge]: https://badge.fury.io/js/avdo.svg
-  [npm-badge-url]: https://www.npmjs.com/package/avdo
+  [travis-badge]: https://travis-ci.org/alexjlockwood/avocado.svg?branch=master
+  [travis-badge-url]: https://travis-ci.org/alexjlockwood/avocado
+  [coveralls-badge]: https://coveralls.io/repos/github/alexjlockwood/avocado/badge.svg?branch=master
+  [coveralls-badge-url]: https://coveralls.io/github/alexjlockwood/avocado?branch=master
+  [npm-badge]: https://badge.fury.io/js/avocado.svg
+  [npm-badge-url]: https://www.npmjs.com/package/avocado
   [svgo]: https://github.com/svg/svgo
   [vscode]: https://code.visualstudio.com/
   [npm]: https://www.npmjs.com/get-npm

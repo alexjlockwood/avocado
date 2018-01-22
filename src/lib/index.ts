@@ -5,7 +5,7 @@
 
 import * as cli from 'commander';
 
-import { Avdo, Options } from './avdo';
+import { Avocado, Options } from './avocado';
 
 import { js2xml } from './js2xml';
 
@@ -24,10 +24,10 @@ const writeFileFn: (
   options?: string,
 ) => Promise<void> = promisify(fs.writeFile);
 
-let avdo: Avdo;
+let avocado: Avocado;
 
 /**
- * Runs the avdo command line tool.
+ * Runs the avocado command line tool.
  */
 export async function run() {
   const pkgJson: {
@@ -92,7 +92,7 @@ export async function run() {
     }
   }
 
-  avdo = new Avdo();
+  avocado = new Avocado();
 
   if (output) {
     if (input && input[0] !== '-') {
@@ -208,7 +208,7 @@ function processData(
   const startTime = Date.now();
   const prevFileSize = Buffer.byteLength(data, 'utf8');
 
-  return avdo.optimize(data).then(result => {
+  return avocado.optimize(data).then(result => {
     // if (config.datauri) {
     //   result.data = encodeSVGDatauri(result.data, config.datauri);
     // }
@@ -322,7 +322,7 @@ function printErrorAndExit(error: any) {
 
 //   // Flatten an array of plugins grouped per type, sort and write output
 //   var list = [].concat
-//     .apply([], new Avdo().config.plugins)
+//     .apply([], new Avocado().config.plugins)
 //     .sort((a, b) => a.name.localeCompare(b.name))
 //     .map(plugin => ` [ ${plugin.name.green} ] ${plugin.description}`)
 //     .join('\n');
@@ -331,7 +331,7 @@ function printErrorAndExit(error: any) {
 
 /*
 npm run build && \
-node bin/avdo --multipass -s \
+node bin/avocado --multipass -s \
 '
 <?xml version="1.0" encoding="utf-8"?>
 <vector

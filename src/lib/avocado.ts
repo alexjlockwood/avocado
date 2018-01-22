@@ -47,7 +47,7 @@ const batchedPlugins = (function(ps: Plugin[]) {
       }
       return arr;
     },
-    [] as Plugin[][]
+    [] as Plugin[][],
   );
 })(Object.keys(plugins).map(k => plugins[k]));
 
@@ -58,7 +58,7 @@ export interface Options {
   pretty?: boolean;
 }
 
-export class Avdo {
+export class Avocado {
   constructor(
     private readonly options: Options = {
       plugins: batchedPlugins,

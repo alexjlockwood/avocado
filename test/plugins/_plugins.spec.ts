@@ -1,4 +1,4 @@
-import { Avdo, plugins } from '../../src/lib/avdo';
+import { Avocado, plugins } from '../../src/lib/avocado';
 
 import { Plugin } from '../../src/plugins/_types';
 import { expect } from 'chai';
@@ -27,7 +27,7 @@ describe('plugin tests', () => {
           const orig = splitted[0];
           const should = splitted[1];
           const params = splitted[2];
-          let avdo: Avdo;
+          let avocado: Avocado;
 
           const plugin = plugins[name];
           const origActive = plugin.active;
@@ -36,11 +36,11 @@ describe('plugin tests', () => {
           if (params) {
             plugin.params = { ...origParams, ...JSON.parse(params) };
           }
-          avdo = new Avdo({
+          avocado = new Avocado({
             plugins: [[plugin]],
             pretty: true,
           });
-          const result = avdo.optimize(orig).then(res => {
+          const result = avocado.optimize(orig).then(res => {
             normalize(res).should.be.equal(should);
           });
           plugin.active = origActive;

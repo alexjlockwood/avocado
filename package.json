@@ -1,11 +1,12 @@
 {
-  "name": "avdo",
-  "version": "0.1.5",
+  "name": "avocado",
+  "version": "1.0.0",
   "description": "Vector Drawable & Animated Vector Drawable optimization tool",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
-    "avdo": "./bin/avdo"
+    "avdo": "./bin/avocado",
+    "avocado": "./bin/avocado"
   },
   "scripts": {
     "prepublishOnly": "npm run build",
@@ -15,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/alexjlockwood/avdo"
+    "url": "https://github.com/alexjlockwood/avocado"
   },
   "keywords": [
     "Android",
