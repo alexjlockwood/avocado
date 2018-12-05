@@ -42,6 +42,7 @@
     "prettier": "1.10.2",
     "should": "^13.2.1",
     "ts-node": "^4.1.0",
+    "tslint": "^5.11.0",
     "typescript": "^2.6.2"
   },
   "engines": {
