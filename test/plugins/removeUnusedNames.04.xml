@@ -1,0 +1,29 @@
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector>
+            <group android:name="rotationGroup">
+                <path android:name="v" android:pathData="..."/>
+            </group>
+        </vector>
+    </aapt:attr>
+    <target android:name="rotationGroup">
+        <aapt:attr name="android:animation">
+            <objectAnimator/>
+        </aapt:attr>
+    </target>
+</animated-vector>
+@@@
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector>
+            <group android:name="rotationGroup">
+                <path android:pathData="..."/>
+            </group>
+        </vector>
+    </aapt:attr>
+    <target android:name="rotationGroup">
+        <aapt:attr name="android:animation">
+            <objectAnimator/>
+        </aapt:attr>
+    </target>
+</animated-vector>

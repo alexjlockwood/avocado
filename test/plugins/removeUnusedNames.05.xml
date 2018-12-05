@@ -1,0 +1,11 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:name="rotationGroup">
+        <path android:name="v" android:pathData="..."/>
+    </group>
+</vector>
+@@@
+<vector xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:name="rotationGroup">
+        <path android:name="v" android:pathData="..."/>
+    </group>
+</vector>

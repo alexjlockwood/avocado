@@ -13,6 +13,7 @@ import { removeDefaults } from '../plugins/removeDefaults';
 import { removeEmptyGroups } from '../plugins/removeEmptyGroups';
 import { removeHiddenElems } from '../plugins/removeHiddenElems';
 import { removeXMLProcInst } from '../plugins/removeXMLProcInst';
+import { removeUnusedNames } from '../plugins/removeUnusedNames';
 import { xml2js } from './xml2js';
 
 // The order is from https://github.com/svg/svgo/blob/master/.svgo.yml
@@ -26,6 +27,7 @@ export const plugins: { [name: string]: Plugin } = {
   removeDefaults,
   // removeUselessStrokeAndFill,
   removeHiddenElems,
+  removeUnusedNames,
   bakeGroupTransforms,
   collapseGroups,
   convertPathData,
