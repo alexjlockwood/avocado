@@ -88,7 +88,7 @@ function filters(
   const pathBase = [0, 0];
   let prev: any = {};
 
-  pathRes = pathRes.filter(function(item, index, path) {
+  pathRes = pathRes.filter(function (item, index, path) {
     let instruction = item.instruction;
     let data = item.data;
     let next = path[index + 1];
@@ -404,7 +404,7 @@ function filters(
       // remove useless non-first path segments
       if (params.removeUseless) {
         // l 0,0 / h 0 / v 0 / q 0,0 0,0 / t 0,0 / c 0,0 0,0 0,0 / s 0,0 0,0
-        if ('lhvqtcs'.indexOf(instruction) > -1 && data.every(i => i === 0)) {
+        if ('lhvqtcs'.indexOf(instruction) > -1 && data.every((i) => i === 0)) {
           path[index] = prev;
           return false;
         }
@@ -444,7 +444,7 @@ function filters(
 function convertToMixed(path: PathItem[], params: Params) {
   let prev = path[0];
 
-  path = path.filter(function(item, index) {
+  path = path.filter(function (item, index) {
     if (index === 0) {
       return true;
     }
@@ -682,11 +682,14 @@ function findCircle(curve: Curve) {
     m2[1] - (m2[0] - midPoint[0]),
   ]);
   const radius = center && getDistance([0, 0], center);
-  const tolerance = Math.min(arcThreshold * error, arcTolerance * radius / 100);
+  const tolerance = Math.min(
+    arcThreshold * error,
+    (arcTolerance * radius) / 100,
+  );
 
   if (
     center &&
-    [1 / 4, 3 / 4].every(point => {
+    [1 / 4, 3 / 4].every((point) => {
       return (
         Math.abs(
           getDistance(getCubicBezierPoint(curve, point), center) - radius,
@@ -708,9 +711,9 @@ function findCircle(curve: Curve) {
 function isArc(curve: Curve, circle: Circle) {
   const tolerance = Math.min(
     arcThreshold * error,
-    arcTolerance * circle.radius / 100,
+    (arcTolerance * circle.radius) / 100,
   );
-  return [0, 1 / 4, 1 / 2, 3 / 4, 1].every(point => {
+  return [0, 1 / 4, 1 / 2, 3 / 4, 1].every((point) => {
     return (
       Math.abs(
         getDistance(getCubicBezierPoint(curve, point), circle.center) -

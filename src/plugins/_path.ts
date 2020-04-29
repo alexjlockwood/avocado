@@ -52,7 +52,7 @@ export function path2js(path: JsApi) {
   path
     .attr('android:pathData')
     .value.split(regPathInstructions)
-    .forEach(data => {
+    .forEach((data) => {
       if (!data) {
         return;
       }
@@ -261,7 +261,7 @@ function relative2absolute(data: PathItem[]) {
   const currentPoint = [0, 0];
   const subpathPoint = [0, 0];
 
-  return data.map(item => {
+  return data.map((item) => {
     const instruction = item.instruction;
     const itemData = item.data && item.data.slice();
 
@@ -403,7 +403,7 @@ export function applyTransforms(
   //   return path;
   // }
 
-  path.forEach(pathItem => {
+  path.forEach((pathItem) => {
     if (pathItem.data) {
       // h -> l
       if (pathItem.instruction === 'h') {
@@ -480,18 +480,73 @@ export function applyTransforms(
   return path;
 }
 
+export function applyTransformsToPathGradients(group: JsApi, path: JsApi) {
+  if (!group.isElem('group') || !path.isElem('path')) {
+    return;
+  }
+  const aaptAttrs = path.content.filter((child) => child.isElem('aapt:attr'));
+  aaptAttrs.forEach((aaptAttr) => {
+    aaptAttr.content.forEach((aaptAttrChild) => {
+      if (aaptAttrChild.isElem('gradient')) {
+        applyTransformsToGradient(group, aaptAttrChild);
+      }
+    });
+  });
+}
+
+function applyTransformsToGradient(group: JsApi, gradient: JsApi) {
+  const gradientTypeAttr = gradient.attr('android:type');
+  if (!gradientTypeAttr) {
+    return;
+  }
+  const matrix = groupToMatrix(getGroupAttrs(group));
+  const gradientType = gradientTypeAttr.value;
+  if (gradientType === 'linear') {
+    const startX = getAndroidNumAttr(gradient, 'startX', 0);
+    const startY = getAndroidNumAttr(gradient, 'startY', 0);
+    const [transStartX, transStartY] = transformPoint(matrix, startX, startY);
+    addAndroidNumAttr(gradient, 'startX', transStartX);
+    addAndroidNumAttr(gradient, 'startY', transStartY);
+    const endX = getAndroidNumAttr(gradient, 'endX', 0);
+    const endY = getAndroidNumAttr(gradient, 'endY', 0);
+    const [transEndX, transEndY] = transformPoint(matrix, endX, endY);
+    addAndroidNumAttr(gradient, 'endX', transEndX);
+    addAndroidNumAttr(gradient, 'endX', transEndY);
+  } else if (gradientType === 'radial') {
+  } else if (gradientType === 'sweep') {
+  }
+  // if (gradient.hasAttr)
+  //   return path.content.some((aaptAttr) => {
+  //     if (!aaptAttr.isElem('aapt:attr')) {
+  //       return false;
+  //     }
+  //     return aaptAttr.content.some((aaptAttrChild) => {
+  //       return aaptAttrChild.isElem('gradient');
+  //     });
+  //   });
+}
+
+function addAndroidNumAttr(item: JsApi, local: string, value: number) {
+  item.addAttr({
+    name: `android:${local}`,
+    prefix: 'android',
+    local,
+    value: String(value),
+  });
+}
+
 export function getGroupAttrs(group: JsApi) {
-  const px = getGroupAttr(group, 'pivotX', 0);
-  const py = getGroupAttr(group, 'pivotY', 0);
-  const sx = getGroupAttr(group, 'scaleX', 1);
-  const sy = getGroupAttr(group, 'scaleY', 1);
-  const tx = getGroupAttr(group, 'translateX', 0);
-  const ty = getGroupAttr(group, 'translateY', 0);
-  const r = getGroupAttr(group, 'rotation', 0);
+  const px = getAndroidNumAttr(group, 'pivotX', 0);
+  const py = getAndroidNumAttr(group, 'pivotY', 0);
+  const sx = getAndroidNumAttr(group, 'scaleX', 1);
+  const sy = getAndroidNumAttr(group, 'scaleY', 1);
+  const tx = getAndroidNumAttr(group, 'translateX', 0);
+  const ty = getAndroidNumAttr(group, 'translateY', 0);
+  const r = getAndroidNumAttr(group, 'rotation', 0);
   return { px, py, sx, sy, tx, ty, r };
 }
 
-function getGroupAttr(
+function getAndroidNumAttr(
   group: JsApi,
   attrLocalName: string,
   defaultValue: number,
@@ -528,7 +583,7 @@ export function getScaling(matrix: Matrix) {
  * Extracts the rotation in degrees from the transformation matrix.
  */
 export function getRotation(matrix: Matrix) {
-  return { r: 180 / Math.PI * Math.atan2(-matrix[2], matrix[0]) };
+  return { r: (180 / Math.PI) * Math.atan2(-matrix[2], matrix[0]) };
 }
 
 /**
@@ -555,9 +610,23 @@ function flattenMatrices(...matrices: Matrix[]) {
   }, identity);
 }
 
+function invertMatrix(matrix: Matrix): Matrix {
+  const [a, b, c, d, e, f] = matrix;
+  let det = a * d - b * c;
+  det = 1 / det;
+  return [
+    d * det,
+    -b * det,
+    -c * det,
+    a * det,
+    (c * f - d * e) * det,
+    (b * e - a * f) * det,
+  ];
+}
+
 function groupToMatrix({ sx, sy, r, tx, ty, px, py }: GroupTransform) {
-  const cosr = Math.cos(r * Math.PI / 180);
-  const sinr = Math.sin(r * Math.PI / 180);
+  const cosr = Math.cos((r * Math.PI) / 180);
+  const sinr = Math.sin((r * Math.PI) / 180);
   return flattenMatrices(
     [1, 0, 0, 1, px, py],
     [1, 0, 0, 1, tx, ty],
@@ -578,7 +647,11 @@ export function flattenGroups(groups: GroupTransform[]) {
  * @param {Array} point x-y point
  * @return {Array} point with new coordinates
  */
-function transformPoint(matrix: number[], x: number, y: number) {
+function transformPoint(
+  matrix: number[],
+  x: number,
+  y: number,
+): [number, number] {
   return [
     matrix[0] * x + matrix[2] * y + matrix[4],
     matrix[1] * x + matrix[3] * y + matrix[5],
@@ -822,30 +895,27 @@ function collapseRepeated(data: PathItem[]) {
   let prevIndex: number;
 
   // Copy an array and modifieds item to keep original data untouched.
-  return data.reduce(
-    (newPath, item) => {
-      if (prev && item.data && item.instruction === prev.instruction) {
-        // Concat previous data with current.
-        if (item.instruction !== 'M') {
-          prev = newPath[prevIndex] = {
-            instruction: prev.instruction,
-            data: prev.data.concat(item.data),
-            coords: item.coords,
-            base: prev.base,
-          };
-        } else {
-          prev.data = item.data;
-          prev.coords = item.coords;
-        }
+  return data.reduce((newPath, item) => {
+    if (prev && item.data && item.instruction === prev.instruction) {
+      // Concat previous data with current.
+      if (item.instruction !== 'M') {
+        prev = newPath[prevIndex] = {
+          instruction: prev.instruction,
+          data: prev.data.concat(item.data),
+          coords: item.coords,
+          base: prev.base,
+        };
       } else {
-        newPath.push(item);
-        prev = item;
-        prevIndex = newPath.length - 1;
+        prev.data = item.data;
+        prev.coords = item.coords;
       }
-      return newPath;
-    },
-    [] as PathItem[],
-  );
+    } else {
+      newPath.push(item);
+      prev = item;
+      prevIndex = newPath.length - 1;
+    }
+    return newPath;
+  }, [] as PathItem[]);
 }
 
 function set(dest: number[], source: number[]) {
@@ -878,8 +948,8 @@ export function intersects(path1: PathItem[], path2: PathItem[]) {
     points2.maxX <= points1.minX ||
     points1.maxY <= points2.minY ||
     points2.maxY <= points1.minY ||
-    points1.every(set1 => {
-      return points2.every(set2 => {
+    points1.every((set1) => {
+      return points2.every((set2) => {
         return (
           set1[set1.maxX][0] <= set2[set2.minX][0] ||
           set2[set2.maxX][0] <= set1[set1.minX][0] ||
@@ -897,12 +967,12 @@ export function intersects(path1: PathItem[], path2: PathItem[]) {
   const hullNest2 = points2.map(convexHull);
 
   // Check intersection of every subpath of the first path with every subpath of the second.
-  return hullNest1.some(hull1 => {
+  return hullNest1.some((hull1) => {
     if (hull1.length < 3) {
       return false;
     }
 
-    return hullNest2.some(hull2 => {
+    return hullNest2.some((hull2) => {
       if (hull2.length < 3) {
         return false;
       }
@@ -944,8 +1014,12 @@ export function intersects(path1: PathItem[], path2: PathItem[]) {
   function supportPoint(polygon: Polygon, direction: number[]) {
     let index =
       direction[1] >= 0
-        ? direction[0] < 0 ? polygon.maxY : polygon.maxX
-        : direction[0] < 0 ? polygon.minX : polygon.minY;
+        ? direction[0] < 0
+          ? polygon.maxY
+          : polygon.maxX
+        : direction[0] < 0
+        ? polygon.minX
+        : polygon.minY;
     let max = -Infinity;
     let value;
     while ((value = dot(polygon[index], direction)) > max) {
@@ -1230,8 +1304,8 @@ function a2c(
 ) {
   // For more information of where this Math came from visit:
   // http://www.w3.org/TR/SVG11/implnote.html#ArcImplementationNotes
-  const _120 = Math.PI * 120 / 180;
-  const rad = Math.PI / 180 * (+angle || 0);
+  const _120 = (Math.PI * 120) / 180;
+  const rad = (Math.PI / 180) * (+angle || 0);
   let res: number[] = [];
   const rotateX = (x: number, y: number, r: number) =>
     x * Math.cos(r) - y * Math.sin(r);
@@ -1248,7 +1322,7 @@ function a2c(
     y2 = rotateY(x2, y2, -rad);
     const x = (x1 - x2) / 2;
     const y = (y1 - y2) / 2;
-    let h = x * x / (rx * rx) + y * y / (ry * ry);
+    let h = (x * x) / (rx * rx) + (y * y) / (ry * ry);
     if (h > 1) {
       h = Math.sqrt(h);
       rx = h * rx;
@@ -1263,8 +1337,8 @@ function a2c(
           (rx2 * ry2 - rx2 * y * y - ry2 * x * x) / (rx2 * y * y + ry2 * x * x),
         ),
       );
-    cx = k * rx * y / ry + (x1 + x2) / 2;
-    cy = k * -ry * x / rx + (y1 + y2) / 2;
+    cx = (k * rx * y) / ry + (x1 + x2) / 2;
+    cy = (k * -ry * x) / rx + (y1 + y2) / 2;
     f1 = Math.asin(+((y1 - cy) / ry).toFixed(9));
     f2 = Math.asin(+((y2 - cy) / ry).toFixed(9));
 
@@ -1309,8 +1383,8 @@ function a2c(
   const c2 = Math.cos(f2);
   const s2 = Math.sin(f2);
   const t = Math.tan(df / 4);
-  const hx = 4 / 3 * rx * t;
-  const hy = 4 / 3 * ry * t;
+  const hx = (4 / 3) * rx * t;
+  const hy = (4 / 3) * ry * t;
   const m = [
     -hx * s1,
     hy * c1,
@@ -1347,7 +1421,7 @@ function a2c(
 function transformArc(arc: number[], transform: Matrix) {
   let a = arc[0];
   let b = arc[1];
-  const rot = arc[2] * Math.PI / 180;
+  const rot = (arc[2] * Math.PI) / 180;
   const cos = Math.cos(rot);
   const sin = Math.sin(rot);
   let h =
@@ -1383,11 +1457,11 @@ function transformArc(arc: number[], transform: Matrix) {
     arc[0] = Math.sqrt(majorAxisSqr);
     arc[1] = Math.sqrt(minorAxisSqr);
     arc[2] =
-      ((major ? term2 < 0 : term1 > 0) ? -1 : 1) *
-      Math.acos(
-        (major ? term1 : term2) / Math.sqrt(term1 * term1 + term2 * term2),
-      ) *
-      180 /
+      (((major ? term2 < 0 : term1 > 0) ? -1 : 1) *
+        Math.acos(
+          (major ? term1 : term2) / Math.sqrt(term1 * term1 + term2 * term2),
+        ) *
+        180) /
       Math.PI;
   }
 

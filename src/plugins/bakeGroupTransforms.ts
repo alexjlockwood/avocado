@@ -1,5 +1,6 @@
 import {
   applyTransforms,
+  applyTransformsToPathGradients,
   convertToRelative,
   flattenGroups,
   getGroupAttrs,
@@ -30,9 +31,9 @@ function fn(item: JsApi, params: Params) {
     !item.hasAttr() ||
     item.hasAttr('android:name') ||
     item.isEmpty() ||
-    item.content.some(i => i.hasAttr('android:name')) ||
+    item.content.some((i) => i.hasAttr('android:name')) ||
     // TODO: are there some cases where we can bake group transforms into a clip-path?
-    item.content.some(i => i.isElem('clip-path'))
+    item.content.some((i) => i.isElem('clip-path'))
   ) {
     return item;
   }
@@ -79,7 +80,7 @@ function fn(item: JsApi, params: Params) {
     floatPrecision > 0 && floatPrecision < 20 ? strongRound : round;
 
   const g1Attrs = getGroupAttrs(item);
-  item.content.forEach(i => {
+  item.content.forEach((i) => {
     if (i.isElem('group')) {
       const g2Attrs = getGroupAttrs(i);
       const matrix = flattenGroups([g1Attrs, g2Attrs]);
@@ -105,9 +106,10 @@ function fn(item: JsApi, params: Params) {
       if (!data.length) {
         return;
       }
+      applyTransformsToPathGradients(item, i);
       convertToRelative(data);
       data = applyTransforms(item, i, data, params);
-      data.forEach(d => {
+      data.forEach((d) => {
         if (d.data) {
           roundData(d.data);
         }
